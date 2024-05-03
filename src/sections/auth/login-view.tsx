@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -14,14 +14,13 @@ import Stack from '@mui/material/Stack';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 // config
-import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { PATH_AFTER_LOGIN, SOCKET_KEY } from 'src/config-global';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
-
-// auth
-import useApi from 'src/hooks/use-api';
 import { useDispatch } from 'src/store';
 import { signin } from 'src/store/reducers/auth';
+
+import useLocales from 'src/locales/use-locales';
 
 // components
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
@@ -29,24 +28,27 @@ import { RouterLink } from 'src/routes/components';
 import Iconify from 'src/components/iconify';
 import Logo from 'src/components/logo';
 
+import useSocket from 'src/hooks/use-socket';
+
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { t } = useLocales();
+  const { sendSocket, lastJsonMessage } = useSocket();
 
-  const { login } = useApi();
   const [errorMsg, setErrorMsg] = useState('');
 
-  const password = useBoolean();
+  const confirmPassword = useBoolean();
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+    name: Yup.string().required('Nick Name / Email is required'),
     password: Yup.string().required('Password is required'),
   });
 
   const defaultValues = {
-    email: '',
+    name: '',
     password: '',
   };
 
@@ -63,16 +65,32 @@ export default function LoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const res = await login(data.email, data.password);
-      if (!res?.data) return;
-      dispatch(signin(res.data));
-      router.push(PATH_AFTER_LOGIN);
+      const { name, password } = data;
+      sendSocket({
+        key: SOCKET_KEY.LOGIN,
+        name,
+        password,
+      });
     } catch (error) {
       console.error(error);
       reset();
       setErrorMsg(typeof error === 'string' ? error : error.message);
     }
   });
+
+  useEffect(() => {
+    if (!lastJsonMessage) return;
+    const { key, data } = lastJsonMessage;
+    if (key !== SOCKET_KEY.LOGIN_RES || !data) return;
+    const { result, user, error } = data;
+    if (error) {
+      setErrorMsg(error);
+      return;
+    }
+    if (!result || !user) return;
+    dispatch(signin(user));
+    // router.push(PATH_AFTER_LOGIN);
+  }, [lastJsonMessage, dispatch, router]);
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5, alignItems: 'center' }}>
@@ -84,18 +102,25 @@ export default function LoginView() {
     <Stack spacing={2.5} height={1} position="relative">
       {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
-      <RHFTextField name="email" label="Nick name" variant="standard" sx={{ fontSize: 26 }} />
+      <RHFTextField
+        name="name"
+        label={t('label.nick_email')}
+        variant="standard"
+        sx={{ fontSize: 26 }}
+      />
 
       <RHFTextField
         name="password"
-        label="Password"
+        label={t('label.password')}
         variant="standard"
-        type={password.value ? 'text' : 'password'}
+        type={confirmPassword.value ? 'text' : 'password'}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
-                <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+              <IconButton onClick={confirmPassword.onToggle} edge="end">
+                <Iconify
+                  icon={confirmPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
+                />
               </IconButton>
             </InputAdornment>
           ),

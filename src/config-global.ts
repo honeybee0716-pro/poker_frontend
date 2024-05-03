@@ -12,7 +12,6 @@ export const PATH_AFTER_LOGIN = paths.users.root as string; // as '/dashboard'
 
 export const API_URL = process.env.REACT_APP_API_URL;
 
-
 export const API_PATH = {
     // auth
     LOGIN: '/api/admin/login',
@@ -23,3 +22,13 @@ export const API_PATH = {
     RECORDS: '/api/admin/records',
     AUTH_GET_ME: '/api/admin/auth/me',
 };
+
+export const SOCKET_KEY = {
+  // auth
+  LOGIN: 'userLogin',
+  LOGIN_RES: 'loginResult',
+  REGISTER: 'createAccount',
+  REGISTER_RES: 'accountCreated',
+};
+
+export const WEBSOCKET_URL = "ws://127.0.0.1:8000"

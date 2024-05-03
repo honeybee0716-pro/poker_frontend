@@ -1,3 +1,6 @@
+// i18n
+import 'src/locales/i18n';
+
 // scrollbar
 import 'simplebar-react/dist/simplebar.min.css';
 
@@ -18,8 +21,10 @@ import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 // components
 import ProgressBar from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
+import { LocalizationProvider } from 'src/locales';
 import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
 import { ApiProvider } from './contexts/ApiContext';
+import { SocketProvider } from './contexts/SocketContext';
 
 // ----------------------------------------------------------------------
 
@@ -27,27 +32,31 @@ export default function App() {
   useScrollToTop();
 
   return (
-    <SettingsProvider
-      defaultSettings={{
-        themeMode: 'dark', // 'light' | 'dark'
-        themeDirection: 'ltr', //  'rtl' | 'ltr'
-        themeContrast: 'default', // 'default' | 'bold'
-        themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-        themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-        themeStretch: false,
-      }}
-    >
-      <ThemeProvider>
-        <MotionLazy>
-          <SnackbarProvider>
-            <SettingsDrawer />
-            <ProgressBar />
-            <ApiProvider>
-              <Router />
-            </ApiProvider>
-          </SnackbarProvider>
-        </MotionLazy>
-      </ThemeProvider>
-    </SettingsProvider>
+    <LocalizationProvider>
+      <SettingsProvider
+        defaultSettings={{
+          themeMode: 'dark', // 'light' | 'dark'
+          themeDirection: 'ltr', //  'rtl' | 'ltr'
+          themeContrast: 'default', // 'default' | 'bold'
+          themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
+          themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+          themeStretch: false,
+        }}
+      >
+        <ThemeProvider>
+          <MotionLazy>
+            <SnackbarProvider>
+              <SettingsDrawer />
+              <ProgressBar />
+              <SocketProvider>
+                <ApiProvider>
+                  <Router />
+                </ApiProvider>
+              </SocketProvider>
+            </SnackbarProvider>
+          </MotionLazy>
+        </ThemeProvider>
+      </SettingsProvider>
+    </LocalizationProvider>
   );
 }

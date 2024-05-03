@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import { SendJsonMessage } from 'react-use-websocket/dist/lib/types';
 
 export type GuardProps = {
   children: ReactElement | null;
@@ -66,6 +67,11 @@ export type IUser = {
   createdAt: string;
   updatedAt: string;
   role?: IRole;
+};
+
+export type SocketContextType = {
+  sendSocket: (data: { [key: string]: any }) => void;
+  lastJsonMessage: any;
 };
 
 export type ApiContextType = {
