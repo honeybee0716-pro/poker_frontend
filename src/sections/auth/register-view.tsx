@@ -42,11 +42,15 @@ export default function RegisterView() {
   const password = useBoolean();
 
   const LoginSchema = Yup.object().shape({
+    name: Yup.string().required('Nick name is required'),
+    agent_code: Yup.string().required('Agent Code is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     password: Yup.string().required('Password is required'),
   });
 
   const defaultValues = {
+    name: '',
+    agent_code: '',
     email: '',
     password: '',
   };
@@ -82,7 +86,7 @@ export default function RegisterView() {
   );
 
   const renderForm = (
-    <Stack spacing={2.5} height={1}>
+    <Stack spacing={1} height={1} position="relative">
       {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
       <RHFTextField name="name" label="Nick name" variant="standard" sx={{ fontSize: 26 }} />
@@ -106,7 +110,7 @@ export default function RegisterView() {
         }}
       />
 
-      <Stack sx={{ alignItems: 'center', gap: 3, mt: 1 }}>
+      <Stack sx={{ alignItems: 'center', gap: 3, position: 'absolute', width: 1, bottom: 50 }}>
         <LoadingButton
           fullWidth
           color="inherit"
@@ -131,7 +135,7 @@ export default function RegisterView() {
   );
 
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
+    <FormProvider methods={methods} onSubmit={onSubmit} style={{ height: '100%' }}>
       {renderHead}
       {renderForm}
     </FormProvider>

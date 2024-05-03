@@ -81,7 +81,7 @@ export default function LoginView() {
   );
 
   const renderForm = (
-    <Stack spacing={2.5} height={1}>
+    <Stack spacing={2.5} height={1} position="relative">
       {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
       <RHFTextField name="email" label="Nick name" variant="standard" sx={{ fontSize: 26 }} />
@@ -102,9 +102,7 @@ export default function LoginView() {
         }}
       />
 
-      <Stack height={1} />
-
-      <Stack sx={{ alignItems: 'center', gap: 3, position: 'relative', bottom: 10 }}>
+      <Stack sx={{ alignItems: 'center', gap: 3, position: 'absolute', width: 1, bottom: 80 }}>
         <LoadingButton
           fullWidth
           color="inherit"
@@ -129,7 +127,7 @@ export default function LoginView() {
   );
 
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
+    <FormProvider methods={methods} onSubmit={onSubmit} style={{ height: '100%' }}>
       {renderHead}
       {renderForm}
     </FormProvider>

@@ -33,7 +33,7 @@ export default function AuthClassicLayout({ children, image, title }: Props) {
           width: 1,
           height: 1,
           maxWidth: 500,
-          maxHeight: 500,
+          maxHeight: 550,
           borderRadius: 3,
           backgroundColor: '#000000',
         }}
