@@ -1,7 +1,31 @@
 {
   "label": {
+    "email": "Email",
+    "nick": "Nice Name",
+    "signin": "Signin",
+    "register": "Register",
+    "password": "Password",
+    "agent_code": "Agent Code",
     "nick_email": "Nick Name / Email",
-    "password": "Password"
+    "create_an_account": "Create an account"
+  },
+  "message": {
+    "welcome": "Welcome to Pokerking!",
+    "Agent not found": "Agent not found",
+    "User not found": "User not found",
+    "User name in use": "User name in use",
+    "Email is required": "Email is required",
+    "Password is required": "Password is required",
+    "Email address in use": "Email address in use",
+    "Password is not match": "Password is not match",
+    "Nick Name / Email is required": "Nick Name / Email is required",
+    "Must contain at least one letter": "Must contain at least one letter",
+    "name must be at least 4 characters": "name must be at least 4 characters",
+    "Email must be a valid email address": "Email must be a valid email address",
+    "password must be at least 6 characters": "password must be at least 6 characters"
+  },
+  "button": {
+    "login": "Login"
   },
   "demo": {
     "title": "English"

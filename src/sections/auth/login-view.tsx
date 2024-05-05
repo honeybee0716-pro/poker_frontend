@@ -17,13 +17,14 @@ import { paths } from 'src/routes/paths';
 import { PATH_AFTER_LOGIN, SOCKET_KEY } from 'src/config-global';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
+import useLocales from 'src/locales/use-locales';
+
 import { useDispatch } from 'src/store';
 import { signin } from 'src/store/reducers/auth';
 
-import useLocales from 'src/locales/use-locales';
-
 // components
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { useSnackbar } from 'src/components/snackbar';
 import { RouterLink } from 'src/routes/components';
 import Iconify from 'src/components/iconify';
 import Logo from 'src/components/logo';
@@ -34,8 +35,9 @@ import useSocket from 'src/hooks/use-socket';
 
 export default function LoginView() {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { t } = useLocales();
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const { sendSocket, lastJsonMessage } = useSocket();
 
   const [errorMsg, setErrorMsg] = useState('');
@@ -82,15 +84,18 @@ export default function LoginView() {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
     if (key !== SOCKET_KEY.LOGIN_RES || !data) return;
-    const { result, user, error } = data;
+    const { result, user, error, token } = data;
     if (error) {
       setErrorMsg(error);
       return;
     }
-    if (!result || !user) return;
-    dispatch(signin(user));
-    // router.push(PATH_AFTER_LOGIN);
-  }, [lastJsonMessage, dispatch, router]);
+    if (!result || !user || !token) return;
+    dispatch(signin({ user, token }));
+    enqueueSnackbar(t('message.welcome'));
+    console.log('🚀 ~ useEffect ~ lastJsonMessage:', lastJsonMessage);
+    router.push(PATH_AFTER_LOGIN);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastJsonMessage]);
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5, alignItems: 'center' }}>
@@ -142,10 +147,10 @@ export default function LoginView() {
           }}
           loading={isSubmitting}
         >
-          Login
+          {t('button.login')}
         </LoadingButton>
         <Link component={RouterLink} href={paths.auth.register} variant="subtitle2">
-          Create an account
+          {t('label.create_an_account')}
         </Link>
       </Stack>
     </Stack>

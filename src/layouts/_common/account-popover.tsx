@@ -1,64 +1,48 @@
 import { m } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-// routes
-import { useRouter } from 'src/routes/hooks';
 // hooks
-import { useMockedUser } from 'src/hooks/use-mocked-user';
+import useSocket from 'src/hooks/use-socket';
 // components
 import { useSelector, useDispatch } from 'src/store';
 import { signout } from 'src/store/reducers/auth';
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
-// ----------------------------------------------------------------------
-
-const OPTIONS = [
-  {
-    label: 'Home',
-    linkTo: '/',
-  },
-  {
-    label: 'Profile',
-    linkTo: '/#1',
-  },
-  {
-    label: 'Settings',
-    linkTo: '/#2',
-  },
-];
+import { SOCKET_KEY } from 'src/config-global';
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  console.log('🚀 ~ AccountPopover ~ user:', user);
+  const { sendSocket } = useSocket();
 
   const popover = usePopover();
 
   const handleLogout = async () => {
     try {
+      sendSocket({
+        key: SOCKET_KEY.DISCONNECT,
+      });
       dispatch(signout());
-      popover.onClose();
-      router.replace('/');
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleClickItem = (path: string) => {
-    popover.onClose();
-    router.push(path);
-  };
+  // const handleClickItem = (path: string) => {
+  //   popover.onClose();
+  //   router.push(path);
+  // };
 
   return (
     <>
@@ -114,12 +98,14 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem
-          onClick={handleLogout}
-          sx={{ m: 1, fontWeight: 'fontWeightBold', color: 'error.main' }}
-        >
-          Logout
-        </MenuItem>
+        <a href="/">
+          <MenuItem
+            onClick={handleLogout}
+            sx={{ m: 1, fontWeight: 'fontWeightBold', color: 'error.main' }}
+          >
+            Logout
+          </MenuItem>
+        </a>
       </CustomPopover>
     </>
   );

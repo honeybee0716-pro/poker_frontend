@@ -1,6 +1,7 @@
 import { useFormContext, Controller } from 'react-hook-form';
 // @mui
 import TextField, { TextFieldProps } from '@mui/material/TextField';
+import useLocales from 'src/locales/use-locales';
 
 // ----------------------------------------------------------------------
 
@@ -9,6 +10,7 @@ type Props = TextFieldProps & {
 };
 
 export default function RHFTextField({ name, helperText, type, ...other }: Props) {
+  const { t } = useLocales();
   const { control } = useFormContext();
 
   return (
@@ -29,7 +31,7 @@ export default function RHFTextField({ name, helperText, type, ...other }: Props
             }
           }}
           error={!!error}
-          helperText={error ? error?.message : helperText}
+          helperText={error ? t(`message.${error?.message}`) : helperText}
           {...other}
         />
       )}

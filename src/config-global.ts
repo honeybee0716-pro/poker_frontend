@@ -29,6 +29,7 @@ export const SOCKET_KEY = {
   LOGIN_RES: 'loginResult',
   REGISTER: 'createAccount',
   REGISTER_RES: 'accountCreated',
+  DISCONNECT: 'disconnect',
 };
 
 export const WEBSOCKET_URL = "ws://127.0.0.1:8000"

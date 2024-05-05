@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 // @mui
 import LoadingButton from '@mui/lab/LoadingButton';
 import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -18,6 +17,7 @@ import { paths } from 'src/routes/paths';
 import { PATH_AFTER_LOGIN, SOCKET_KEY } from 'src/config-global';
 // hooks
 import useSocket from 'src/hooks/use-socket';
+import useLocales from 'src/locales/use-locales';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 // auth
@@ -26,6 +26,7 @@ import { signin } from 'src/store/reducers/auth';
 
 // components
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import { useSnackbar } from 'src/components/snackbar';
 import { RouterLink } from 'src/routes/components';
 import Iconify from 'src/components/iconify';
 import Logo from 'src/components/logo';
@@ -34,7 +35,9 @@ import Logo from 'src/components/logo';
 
 export default function RegisterView() {
   const router = useRouter();
+  const { t } = useLocales();
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const { sendSocket, lastJsonMessage } = useSocket();
 
   const [errorMsg, setErrorMsg] = useState('');
@@ -65,6 +68,7 @@ export default function RegisterView() {
   });
 
   const {
+    watch,
     reset,
     handleSubmit,
     formState: { isSubmitting },
@@ -88,18 +92,25 @@ export default function RegisterView() {
   });
 
   useEffect(() => {
-    if(!lastJsonMessage) return;
+    if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
     if (key !== SOCKET_KEY.REGISTER_RES || !data) return;
-    const { result, user, error } = data;
+    const { result, user, error, token } = data;
     if (error) {
       setErrorMsg(error);
       return;
     }
-    if (!result || !user) return;
-    dispatch(signin(user));
-    // router.push(PATH_AFTER_LOGIN);
-  }, [lastJsonMessage, dispatch, router]);
+    if (!result || !user || !token) return;
+    dispatch(signin({ user, token }));
+    console.log('succss');
+
+    enqueueSnackbar(t('message.welcome'));
+    router.push(PATH_AFTER_LOGIN);
+  }, [lastJsonMessage, router, dispatch, enqueueSnackbar, t]);
+
+  useEffect(() => {
+    setErrorMsg('');
+  }, [watch]);
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 3, alignItems: 'center' }}>
@@ -109,23 +120,28 @@ export default function RegisterView() {
 
   const renderForm = (
     <Stack spacing={1} height={1} position="relative">
-      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+      {!!errorMsg && <Alert severity="error">{t(`message.${errorMsg}`)}</Alert>}
 
-      <RHFTextField name="name" label="Nick Name" variant="standard" sx={{ fontSize: 26 }} />
+      <RHFTextField name="name" label={t('label.nick')} variant="standard" sx={{ fontSize: 26 }} />
 
-      <RHFTextField name="email" label="Email" variant="standard" sx={{ fontSize: 26 }} />
+      <RHFTextField
+        name="email"
+        label={t('label.email')}
+        variant="standard"
+        sx={{ fontSize: 26 }}
+      />
       <RHFTextField
         type="number"
         inputProps={{ min: 0 }}
         name="agent_code"
-        label="Agent Code"
+        label={t('label.agent_code')}
         variant="standard"
         sx={{ fontSize: 26 }}
       />
 
       <RHFTextField
         name="password"
-        label="Password"
+        label={t('label.password')}
         variant="standard"
         type={confirmPassword.value ? 'text' : 'password'}
         InputProps={{
@@ -156,10 +172,10 @@ export default function RegisterView() {
           }}
           loading={isSubmitting}
         >
-          Register
+          {t('label.register')}
         </LoadingButton>
         <Link component={RouterLink} href={paths.auth.login} variant="subtitle2">
-          Signin
+          {t('label.signin')}
         </Link>
       </Stack>
     </Stack>
