@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 // sections
-import BalanceView from 'src/sections/balance/view';
+import ProfileView from 'src/sections/profile/view';
 
 // ----------------------------------------------------------------------
 
@@ -8,10 +8,10 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title> PokerKing Admin: Balance</title>
+        <title>PokerKing : Profile</title>
       </Helmet>
 
-      <BalanceView />
+      <ProfileView />
     </>
   );
 }

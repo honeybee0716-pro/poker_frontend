@@ -3,7 +3,6 @@ import { useTheme } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 // theme
 import { bgBlur } from 'src/theme/css';
 // hooks
@@ -11,18 +10,10 @@ import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
 // components
 import Logo from 'src/components/logo';
-import SvgColor from 'src/components/svg-color';
 import { useSettingsContext } from 'src/components/settings';
 //
 import { HEADER, NAV } from '../config-layout';
-import {
-  Searchbar,
-  AccountPopover,
-  SettingsButton,
-  LanguagePopover,
-  ContactsPopover,
-  NotificationsPopover,
-} from '../_common';
+import { AccountPopover, LanguagePopover } from '../_common';
 
 // ----------------------------------------------------------------------
 
@@ -47,17 +38,9 @@ export default function Header({ onOpenNav }: Props) {
 
   const renderContent = (
     <>
-      {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />}
+      <Logo sx={{ mr: 2.5, width: 100 }} />
 
-      {!lgUp && (
-        <IconButton onClick={onOpenNav}>
-          <SvgColor src="/assets/icons/navbar/ic_menu_item.svg" />
-        </IconButton>
-      )}
-
-      <Searchbar />
-
-      <Stack
+      {/* <Stack
         flexGrow={1}
         direction="row"
         alignItems="center"
@@ -66,43 +49,21 @@ export default function Header({ onOpenNav }: Props) {
       >
         <LanguagePopover />
 
-        {/* <NotificationsPopover /> */}
-
-        {/* <ContactsPopover /> */}
-
-        <SettingsButton />
-
         <AccountPopover />
-      </Stack>
+      </Stack> */}
     </>
   );
 
   return (
     <AppBar
       sx={{
+        left: 0,
+        width: 0.5,
+        bgcolor: '#ffffff00',
         height: HEADER.H_MOBILE,
         zIndex: theme.zIndex.appBar + 1,
-        ...bgBlur({
-          color: theme.palette.background.default,
-        }),
         transition: theme.transitions.create(['height'], {
           duration: theme.transitions.duration.shorter,
-        }),
-        ...(lgUp && {
-          width: `calc(100% - ${NAV.W_VERTICAL + 1}px)`,
-          height: HEADER.H_DESKTOP,
-          ...(offsetTop && {
-            height: HEADER.H_DESKTOP_OFFSET,
-          }),
-          ...(isNavHorizontal && {
-            width: 1,
-            bgcolor: 'background.default',
-            height: HEADER.H_DESKTOP_OFFSET,
-            borderBottom: `dashed 1px ${theme.palette.divider}`,
-          }),
-          ...(isNavMini && {
-            width: `calc(100% - ${NAV.W_MINI + 1}px)`,
-          }),
         }),
       }}
     >

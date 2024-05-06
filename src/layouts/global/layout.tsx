@@ -1,16 +1,16 @@
+import { SyntheticEvent, useState } from 'react';
 // @mui
-import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { Tab, Tabs } from '@mui/material';
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
-import { useResponsive } from 'src/hooks/use-responsive';
-// components
-import { useSettingsContext } from 'src/components/settings';
+import Iconify from 'src/components/iconify';
+import useLocales from 'src/locales/use-locales';
+import { useRouter } from 'src/routes/hooks';
+
 //
 import Main from './main';
 import Header from './header';
-import NavMini from './nav-mini';
-import NavVertical from './nav-vertical';
-import NavHorizontal from './nav-horizontal';
 
 // ----------------------------------------------------------------------
 
@@ -18,70 +18,114 @@ type Props = {
   children: React.ReactNode;
 };
 
+const NAVBAR = [
+  {
+    value: 'lobby',
+    icon: 'material-symbols:data-table-rounded',
+  },
+  {
+    value: 'profile',
+    icon: 'iconamoon:profile-fill',
+  },
+  {
+    value: 'wallet',
+    icon: 'mingcute:wallet-line',
+  },
+  {
+    value: 'shop',
+    icon: 'majesticons:shopping-cart',
+  },
+];
 export default function DashboardLayout({ children }: Props) {
-  const settings = useSettingsContext();
+  const router = useRouter();
+  const { t } = useLocales();
 
-  const lgUp = useResponsive('up', 'lg');
+  const [navbar, setNavbar] = useState('lobby');
 
-  const nav = useBoolean();
+  const handleChange = (event: SyntheticEvent, newValue: string) => {
+    router.push(newValue);
+    setNavbar(newValue);
+  };
 
-  const isHorizontal = settings.themeLayout === 'horizontal';
-
-  const isMini = settings.themeLayout === 'mini';
-
-  const renderNavMini = <NavMini />;
-
-  const renderHorizontal = <NavHorizontal />;
-
-  const renderNavVertical = <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} />;
-
-  if (isHorizontal) {
-    return (
-      <>
-        <Header onOpenNav={nav.onTrue} />
-
-        {lgUp ? renderHorizontal : renderNavVertical}
-
-        <Main>{children}</Main>
-      </>
-    );
-  }
-
-  if (isMini) {
-    return (
-      <>
-        <Header onOpenNav={nav.onTrue} />
-
-        <Box
-          sx={{
-            minHeight: 1,
-            display: 'flex',
-            flexDirection: { xs: 'column', lg: 'row' },
-          }}
-        >
-          {lgUp ? renderNavMini : renderNavVertical}
-
-          <Main>{children}</Main>
-        </Box>
-      </>
-    );
-  }
+  const renderBg = (
+    <Stack
+      sx={{
+        minWidth: { xs: 1, sm: 0.3, md: 0.5 },
+        background: {
+          xs: `url(/assets/pokerking/board_bg.jpg) no-repeat center / cover`,
+          sm: `url(/assets/pokerking/board_bg.jpg) no-repeat -395px / cover`,
+        },
+      }}
+    >
+      <Stack
+        sx={{
+          height: 1,
+          bgcolor: '#00000078',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="h1" sx={{ fontFamily: `'Yellowtail', sans-serif` }}>
+          {t('label.casino_poker')}
+        </Typography>
+        <Typography>{t('message.Experience the biggest casino poker right now')}</Typography>
+      </Stack>
+    </Stack>
+  );
 
   return (
     <>
-      <Header onOpenNav={nav.onTrue} />
+      <Header />
 
-      <Box
+      <Stack
         sx={{
-          minHeight: 1,
-          display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
+          height: 1,
+          width: 1,
+          flexDirection: { xs: 'column', sm: 'row' },
         }}
       >
-        {renderNavVertical}
-
-        <Main>{children}</Main>
-      </Box>
+        {renderBg}
+        <Stack width={1}>
+          <Main
+            sx={{
+              background: `url(/assets/pokerking/board.png) no-repeat center / cover`,
+            }}
+          >
+            {children}
+          </Main>
+          <Tabs
+            value={navbar}
+            onChange={handleChange}
+            sx={{
+              width: 0.5,
+              bottom: 0,
+              bgcolor: '#1603038a',
+              position: 'absolute',
+              '& .MuiTabs-flexContainer': {
+                py: 2,
+                px: 8,
+                justifyContent: 'space-between',
+              },
+              '& .MuiTab-root.Mui-selected': {
+                color: '#cfb13a',
+              },
+              '& .MuiTabs-indicator': {
+                bgcolor: '#cfb13a',
+              },
+            }}
+          >
+            {NAVBAR.map((e) => (
+              <Tab
+                key={e.value}
+                value={e.value}
+                label={t(`button.${e.value}`)}
+                iconPosition="top"
+                icon={<Iconify icon={e.icon} width={24} height={24} />}
+              />
+            ))}
+          </Tabs>
+        </Stack>
+      </Stack>
     </>
   );
 }

@@ -7,9 +7,13 @@
     "password": "Password",
     "agent_code": "Agent Code",
     "nick_email": "Nick Name / Email",
-    "create_an_account": "Create an account"
+    "create_an_account": "Create an account",
+    "casino_poker": "Casino Poker",
+    "welcome_to": "Welcome to",
+    "seat": "Seat"
   },
   "message": {
+    "Experience the biggest casino poker right now": "Experience the biggest casino poker right now",
     "welcome": "Welcome to Pokerking!",
     "Agent not found": "Agent not found",
     "User not found": "User not found",
@@ -25,7 +29,11 @@
     "password must be at least 6 characters": "password must be at least 6 characters"
   },
   "button": {
-    "login": "Login"
+    "login": "Login",
+    "lobby": "LOBBY",
+    "profile": "PROFILE",
+    "wallet": "WALLET",
+    "shop": "SHOP"
   },
   "demo": {
     "title": "English"

@@ -9,10 +9,10 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
-const IndexPage = lazy(() => import('src/pages/home/uesrs'));
-const RecordsPage = lazy(() => import('src/pages/home/records'));
-const AgentsPage = lazy(() => import('src/pages/home/agents'));
-const BalancePage = lazy(() => import('src/pages/home/balance'));
+const IndexPage = lazy(() => import('src/pages/home'));
+const ProfilePage = lazy(() => import('src/pages/home/profile'));
+// const AgentsPage = lazy(() => import('src/pages/home/agents'));
+// const BalancePage = lazy(() => import('src/pages/home/balance'));
 
 export const mainRoutes = [
   {
@@ -28,10 +28,10 @@ export const mainRoutes = [
     ),
     children: [
       { element: <IndexPage />, index: true },
-      { path: 'users', element: <IndexPage /> },
-      { path: 'agents', element: <AgentsPage /> },
-      { path: 'record', element: <RecordsPage /> },
-      { path: 'balance', element: <BalancePage /> },
+      { path: 'lobby', element: <IndexPage /> },
+      { path: 'profile', element: <ProfilePage /> },
+      // { path: 'record', element: <RecordsPage /> },
+      // { path: 'balance', element: <BalancePage /> },
     ],
   },
 ];

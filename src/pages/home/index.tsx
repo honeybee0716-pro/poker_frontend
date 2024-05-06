@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 // sections
-import AgentsView from 'src/sections/agents/view';
+import GameBoardView from 'src/sections/board/view';
 
 // ----------------------------------------------------------------------
 
@@ -8,10 +8,10 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title> Pokerking Admin: Agents</title>
+        <title>PokerKing</title>
       </Helmet>
 
-      <AgentsView />
+      <GameBoardView />
     </>
   );
 }
