@@ -58,23 +58,23 @@ export function useNavData() {
     () => [
       // OVERVIEW
       // ----------------------------------------------------------------------
-      {
-        subheader: 'management',
-        items: [
-          { title: 'Users', path: paths.users.root, icon: ICONS.user },
-          { title: 'Agents', path: paths.agents.root, icon: ICONS.agent },
-          {
-            title: 'Game record',
-            path: paths.record.root,
-            icon: ICONS.record,
-          },
-          {
-            title: 'Balance',
-            path: paths.balance.root,
-            icon: ICONS.balance,
-          },
-        ],
-      },
+      // {
+      //   subheader: 'management',
+      //   items: [
+      //     { title: 'Users', path: paths.users.root, icon: ICONS.user },
+      //     { title: 'Agents', path: paths.agents.root, icon: ICONS.agent },
+      //     {
+      //       title: 'Game record',
+      //       path: paths.record.root,
+      //       icon: ICONS.record,
+      //     },
+      //     {
+      //       title: 'Balance',
+      //       path: paths.balance.root,
+      //       icon: ICONS.balance,
+      //     },
+      //   ],
+      // },
 
       // MANAGEMENT
       // ----------------------------------------------------------------------

@@ -7,8 +7,6 @@ import { paths } from 'src/routes/paths';
 const AuthGuard = ({ children }: GuardProps) => {
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  console.log('🚀 ~ AuthGuard ~ isLoggedIn, user:', isLoggedIn, user);
-
   useEffect(() => {
     if (!isLoggedIn) {
       navigate(paths.auth.login, { replace: true });

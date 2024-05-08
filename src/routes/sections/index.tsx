@@ -3,6 +3,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import { PATH_AFTER_LOGIN } from 'src/config-global';
 //
 import { mainRoutes } from './main';
+import { gameRoutes } from './room';
 
 import { authRoutes } from './auth';
 
@@ -22,6 +23,8 @@ export default function Router() {
 
     // Main routes
     ...mainRoutes,
+
+    ...gameRoutes,
 
     ...erroRoutes,
 

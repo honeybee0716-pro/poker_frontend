@@ -69,6 +69,14 @@ export type IUser = {
   role?: IRole;
 };
 
+export type IRoom = {
+  maxSeats: number;
+  playerCount: number;
+  roomId: number;
+  roomMinBet: number;
+  roomName: string;
+};
+
 export type SocketContextType = {
   sendSocket: (data: { [key: string]: any }) => void;
   lastJsonMessage: any;
@@ -77,15 +85,4 @@ export type SocketContextType = {
 export type ApiContextType = {
   initialize: () => Promise<any>;
   login: (email: string, password: string) => Promise<any>;
-
-  getUsers: () => Promise<any>;
-  updateUser: (data: IUpdateUser) => Promise<any>;
-  createUser: (data: IUpdateUser) => Promise<any>;
-  deleteUser: (id: number) => Promise<any>;
-  getRoles: () => Promise<any>;
-  updateRoles: (data: IRole) => Promise<any>;
-  getCharging: () => Promise<any>;
-  getRecords: () => Promise<any>;
-  approveCharging: (id: number) => Promise<any>;
-  deleteCharging: (id: number) => Promise<any>;
 };

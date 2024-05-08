@@ -11,8 +11,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 const IndexPage = lazy(() => import('src/pages/home'));
 const ProfilePage = lazy(() => import('src/pages/home/profile'));
-// const AgentsPage = lazy(() => import('src/pages/home/agents'));
-// const BalancePage = lazy(() => import('src/pages/home/balance'));
+const WalletPage = lazy(() => import('src/pages/home/wallet'));
 
 export const mainRoutes = [
   {
@@ -30,8 +29,7 @@ export const mainRoutes = [
       { element: <IndexPage />, index: true },
       { path: 'lobby', element: <IndexPage /> },
       { path: 'profile', element: <ProfilePage /> },
-      // { path: 'record', element: <RecordsPage /> },
-      // { path: 'balance', element: <BalancePage /> },
+      { path: 'wallet', element: <WalletPage /> },
     ],
   },
 ];

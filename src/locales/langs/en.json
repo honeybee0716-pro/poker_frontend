@@ -10,7 +10,21 @@
     "create_an_account": "Create an account",
     "casino_poker": "Casino Poker",
     "welcome_to": "Welcome to",
-    "seat": "Seat"
+    "id": "ID",
+    "seat": "Seat",
+    "my_profile": "My Profile",
+    "level": "Level",
+    "point": "Point",
+    "bonus": "Bonus",
+    "support": "Support",
+    "privacy_policy": "Privacy Policy",
+    "wallet": "Wallet",
+    "wallet_balance": "Wallet Balance",
+    "top_up_your_wallet_balance": "Top up your Wallet Balance",
+    "enter_amount_to_add": "Enter amount to add",
+    "enter_amount": "Enter Amount",
+    "add_a_quick_amount": "Add a quick amount",
+    "add_cash": "Add CASH"
   },
   "message": {
     "Experience the biggest casino poker right now": "Experience the biggest casino poker right now",
@@ -26,7 +40,10 @@
     "Must contain at least one letter": "Must contain at least one letter",
     "name must be at least 4 characters": "name must be at least 4 characters",
     "Email must be a valid email address": "Email must be a valid email address",
-    "password must be at least 6 characters": "password must be at least 6 characters"
+    "password must be at least 6 characters": "password must be at least 6 characters",
+    "Get extra money by participating in various events": "Get extra money by participating in various events",
+    "Connect us for issue": "Connect us for issue",
+    "Know our privacy policies": "Know our privacy policies"
   },
   "button": {
     "login": "Login",

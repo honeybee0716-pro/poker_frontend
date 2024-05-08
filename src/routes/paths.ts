@@ -2,11 +2,10 @@
 
 const ROOTS = {
   AUTH: '/auth',
-  USERS: '/users',
-  AGENTS: '/agents',
-  RECORD: '/record',
-  BALANCE: '/balance',
-  DASHBOARD: '/dashboard',
+  LOBBY: '/lobby',
+  PROFILE: '/profile',
+  WALLET: '/wallet',
+  ROOM: '/room',
 };
 
 // ----------------------------------------------------------------------
@@ -18,8 +17,8 @@ export const paths = {
     login: `${ROOTS.AUTH}/login`,
     register: `${ROOTS.AUTH}/register`,
   },
-  users: { root: ROOTS.USERS, edit: (id: number) => `${ROOTS.USERS}/${id}/edit`, },
-  agents: { root: ROOTS.AGENTS },
-  record: { root: ROOTS.RECORD },
-  balance: { root: ROOTS.BALANCE },
+  users: { root: ROOTS.LOBBY },
+  profile: { root: ROOTS.PROFILE },
+  wallet: { root: ROOTS.WALLET },
+  room: { root: ROOTS.ROOM, view: (id: number) => `${ROOTS.ROOM}/${id}` },
 };
