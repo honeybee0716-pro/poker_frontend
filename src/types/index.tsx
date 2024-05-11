@@ -17,40 +17,6 @@ export type IRole = {
   type: 'player' | 'agent' | 'super_admin';
 };
 
-export type IUpdateUser = {
-  id?: number;
-  name: string;
-  email: string;
-  money: string;
-  win_count: number;
-  lose_count: number;
-  role_id: number;
-  status: boolean;
-  password: string;
-};
-
-export type IBalance = {
-  id: number;
-  user_id: number;
-  amount: string;
-  status: boolean;
-  user: IUser;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type IRecord = {
-  id: number;
-  user_id: number;
-  amount: number;
-  action: string;
-  createdAt: string;
-  updatedAt: string;
-  player_cards: string;
-  current_money: string;
-  user: IUser;
-};
-
 export type IUser = {
   id: number;
   name: string;
@@ -77,9 +43,28 @@ export type IRoom = {
   roomName: string;
 };
 
+export type IPlayerData = {
+  isFold?: boolean;
+  isPlayerTurn?: boolean;
+  playerId: number;
+  playerMoney?: number;
+  playerName: string;
+  timeBar?: number;
+  timeLeft?: number;
+  totalBet?: number;
+  cards?: string[];
+  isDealer?: boolean;
+};
+
+export type IUserAction = {
+  actionText: string;
+  playerId: number;
+};
+
 export type SocketContextType = {
   sendSocket: (data: { [key: string]: any }) => void;
   lastJsonMessage: any;
+  connectionId: number;
 };
 
 export type ApiContextType = {

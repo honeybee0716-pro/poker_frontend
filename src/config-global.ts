@@ -33,6 +33,18 @@ export const SOCKET_KEY = {
 
   GET_ROOMS: 'getRooms',
   SELECT_ROOM: 'selectRoom',
+  DISCONNECT_ROOM: 'disconnectRoom',
+
+  HOLE_CARDS: 'holeCards',
+  ROOM_PARAM: 'roomParams',
+  STATUS_UPDATE: 'statusUpdate',
+  LAST_USER_ACTION: 'lastUserAction',
+  ALL_PLAYERS_CARDS: 'allPlayersCards',
+
+  SET_FOLD: 'setFold',
+  SET_CHECK: 'setCheck',
+  SET_RAISE: 'setRaise',
+
 };
 
 export const WEBSOCKET_URL = 'ws://127.0.0.1:8000';

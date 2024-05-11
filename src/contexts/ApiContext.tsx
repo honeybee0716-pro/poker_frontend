@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 import axios from 'src/utils/axios';
 import { API_PATH } from 'src/config-global';
-import { ApiContextType, IRole, IUpdateUser } from 'src/types';
+import { ApiContextType } from 'src/types';
 import { useDispatch, useSelector } from 'src/store';
 import { edit } from 'src/store/reducers/auth';
 

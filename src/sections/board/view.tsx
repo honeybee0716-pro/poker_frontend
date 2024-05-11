@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 // store
 import { useSelector, useDispatch } from 'src/store';
+import { edit } from 'src/store/reducers/auth';
 // hooks
 import useSocket from 'src/hooks/use-socket';
 import useLocales from 'src/locales/use-locales';
@@ -38,7 +39,7 @@ export default function UsersView() {
   const dispatch = useDispatch();
   const { t } = useLocales();
   const router = useRouter();
-  const { user } = useSelector((store) => store.auth);
+  const store = useSelector((e) => e.auth);
   const { sendSocket, lastJsonMessage } = useSocket();
   const settings = useSettingsContext();
   const smDown = useResponsive('down', 'sm');
@@ -46,28 +47,25 @@ export default function UsersView() {
   const [rooms, setRooms] = useState<IRoom[]>([]);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!store.user?.id) return;
     sendSocket({
       roomId: -1,
       key: SOCKET_KEY.GET_ROOMS,
-      playerId: user?.id,
+      playerId: store.user?.id,
       roomSortParam: 'all',
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [store.user?.id]);
 
   useEffect(() => {
     if (!lastJsonMessage) return;
-    const { key, data } = lastJsonMessage;
+    const { key, data, user } = lastJsonMessage;
     if (key !== SOCKET_KEY.GET_ROOMS || !data) return;
     setRooms(data);
-  }, [lastJsonMessage]);
+    dispatch(edit(user));
+  }, [lastJsonMessage, dispatch]);
 
   const selectRoom = (roomId: number) => {
-    sendSocket({
-      roomId,
-      key: SOCKET_KEY.SELECT_ROOM,
-    });
     router.push(paths.room.view(roomId));
   };
 
@@ -85,7 +83,7 @@ export default function UsersView() {
       >
         {!smDown && (
           <Typography variant="h5">
-            {t('label.welcome_to')} {user?.name}!
+            {t('label.welcome_to')} {store.user?.name}!
           </Typography>
         )}
 
@@ -99,7 +97,7 @@ export default function UsersView() {
           {!smDown && <GuidePopover />}
           <Chip
             avatar={<Avatar alt="Natacha" src="/assets/pokerking/coin.png" />}
-            label={`${user.money} G`}
+            label={`${store.user.money} G`}
             variant="outlined"
             sx={{ px: 1, py: 0.5, borderRadius: 50, border: '2px solid #cfb13a' }}
           />

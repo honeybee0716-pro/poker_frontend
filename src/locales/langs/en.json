@@ -50,7 +50,12 @@
     "lobby": "LOBBY",
     "profile": "PROFILE",
     "wallet": "WALLET",
-    "shop": "SHOP"
+    "shop": "SHOP",
+    "FOLD": "FOLD",
+    "CALL": "CALL",
+    "CHECK": "CHECK",
+    "RAISE": "RAISE",
+    "ALL": "ALL"
   },
   "demo": {
     "title": "English"

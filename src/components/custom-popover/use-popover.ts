@@ -7,6 +7,7 @@ type ReturnType = {
   open: HTMLElement | null;
   onOpen: (event: React.MouseEvent<HTMLElement>) => void;
   setOpen: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
+  onOpenRef: (event: any) => void;
 };
 
 export default function usePopover(): ReturnType {
@@ -14,6 +15,10 @@ export default function usePopover(): ReturnType {
 
   const onOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget);
+  }, []);
+
+  const onOpenRef = useCallback((event: any) => {
+    setOpen(event.current);
   }, []);
 
   const onClose = useCallback(() => {
@@ -25,5 +30,6 @@ export default function usePopover(): ReturnType {
     onOpen,
     onClose,
     setOpen,
+    onOpenRef,
   };
 }

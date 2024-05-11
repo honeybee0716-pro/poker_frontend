@@ -44,6 +44,7 @@ export const SocketProvider = ({ children }: { children: React.ReactElement }) =
     <SocketContext.Provider
       value={{
         sendSocket,
+        connectionId,
         lastJsonMessage,
       }}
     >
