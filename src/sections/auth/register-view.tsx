@@ -47,7 +47,7 @@ export default function RegisterView() {
   const LoginSchema = Yup.object().shape({
     name: Yup.string().min(4).required('Nick Name is required'),
     agent_code: Yup.number().min(0).required('Agent Code is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+    email: Yup.string().required('Email is required'),
     password: Yup.string()
       .min(6)
       .matches(/[A-z]/, 'Must contain at least one letter')

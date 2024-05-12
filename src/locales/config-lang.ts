@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 import {
   enUS as enUSAdapter,
-  fr as frFRAdapter,
+  ko as koKRAdapter,
   vi as viVNAdapter,
   zhCN as zhCNAdapter,
   arSA as arSAAdapter,
@@ -9,7 +9,7 @@ import {
 // core
 import {
   enUS as enUSCore,
-  frFR as frFRCore,
+  koKR as koKRCore,
   viVN as viVNCore,
   zhCN as zhCNCore,
   arSA as arSACore,
@@ -41,13 +41,13 @@ export const allLangs = [
     adapterLocale: enUSAdapter,
     icon: 'flagpack:gb-nir',
   },
-  // {
-  //   label: 'French',
-  //   value: 'fr',
-  //   systemValue: merge(frFRCore),
-  //   adapterLocale: frFRAdapter,
-  //   icon: 'flagpack:fr',
-  // },
+  {
+    label: 'Korean',
+    value: 'kr',
+    systemValue: merge(koKRCore),
+    adapterLocale: koKRAdapter,
+    icon: 'flagpack:ko',
+  },
   // {
   //   label: 'Vietnamese',
   //   value: 'vi',

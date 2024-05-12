@@ -1,0 +1,63 @@
+{
+  "label": {
+    "email": "핸드폰 번호",
+    "nick": "닉네임 입력",
+    "signin": "로그인",
+    "register": "회원가입",
+    "password": "비밀번호",
+    "agent_code": "에이전트 코드",
+    "nick_email": "닉네임 / 핸드폰 번호",
+    "create_an_account": "계정 생성",
+    "casino_poker": "Casino Poker",
+    "welcome_to": "Welcome to",
+    "id": "아이디",
+    "seat": "자리",
+    "my_profile": "내 프로필",
+    "level": "레벨",
+    "point": "포인트",
+    "bonus": "보너스",
+    "support": "고객센터",
+    "privacy_policy": "개인정보처리동의",
+    "wallet": "지갑",
+    "wallet_balance": "지갑 잔액",
+    "top_up_your_wallet_balance": "지갑 잔액 보충",
+    "enter_amount_to_add": "추가 할 금액 입력",
+    "enter_amount": "금액 입력",
+    "add_a_quick_amount": "빠르게 금액 추가",
+    "add_cash": "금액 추가"
+  },
+  "message": {
+    "Experience the biggest casino poker right now": "최고의 포커 게임을 경험하세요!",
+    "welcome": "Poker king 에 오신 것을 환영 합니다!",
+    "Agent not found": "해당 에이전트를 찾을 수 없습니다.",
+    "User not found": "해당 유저 계정을 찾을 수 없습니다.",
+    "User name in use": "사용 중 인 사용자 이름 입니다.",
+    "Email is required": "연락처가 필요 합니다.",
+    "Password is required": "비밀번호는 필수입니다.",
+    "Email address in use": "사용 중 인 연락처 입니다.",
+    "Password is not match": "암호가 일치하지 않습니다.",
+    "Nick Name / Email is required": "닉네임 / 연락처가 필요합니다.",
+    "Must contain at least one letter": "하나 이상의 문자를 포함해야 합니다.",
+    "name must be at least 4 characters": "이름은 4자 이상이어야 합니다.",
+    "Email must be a valid email address": "연락처는 올바른 연락처여야 합니다.",
+    "password must be at least 6 characters": "암호는 6자 이상이어야 합니다.",
+    "Get extra money by participating in various events": "다양한 이벤트에 참여하여 추가적인 게임 머니를 획득하세요!",
+    "Connect us for issue": "문제에 대해 연락하세요!",
+    "Know our privacy policies": "개인정보보호정책에 대해 확인"
+  },
+  "button": {
+    "login": "로그인",
+    "lobby": "게임 로비",
+    "profile": "프로필",
+    "wallet": "지갑",
+    "shop": "상점",
+    "FOLD": "폴드",
+    "CALL": "콜",
+    "CHECK": "체크",
+    "RAISE": "레이즈",
+    "ALL": "올인"
+  },
+  "demo": {
+    "title": "English"
+  }
+}
