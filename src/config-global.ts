@@ -46,4 +46,4 @@ export const SOCKET_KEY = {
   SET_RAISE: 'setRaise',
 };
 
-export const WEBSOCKET_URL = process.env.REACT_APP_SOCKET_URL;
+export const WEBSOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'ws://127.0.0.1:8000';
