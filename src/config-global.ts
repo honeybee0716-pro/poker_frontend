@@ -44,7 +44,6 @@ export const SOCKET_KEY = {
   SET_FOLD: 'setFold',
   SET_CHECK: 'setCheck',
   SET_RAISE: 'setRaise',
-
 };
 
-export const WEBSOCKET_URL = 'ws://127.0.0.1:8000';
+export const WEBSOCKET_URL = process.env.REACT_APP_SOCKET_URL;
