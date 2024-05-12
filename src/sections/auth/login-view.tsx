@@ -84,13 +84,13 @@ export default function LoginView() {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
     if (key !== SOCKET_KEY.LOGIN_RES || !data) return;
-    const { result, user, error, token } = data;
+    const { result, user, error } = data;
     if (error) {
       setErrorMsg(error);
       return;
     }
-    if (!result || !user || !token) return;
-    dispatch(signin({ user, token }));
+    if (!result || !user) return;
+    dispatch(signin({ user, token: 'token' }));
     enqueueSnackbar(t('message.welcome'));
     console.log('🚀 ~ useEffect ~ lastJsonMessage:', lastJsonMessage);
     router.push(PATH_AFTER_LOGIN);

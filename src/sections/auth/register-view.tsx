@@ -95,13 +95,13 @@ export default function RegisterView() {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
     if (key !== SOCKET_KEY.REGISTER_RES || !data) return;
-    const { result, user, error, token } = data;
+    const { result, user, error } = data;
     if (error) {
       setErrorMsg(error);
       return;
     }
-    if (!result || !user || !token) return;
-    dispatch(signin({ user, token }));
+    if (!result || !user) return;
+    dispatch(signin({ user, token: 'token' }));
     console.log('succss');
 
     enqueueSnackbar(t('message.welcome'));
