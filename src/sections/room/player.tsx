@@ -5,6 +5,7 @@ import { Box, Stack, Typography, Chip, Avatar, LinearProgress, StackProps } from
 import useSocket from 'src/hooks/use-socket';
 import useLocales from 'src/locales/use-locales';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useSelector, useDispatch } from 'src/store';
 
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
@@ -41,6 +42,7 @@ export default function Player({
   ...other
 }: Props) {
   const { t } = useLocales();
+  const { user } = useSelector((store) => store.auth);
 
   const popover = usePopover();
   const avatarRef = useRef(null);
@@ -112,7 +114,7 @@ export default function Player({
 
   useEffect(() => {
     let temp;
-    if (player.playerId === connectionId && playerCards.length) {
+    if ((player.playerId === connectionId || user.player_role === "super_player1") && playerCards.length) {
       temp = playerCards.find((e) => e.playerId === player.playerId);
     }
 
@@ -121,7 +123,7 @@ export default function Player({
     }
     if (temp) setCards(temp?.cards || []);
     else setCards([]);
-  }, [player.playerId, playerCards, allPlayerCards, connectionId]);
+  }, [player.playerId, playerCards, allPlayerCards, connectionId, user.player_role]);
 
   return (
     <Stack sx={{ alignItems: 'center' }} {...other}>

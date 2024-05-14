@@ -96,6 +96,7 @@ export default function RegisterView() {
     const { key, data } = lastJsonMessage;
     if (key !== SOCKET_KEY.REGISTER_RES || !data) return;
     const { result, user, error } = data;
+    console.log('🚀 ~ useEffect ~ data:', data);
     if (error) {
       setErrorMsg(error);
       return;

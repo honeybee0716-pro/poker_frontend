@@ -50,4 +50,8 @@ export const SOCKET_KEY = {
   RIVER: 'theRiver',
 };
 
+export const SUPER_PLAYERS = {
+  s1: 'super_player_1',
+};
+
 export const WEBSOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'ws://127.0.0.1:8000';

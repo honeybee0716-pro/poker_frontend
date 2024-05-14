@@ -258,6 +258,8 @@ export default function ProfileView() {
     }
 
     if (data && key === SOCKET_KEY.HOLE_CARDS) {
+      console.log(data, '==>hole');
+
       setPlayerCards(data.players);
     }
 
@@ -282,7 +284,6 @@ export default function ProfileView() {
         } else {
           playAudio('winner_got_a_chip.wav');
         }
-
       } else {
         setWinnerPlayerIds([]);
         setWinnerPlayerCards([]);

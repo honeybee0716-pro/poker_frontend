@@ -9,20 +9,21 @@ type initialStateType = {
 };
 
 const initialUser: IUser = {
-  "id": 1,
-  "name": "",
-  "email": "",
-  "password": "",
-  "xp": 0,
-  "money": "",
-  "agent_code": 0,
-  "win_count": 0,
-  "lose_count": 0,
-  "rew_ad_count": 0,
-  "status": true,
-  "role_id": 6,
-  "createdAt": "",
-  "updatedAt": ""
+  id: 1,
+  name: '',
+  email: '',
+  password: '',
+  xp: 0,
+  money: '',
+  agent_code: 0,
+  win_count: 0,
+  lose_count: 0,
+  rew_ad_count: 0,
+  status: true,
+  role_id: 6,
+  createdAt: '',
+  updatedAt: '',
+  player_role: '',
 };
 
 const initialState: initialStateType = {

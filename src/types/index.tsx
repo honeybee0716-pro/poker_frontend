@@ -33,6 +33,7 @@ export type IUser = {
   createdAt: string;
   updatedAt: string;
   role?: IRole;
+  player_role: string;
 };
 
 export type IRoom = {
