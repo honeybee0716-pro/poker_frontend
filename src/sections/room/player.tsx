@@ -11,6 +11,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { SOCKET_KEY } from 'src/config-global';
 import { getCardResource } from 'src/utils/card';
 import { fCurrency } from 'src/utils/format-number';
+import playAudio from 'src/utils/audio';
 import { IPlayerData, IUserAction } from 'src/types';
 // ----------------------------------------------------------------------
 
@@ -23,6 +24,7 @@ type Props = StackProps & {
   winnerPlayerIds: number[];
   winnerPlayerCards: string[];
   allPlayerCards: IPlayerData[];
+  audioRef: any;
 };
 let interval: any = 0;
 
@@ -35,6 +37,7 @@ export default function Player({
   allPlayerCards,
   winnerPlayerIds,
   winnerPlayerCards,
+  audioRef,
   ...other
 }: Props) {
   const { t } = useLocales();
@@ -48,12 +51,24 @@ export default function Player({
   const [lastUserAction, setLastUserAction] = useState<IUserAction | null>(null);
   const [cards, setCards] = useState<string[]>([]);
 
+  function playAudioTimeOut() {
+    const audio = audioRef.current;
+    if (audio && audio.paused) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+  }
+
   useEffect(() => {
     if (!player.timeLeft || player.timeLeft <= 0) {
       return setProgress(100);
     }
     clearInterval(interval);
     let index = 0;
+    if (player.playerId === connectionId && audioRef.current) {
+      playAudioTimeOut();
+    }
+
     interval = setInterval(() => {
       index += 1;
       setProgress(100 - index);
@@ -63,20 +78,32 @@ export default function Player({
       clearInterval(interval);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player]);
+  }, [player, audioRef]);
 
   useEffect(() => {
     if (!lastJsonMessage) return;
+
     const { key, data } = lastJsonMessage;
     if (data && key === SOCKET_KEY.LAST_USER_ACTION) {
+      if (audioRef.current && !audioRef.current.paused) audioRef.current.pause();
       setLastUserAction(data);
       showActionText.onTrue();
 
       setTimeout(() => {
         showActionText.onFalse();
       }, 2000);
+
+      if (data.actionText === 'CHECK') {
+        playAudio('player_check.wav');
+      } else if (data.actionText === 'CALL') {
+        playAudio('player_call_sound.wav');
+      } else if (data.actionText === 'RAISE') {
+        playAudio('player_raise_sound.wav');
+      } else if (data.actionText === 'FOLD') {
+        playAudio('player_fold.wav');
+      }
     }
-  }, [lastJsonMessage, showActionText]);
+  }, [lastJsonMessage, showActionText, audioRef]);
 
   useEffect(() => {
     if (!avatarRef.current || !lastUserAction) return;

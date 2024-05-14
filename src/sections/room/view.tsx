@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // @mui
 import {
@@ -30,6 +30,7 @@ import { fCurrency } from 'src/utils/format-number';
 import { useSettingsContext } from 'src/components/settings';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { getCardResource } from 'src/utils/card';
+import playAudio from 'src/utils/audio';
 
 // types
 import { SOCKET_KEY } from 'src/config-global';
@@ -201,6 +202,8 @@ export default function ProfileView() {
 
   const { sendSocket, lastJsonMessage, connectionId } = useSocket();
 
+  const audioRef = useRef<any>(null);
+
   const [totalPot, setTotalPot] = useState<number>(0);
   const [me, setMe] = useState<IPlayerData | null>(null);
   const [raiseCount, setRaiseCount] = useState<number>(0);
@@ -273,12 +276,29 @@ export default function ProfileView() {
       if (data.isResultsCall) {
         setWinnerPlayerIds(data.roundWinnerPlayerIds);
         setWinnerPlayerCards(data.roundWinnerPlayerCards);
+
+        if (data.roundWinnerPlayerIds.includes(connectionId)) {
+          playAudio('winner_player.wav');
+        } else {
+          playAudio('winner_got_a_chip.wav');
+        }
+
       } else {
         setWinnerPlayerIds([]);
         setWinnerPlayerCards([]);
       }
     }
-  }, [lastJsonMessage]);
+
+    if (key === SOCKET_KEY.FLOP) {
+      playAudio('start_action.mp3');
+    }
+    if (key === SOCKET_KEY.TURN) {
+      playAudio('card_drop.wav');
+    }
+    if (key === SOCKET_KEY.RIVER) {
+      playAudio('end_flop_turn_river.wav');
+    }
+  }, [lastJsonMessage, connectionId]);
 
   useEffect(() => {
     if (!playersData.length) return;
@@ -318,10 +338,8 @@ export default function ProfileView() {
   };
 
   const handleRaise = () => {
-    if (!actionButtonsEnabled || !isPlayerTurn) return;
-    // if (raiseCount == raiseMoney) {
-    //   playingSound("assets/sounds/player_all_in.mp3");
-    // }
+    if (!actionButtonsEnabled || !isPlayerTurn || !me?.playerMoney) return;
+    if (raiseCount === me.playerMoney) playAudio('player_all_in.mp3');
     sendSocket({
       roomId,
       amount: raiseCount,
@@ -434,6 +452,7 @@ export default function ProfileView() {
                 allPlayerCards={allPlayerCards}
                 winnerPlayerIds={winnerPlayerIds}
                 winnerPlayerCards={winnerPlayerCards}
+                audioRef={audioRef}
                 sx={PLAYER_STYLE[index]}
               />
             ))}
@@ -569,6 +588,10 @@ export default function ProfileView() {
           </Button>
         </Stack>
       </CustomPopover>
+      <Box component="audio" ref={audioRef} hidden>
+        <source src="/assets/pokerking/sounds/time_out.wav" type="audio/wav" />
+        <track kind="captions" srcLang="en" src="" />
+      </Box>
     </Stack>
   );
 }
