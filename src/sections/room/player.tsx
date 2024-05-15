@@ -105,7 +105,8 @@ export default function Player({
   useEffect(() => {
     let temp;
     if (
-      (player.playerId === connectionId || user.player_role === 'super_player1') &&
+      player.playerId === connectionId &&
+      //  || user.player_role === 'super_player1'
       playerCards.length
     ) {
       temp = playerCards.find((e) => e.playerId === player.playerId);
@@ -135,8 +136,8 @@ export default function Player({
             ref={avatarRef}
             src="/assets/pokerking/avatars/avatar0.jpg"
             sx={{
-              width: 70,
-              height: 70,
+              width: { xs: 40, sm: 70 },
+              height: { xs: 40, sm: 70 },
               borderRadius: 1,
               border: '1px solid',
               borderColor: 'primary.main',
@@ -144,18 +145,25 @@ export default function Player({
           />
         )}
 
-        <Stack sx={{ height: 1, p: 1, textAlign: 'center', position: 'relative' }}>
-          <Box sx={{ borderBottom: '1px solid' }}>{player.playerName} </Box>
-          <Stack direction="row" justifyContent="center" alignItems="center" gap={1}>
+        <Stack sx={{ height: 1, p: { xs: 0.3, sm: 1 }, textAlign: 'center', position: 'relative' }}>
+          <Box sx={{ borderBottom: '1px solid', fontSize: { xs: 14, sm: 16 } }}>
+            {player.playerName}{' '}
+          </Box>
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            gap={{ xs: 0.2, sm: 1 }}
+          >
             <Box
               component="img"
               src="/assets/pokerking/coin.png"
               sx={{
-                width: 18,
-                height: 18,
+                width: { xs: 13, sm: 18 },
+                height: { xs: 13, sm: 18 },
               }}
             />
-            <Typography>
+            <Typography sx={{ fontSize: { xs: 12, sm: 16 } }}>
               {player.playerMoney && fCurrency(Number(player.playerMoney.toFixed(1)))}
             </Typography>
           </Stack>
@@ -174,8 +182,8 @@ export default function Player({
             ref={avatarRef}
             src="/assets/pokerking/avatars/avatar0.jpg"
             sx={{
-              width: 70,
-              height: 70,
+              width: { xs: 40, sm: 70 },
+              height: { xs: 40, sm: 70 },
               borderRadius: 1,
               border: '1px solid',
               borderColor: 'primary.main',
@@ -195,7 +203,9 @@ export default function Player({
             },
           }}
         >
-          <Typography sx={{ px: 1 }}>{t(`button.${lastUserAction?.actionText}`)}</Typography>
+          <Typography sx={{ px: 1, fontSize: { xs: 14, sm: 16 } }}>
+            {t(`button.${lastUserAction?.actionText}`)}
+          </Typography>
         </CustomPopover>
       )}
 
@@ -203,7 +213,7 @@ export default function Player({
         <Stack
           sx={{
             width: 1,
-            top: cards.length ? -60 : -40,
+            top: cards.length ? { xs: -40, sm: -60 } : { xs: -20, sm: -40 },
             position: 'absolute',
             justifyContent: 'center',
             flexDirection: 'row',
@@ -215,14 +225,14 @@ export default function Player({
               cards.length && cards[0] ? getCardResource(cards[0]) : 'card_back.png'
             }`}
             sx={{
-              width: 50,
+              width: { xs: 30, sm: 50 },
               borderRadius: 0.5,
               borderColor: 'primary.main',
               ...(cards.length
                 ? {
                     transform: 'rotate(-9deg)',
                     position: 'absolute',
-                    mr: 5,
+                    mr: { xs: 3, sm: 5 },
                   }
                 : {
                     border: '2px solid',
@@ -239,14 +249,14 @@ export default function Player({
               cards.length > 1 && cards[1] ? getCardResource(cards[1]) : 'card_back.png'
             }`}
             sx={{
-              width: 50,
+              width: { xs: 30, sm: 50 },
               borderRadius: 0.5,
               position: 'absolute',
               borderColor: `primary.main`,
               ...(cards.length
                 ? {
                     transform: 'rotate(9deg)',
-                    ml: 6,
+                    ml: { xs: 3, sm: 6 },
                   }
                 : {
                     mt: 1,
@@ -265,7 +275,7 @@ export default function Player({
           component="img"
           className="dealer-icon"
           src="/assets/pokerking/dealer.png"
-          sx={{ width: 30, height: 30 }}
+          sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 } }}
         />
       )}
       {player?.totalBet && player.totalBet > 0 ? (

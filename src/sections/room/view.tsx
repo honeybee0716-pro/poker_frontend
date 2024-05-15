@@ -81,7 +81,7 @@ const PrettoSlider = styled(Slider)({
 const CHIP_STYLE = {
   background: 'transparent',
   position: 'absolute',
-  gap: 1,
+  gap: { xs: 0, sm: 1 },
   m: 0,
   '& .MuiAvatar-root': {
     height: 31,
@@ -90,100 +90,101 @@ const CHIP_STYLE = {
   '& .MuiChip-label': {
     background: '#00000061',
     borderRadius: '0 10px',
+    pr: { xs: 0.9 },
   },
 };
 
 const PLAYER_STYLE: any = [
   {
-    top: 0,
+    top: { xs: -30, sm: 0 },
     position: 'absolute',
     alignItems: 'center',
     '& .dealer-icon': {
       position: 'absolute',
-      bottom: -34,
+      bottom: { xs: -24, sm: -34 },
     },
     '& .chip-icon': {
       ...CHIP_STYLE,
-      bottom: -80,
+      bottom: { xs: -60, sm: -80 },
       right: 0,
     },
   },
   {
     top: '20%',
-    right: 0,
+    right: { xs: -50, sm: 0 },
     position: 'absolute',
     alignItems: 'center',
     '& .dealer-icon': {
       position: 'absolute',
-      left: -34,
+      left: { xs: -24, sm: -34 },
       top: 0,
     },
     '& .chip-icon': {
       ...CHIP_STYLE,
-      left: -100,
+      left: { xs: -60, sm: -100 },
       bottom: 0,
     },
   },
   {
     bottom: '20%',
-    right: 0,
+    right: { xs: -50, sm: 0 },
     position: 'absolute',
     alignItems: 'center',
     '& .dealer-icon': {
       position: 'absolute',
-      left: -34,
+      left: { xs: -24, sm: -34 },
       top: 0,
     },
     '& .chip-icon': {
       ...CHIP_STYLE,
-      left: -100,
+      left: { xs: -60, sm: -100 },
       bottom: 0,
     },
   },
   {
-    bottom: 0,
+    bottom: { xs: -30, sm: 0 },
     position: 'absolute',
     alignItems: 'center',
     '& .dealer-icon': {
       position: 'absolute',
-      top: -34,
+      top: { xs: -24, sm: -34 },
       right: 0,
     },
     '& .chip-icon': {
       ...CHIP_STYLE,
-      top: -80,
+      top: { xs: -60, sm: -80 },
       left: 0,
     },
   },
   {
     bottom: '20%',
-    left: 0,
+    left: { xs: -50, sm: 0 },
     position: 'absolute',
     alignItems: 'center',
     '& .dealer-icon': {
       position: 'absolute',
       bottom: 0,
-      right: -34,
+      right: { xs: -24, sm: -34 },
     },
     '& .chip-icon': {
       ...CHIP_STYLE,
-      right: -100,
+      right: { xs: -60, sm: -100 },
       top: 0,
     },
   },
   {
     top: '20%',
-    left: 0,
+    left: { xs: -50, sm: 0 },
     position: 'absolute',
     alignItems: 'center',
     '& .dealer-icon': {
       position: 'absolute',
       bottom: 0,
-      right: -34,
+      right: { xs: -24, sm: -34 },
     },
     '& .chip-icon': {
       ...CHIP_STYLE,
-      right: -100,
+      right: { xs: -60, sm: -100 },
       top: 0,
     },
   },
@@ -395,6 +396,7 @@ export default function ProfileView() {
       <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ height: 1, width: 1 }}>
         <Stack
           sx={{
+            mt: 5,
             width: 1,
             height: 1,
             alignItems: 'center',
@@ -403,7 +405,7 @@ export default function ProfileView() {
         >
           <Stack
             sx={{
-              p: 3,
+              p: { xs: 0, sm: 3 },
               width: { xs: 0.7, sm: 1 },
               position: 'relative',
               alignItems: 'center',
@@ -430,7 +432,7 @@ export default function ProfileView() {
                         component="img"
                         src={`/assets/pokerking/card/${getCardResource(card)}`}
                         sx={{
-                          width: 50,
+                          width: { xs: 30, sm: 50 },
                         }}
                       />
                     ))
@@ -440,7 +442,7 @@ export default function ProfileView() {
                         component="img"
                         src="/assets/pokerking/card/card_back.png"
                         sx={{
-                          width: 50,
+                          width: { xs: 30, sm: 50 },
                         }}
                       />
                     ))}
@@ -473,7 +475,7 @@ export default function ProfileView() {
       <Container maxWidth={settings.themeStretch ? false : 'md'} sx={{ width: 1, zIndex: 9999 }}>
         <Stack
           direction="row"
-          sx={{ p: 3, justifyContent: 'space-between', opacity: isPlayerTurn ? 1 : 0.7 }}
+          sx={{ p: 3, justifyContent: 'space-between', opacity: isPlayerTurn ? 1 : 0.7, gap: 1 }}
         >
           <Button
             variant="contained"
@@ -481,7 +483,7 @@ export default function ProfileView() {
             sx={{
               py: 1,
               px: 3,
-              width: 120,
+              width: { xs: 120, sm: 150 },
               height: 50,
               borderRadius: 50,
               background: 'url(/assets/pokerking/button/fold_button.png)',
@@ -497,7 +499,7 @@ export default function ProfileView() {
             sx={{
               py: 1,
               px: 3,
-              width: 120,
+              width: { xs: 120, sm: 150 },
               height: 50,
               borderRadius: 50,
               background: 'url(/assets/pokerking/button/call_button.png)',
@@ -513,7 +515,7 @@ export default function ProfileView() {
             sx={{
               py: 1,
               px: 3,
-              width: 120,
+              width: { xs: 120, sm: 150 },
               height: 50,
               borderRadius: 50,
               background: 'url(/assets/pokerking/button/raise_button.png)',
