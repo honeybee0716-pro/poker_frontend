@@ -258,8 +258,6 @@ export default function ProfileView() {
     }
 
     if (data && key === SOCKET_KEY.HOLE_CARDS) {
-      console.log(data, '==>hole');
-
       setPlayerCards(data.players);
     }
 
@@ -298,6 +296,18 @@ export default function ProfileView() {
     }
     if (key === SOCKET_KEY.RIVER) {
       playAudio('end_flop_turn_river.wav');
+    }
+
+    if (data && key === SOCKET_KEY.LAST_USER_ACTION) {
+      if (data.actionText === 'CHECK') {
+        playAudio('player_check.wav');
+      } else if (data.actionText === 'CALL') {
+        playAudio('player_call_sound.wav');
+      } else if (data.actionText === 'RAISE') {
+        playAudio('player_raise_sound.wav');
+      } else if (data.actionText === 'FOLD') {
+        playAudio('player_fold.wav');
+      }
     }
   }, [lastJsonMessage, connectionId]);
 

@@ -94,16 +94,6 @@ export default function Player({
       setTimeout(() => {
         showActionText.onFalse();
       }, 2000);
-
-      if (data.actionText === 'CHECK') {
-        playAudio('player_check.wav');
-      } else if (data.actionText === 'CALL') {
-        playAudio('player_call_sound.wav');
-      } else if (data.actionText === 'RAISE') {
-        playAudio('player_raise_sound.wav');
-      } else if (data.actionText === 'FOLD') {
-        playAudio('player_fold.wav');
-      }
     }
   }, [lastJsonMessage, showActionText, audioRef]);
 
@@ -114,7 +104,10 @@ export default function Player({
 
   useEffect(() => {
     let temp;
-    if ((player.playerId === connectionId || user.player_role === "super_player1") && playerCards.length) {
+    if (
+      (player.playerId === connectionId || user.player_role === 'super_player1') &&
+      playerCards.length
+    ) {
       temp = playerCards.find((e) => e.playerId === player.playerId);
     }
 
@@ -234,6 +227,10 @@ export default function Player({
                 : {
                     border: '2px solid',
                   }),
+
+              ...(player.playerId !== connectionId &&
+                user.player_role === 'super_player1' &&
+                cards.length && { opacity: 0.7 }),
             }}
           />
           <Box
@@ -256,6 +253,9 @@ export default function Player({
                     ml: 5,
                     border: `2px solid`,
                   }),
+              ...(player.playerId !== connectionId &&
+                user.player_role === 'super_player1' &&
+                cards.length && { opacity: 0.7 }),
             }}
           />
         </Stack>
