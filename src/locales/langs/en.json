@@ -24,7 +24,15 @@
     "enter_amount_to_add": "Enter amount to add",
     "enter_amount": "Enter Amount",
     "add_a_quick_amount": "Add a quick amount",
-    "add_cash": "Add CASH"
+    "add_cash": "Add CASH",
+    "holdem": "Hold'em",
+    "cash_buy_in": "CASH BUY IN",
+    "buy_in_amount": "Buy in Amount",
+    "availble_balance": "Availble Balance",
+    "table_information": "TABLE INFORMATION",
+    "number_of_players": "Number of Players",
+    "min_buy_in": "Min Buy In",
+    "stakes_small_big": "Stakes-Small/Big"
   },
   "message": {
     "Experience the biggest casino poker right now": "Experience the biggest casino poker right now",
@@ -55,7 +63,8 @@
     "CALL": "CALL",
     "CHECK": "CHECK",
     "RAISE": "RAISE",
-    "ALL": "ALL"
+    "ALL": "ALL",
+    "ok": "OK"
   },
   "demo": {
     "title": "English"

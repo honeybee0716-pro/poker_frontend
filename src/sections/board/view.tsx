@@ -30,6 +30,7 @@ import { GuidePopover, AccountPopover, LanguagePopover } from 'src/layouts/_comm
 import { paths } from 'src/routes/paths';
 
 // types
+import { fCurrency } from 'src/utils/format-number';
 import { SOCKET_KEY } from 'src/config-global';
 import { IRoom } from 'src/types';
 
@@ -97,7 +98,7 @@ export default function UsersView() {
           {!smDown && <GuidePopover />}
           <Chip
             avatar={<Avatar alt="Natacha" src="/assets/pokerking/coin.png" />}
-            label={`${store.user.money} G`}
+            label={`${fCurrency(Number(store.user.money).toFixed(2))} G`}
             variant="outlined"
             sx={{ px: 1, py: 0.5, borderRadius: 50, border: '2px solid #cfb13a' }}
           />

@@ -23,8 +23,9 @@ export default function GuuidePopover({ sx }: { sx?: SxProps<Theme> }) {
       <Dialog
         open={dialog.value}
         onClose={() => dialog.onFalse()}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        sx={{
+          zIndex: 99999,
+        }}
       >
         <Box component="img" src="/assets/pokerking/poker_guide.png" sx={{ width: 300 }} />
       </Dialog>

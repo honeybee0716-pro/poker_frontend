@@ -19,7 +19,6 @@ import { useSelector, useDispatch } from 'src/store';
 // hooks
 import useSocket from 'src/hooks/use-socket';
 import useLocales from 'src/locales/use-locales';
-import { useBoolean } from 'src/hooks/use-boolean';
 import { useParams, useRouter } from 'src/routes/hooks';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { GuidePopover } from 'src/layouts/_common';
@@ -37,6 +36,8 @@ import { SOCKET_KEY } from 'src/config-global';
 import { IPlayerData } from 'src/types';
 
 import Player from './player';
+import CashBuyPopup from './options/cash_buy';
+import RoomInforPopup from './options/infor';
 // ----------------------------------------------------------------------
 
 const PrettoSlider = styled(Slider)({
@@ -211,6 +212,7 @@ export default function ProfileView() {
   const [currentStatus, setCurrentStatus] = useState<string>('');
   const [roomName, setRoomName] = useState<string>('');
   const [roomMinBet, setRoomMinBet] = useState<number>(0);
+  const [playerCount, setPlayerCount] = useState<number>(0);
   const [middleCards, setMiddleCards] = useState<string[]>([]);
   const [playersData, setPlayersData] = useState<IPlayerData[]>([]);
   const [playerCards, setPlayerCards] = useState<IPlayerData[]>([]);
@@ -248,14 +250,16 @@ export default function ProfileView() {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
     if (data && key === SOCKET_KEY.ROOM_PARAM) {
+      console.log('🚀 ~ useEffect ~ ROOM_PARAM:', data);
       setMiddleCards([]);
       setPlayerCards([]);
       setAllPlayerCards([]);
       setWinnerPlayerIds([]);
       setWinnerPlayerCards([]);
       const dealer = data.playersData.find((e: any) => e.isDealer === true);
-      setDealerId(dealer?.playerId || -1);
+      setDealerId(dealer?.playerId);
       setRoomMinBet(data.roomMinBet);
+      setPlayerCount(data.playerCount);
     }
 
     if (data && key === SOCKET_KEY.HOLE_CARDS) {
@@ -384,12 +388,8 @@ export default function ProfileView() {
           </Stack>
           <Stack direction="row" gap={{ xs: 0.5, sm: 4 }}>
             <GuidePopover sx={{ padding: '5px' }} />
-            <IconButton sx={{ p: 0.5, border: '3px solid', borderColor: 'primary.main' }}>
-              <Iconify icon="fa6-solid:info" sx={{ color: 'primary.main' }} />
-            </IconButton>
-            <IconButton sx={{ p: 0.5, border: '3px solid', borderColor: 'primary.main' }}>
-              <Iconify icon="lets-icons:setting-fill" sx={{ color: 'primary.main' }} />
-            </IconButton>
+            <CashBuyPopup roomMinBet={roomMinBet} player={me}  />
+            <RoomInforPopup playerCount={playerCount} roomMinBet={roomMinBet}  />
           </Stack>
         </Stack>
       </AppBar>
@@ -466,7 +466,12 @@ export default function ProfileView() {
                 winnerPlayerIds={winnerPlayerIds}
                 winnerPlayerCards={winnerPlayerCards}
                 audioRef={audioRef}
-                sx={PLAYER_STYLE[index]}
+                sx={
+                  (player?.playerId === connectionId && PLAYER_STYLE[3]) ||
+                  (index === 3 &&
+                    PLAYER_STYLE[playersData.findIndex((e) => e.playerId === connectionId)]) ||
+                  PLAYER_STYLE[index]
+                }
               />
             ))}
           </Stack>
@@ -483,8 +488,9 @@ export default function ProfileView() {
             sx={{
               py: 1,
               px: 3,
+              fontSize: { xs: 14, sm: 16 },
               width: { xs: 120, sm: 150 },
-              height: 50,
+              height: { xs: 50, sm: 70 },
               borderRadius: 50,
               background: 'url(/assets/pokerking/button/fold_button.png)',
               backgroundSize: 'cover',
@@ -499,8 +505,9 @@ export default function ProfileView() {
             sx={{
               py: 1,
               px: 3,
+              fontSize: { xs: 14, sm: 16 },
               width: { xs: 120, sm: 150 },
-              height: 50,
+              height: { xs: 50, sm: 70 },
               borderRadius: 50,
               background: 'url(/assets/pokerking/button/call_button.png)',
               backgroundSize: 'cover',
@@ -515,8 +522,9 @@ export default function ProfileView() {
             sx={{
               py: 1,
               px: 3,
+              fontSize: { xs: 14, sm: 16 },
               width: { xs: 120, sm: 150 },
-              height: 50,
+              height: { xs: 50, sm: 70 },
               borderRadius: 50,
               background: 'url(/assets/pokerking/button/raise_button.png)',
               backgroundSize: 'cover',
