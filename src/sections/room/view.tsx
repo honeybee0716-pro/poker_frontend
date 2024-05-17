@@ -208,6 +208,7 @@ export default function ProfileView() {
 
   const [totalPot, setTotalPot] = useState<number>(0);
   const [me, setMe] = useState<IPlayerData | null>(null);
+  const [myIndex, setMyIndex] = useState<number>(3);
   const [raiseCount, setRaiseCount] = useState<number>(0);
   const [currentStatus, setCurrentStatus] = useState<string>('');
   const [roomName, setRoomName] = useState<string>('');
@@ -319,8 +320,10 @@ export default function ProfileView() {
   useEffect(() => {
     if (!playersData.length) return;
     const player = playersData.find((e) => e.playerId === connectionId);
-    if (!player) return;
+    const index = playersData.findIndex((e) => e.playerId === connectionId);
+    if (!player || index === -1) return;
     setMe(player);
+    setMyIndex(index);
     setIsPlayerTurn(player.isPlayerTurn ?? false);
     setActionButtonsEnabled(!player.isFold);
   }, [playersData, connectionId]);
@@ -366,6 +369,8 @@ export default function ProfileView() {
     popover.onClose();
   };
 
+  console.log(playersData, '==>ii', myIndex);
+
   return (
     <Stack
       sx={{
@@ -388,8 +393,8 @@ export default function ProfileView() {
           </Stack>
           <Stack direction="row" gap={{ xs: 0.5, sm: 4 }}>
             <GuidePopover sx={{ padding: '5px' }} />
-            <CashBuyPopup roomMinBet={roomMinBet} player={me}  />
-            <RoomInforPopup playerCount={playerCount} roomMinBet={roomMinBet}  />
+            <CashBuyPopup roomMinBet={roomMinBet} player={me} />
+            <RoomInforPopup playerCount={playerCount} roomMinBet={roomMinBet} />
           </Stack>
         </Stack>
       </AppBar>
@@ -454,26 +459,27 @@ export default function ProfileView() {
                 sx={{ bgcolor: '#000000a6', mt: 2, color: '#FFF' }}
               />
             </Stack>
-            {playersData.map((player: IPlayerData, index: number) => (
-              <Player
-                key={index}
-                isLeft
-                player={player}
-                dealerId={dealerId}
-                roomMinBet={roomMinBet}
-                playerCards={playerCards}
-                allPlayerCards={allPlayerCards}
-                winnerPlayerIds={winnerPlayerIds}
-                winnerPlayerCards={winnerPlayerCards}
-                audioRef={audioRef}
-                sx={
-                  (player?.playerId === connectionId && PLAYER_STYLE[3]) ||
-                  (index === 3 &&
-                    PLAYER_STYLE[playersData.findIndex((e) => e.playerId === connectionId)]) ||
-                  PLAYER_STYLE[index]
-                }
-              />
-            ))}
+            {playersData.map((player: IPlayerData, index: number) => {
+              const s_index =
+                index < myIndex - 3
+                  ? index + playersData.length - (myIndex - 3)
+                  : index - (myIndex - 3);
+              return (
+                <Player
+                  key={index}
+                  isLeft
+                  player={player}
+                  dealerId={dealerId}
+                  roomMinBet={roomMinBet}
+                  playerCards={playerCards}
+                  allPlayerCards={allPlayerCards}
+                  winnerPlayerIds={winnerPlayerIds}
+                  winnerPlayerCards={winnerPlayerCards}
+                  audioRef={audioRef}
+                  sx={PLAYER_STYLE[s_index]}
+                />
+              );
+            })}
           </Stack>
         </Stack>
       </Container>
@@ -522,10 +528,10 @@ export default function ProfileView() {
             sx={{
               py: 1,
               px: 3,
+              borderRadius: 50,
               fontSize: { xs: 14, sm: 16 },
               width: { xs: 120, sm: 150 },
               height: { xs: 50, sm: 70 },
-              borderRadius: 50,
               background: 'url(/assets/pokerking/button/raise_button.png)',
               backgroundSize: 'cover',
             }}

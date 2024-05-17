@@ -93,6 +93,15 @@ export default function CashBuyInPopup({ roomMinBet, player }: Props) {
 
   const [amount, setAmount] = useState<number>(roomMinBet);
 
+  // const changeRoomBet = () => {
+  //   sendSocket({
+  //     roomId: -1,
+  //     key: SOCKET_KEY.GET_ROOMS,
+  //     playerId: user?.id,
+  //     roomSortParam: 'all',
+  //   });
+  // }
+
   return (
     <>
       <IconButton
