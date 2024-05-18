@@ -51,7 +51,7 @@ export default function UsersView() {
     if (!store.user?.id) return;
     sendSocket({
       roomId: -1,
-      key: SOCKET_KEY.GET_ROOMS,
+      key: SOCKET_KEY.GET_SPECTATE_ROOMS,
       playerId: store.user?.id,
       roomSortParam: 'all',
     });
@@ -61,7 +61,7 @@ export default function UsersView() {
   useEffect(() => {
     if (!lastJsonMessage) return;
     const { key, data, user } = lastJsonMessage;
-    if (key !== SOCKET_KEY.GET_ROOMS || !data) return;
+    if (key !== SOCKET_KEY.GET_SPECTATE_ROOMS || !data) return;
     setRooms(data);
     dispatch(edit(user));
   }, [lastJsonMessage, dispatch]);
@@ -98,7 +98,7 @@ export default function UsersView() {
           {!smDown && <GuidePopover />}
           <Chip
             avatar={<Avatar alt="Natacha" src="/assets/pokerking/coin.png" />}
-            label={`${fCurrency(Number(store.user.money).toFixed(2))} G`}
+            label={`${fCurrency(Number(store.user?.money || 0).toFixed(2))} G`}
             variant="outlined"
             sx={{ px: 1, py: 0.5, borderRadius: 50, border: '2px solid #cfb13a' }}
           />

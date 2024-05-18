@@ -32,7 +32,9 @@
     "table_information": "TABLE INFORMATION",
     "number_of_players": "Number of Players",
     "min_buy_in": "Min Buy In",
-    "stakes_small_big": "Stakes-Small/Big"
+    "stakes_small_big": "Stakes-Small/Big",
+    "spectators": "Spectators",
+    "append_players": "Append Players"
   },
   "message": {
     "Experience the biggest casino poker right now": "Experience the biggest casino poker right now",

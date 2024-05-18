@@ -12,6 +12,8 @@ import {
   IconButton,
   Button,
   Slider,
+  Tooltip,
+  AvatarGroup,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // store
@@ -217,6 +219,8 @@ export default function ProfileView() {
   const [middleCards, setMiddleCards] = useState<string[]>([]);
   const [playersData, setPlayersData] = useState<IPlayerData[]>([]);
   const [playerCards, setPlayerCards] = useState<IPlayerData[]>([]);
+  const [spectators, setSpectators] = useState<IPlayerData[]>([]);
+  const [appendPlayers, setAppendPlayers] = useState<IPlayerData[]>([]);
   const [allPlayerCards, setAllPlayerCards] = useState<IPlayerData[]>([]);
   const [winnerPlayerIds, setWinnerPlayerIds] = useState<number[]>([]);
   const [winnerPlayerCards, setWinnerPlayerCards] = useState<string[]>([]);
@@ -230,7 +234,7 @@ export default function ProfileView() {
     if (!user?.id) return;
     sendSocket({
       roomId: -1,
-      key: SOCKET_KEY.GET_ROOMS,
+      key: SOCKET_KEY.GET_SPECTATE_ROOMS,
       playerId: user?.id,
       roomSortParam: 'all',
     });
@@ -242,7 +246,7 @@ export default function ProfileView() {
 
     sendSocket({
       roomId,
-      key: SOCKET_KEY.SELECT_ROOM,
+      key: SOCKET_KEY.SELECT_SPECTATE_ROOM,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
@@ -251,7 +255,6 @@ export default function ProfileView() {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
     if (data && key === SOCKET_KEY.ROOM_PARAM) {
-      console.log('🚀 ~ useEffect ~ ROOM_PARAM:', data);
       setMiddleCards([]);
       setPlayerCards([]);
       setAllPlayerCards([]);
@@ -279,6 +282,8 @@ export default function ProfileView() {
       setMiddleCards(data.middleCards);
       setIsCallSituation(data.isCallSituation);
 
+      setSpectators(data.spectators);
+      setAppendPlayers(data.appendPlayers);
       if (data.isResultsCall) {
         setWinnerPlayerIds(data.roundWinnerPlayerIds);
         setWinnerPlayerCards(data.roundWinnerPlayerCards);
@@ -342,7 +347,6 @@ export default function ProfileView() {
       roomId,
       key: SOCKET_KEY.SET_FOLD,
     });
-    setPlayerCards([]);
     setActionButtonsEnabled(false);
     setIsPlayerTurn(false);
   };
@@ -369,8 +373,6 @@ export default function ProfileView() {
     popover.onClose();
   };
 
-  console.log(playersData, '==>ii', myIndex);
-
   return (
     <Stack
       sx={{
@@ -393,12 +395,58 @@ export default function ProfileView() {
           </Stack>
           <Stack direction="row" gap={{ xs: 0.5, sm: 4 }}>
             <GuidePopover sx={{ padding: '5px' }} />
-            <CashBuyPopup roomMinBet={roomMinBet} player={me} />
-            <RoomInforPopup playerCount={playerCount} roomMinBet={roomMinBet} />
+            <CashBuyPopup
+              roomMinBet={roomMinBet}
+              playerCount={playerCount}
+              roomId={roomId}
+              player={user}
+            />
+            <RoomInforPopup
+              playerCount={playerCount + appendPlayers.length}
+              roomMinBet={roomMinBet}
+            />
           </Stack>
         </Stack>
       </AppBar>
       <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ height: 1, width: 1 }}>
+        {spectators.length > 0 && (
+          <Stack sx={{ position: 'absolute', zIndex: 99999, top: 70 }}>
+            <Typography color="info.main" sx={{ fontSize: 12 }}>
+              {t('label.spectators')}
+            </Typography>
+            <AvatarGroup max={4}>
+              {spectators.map((player, index) => (
+                <Tooltip title={player.playerName} key={index}>
+                  <Avatar
+                    alt="spectator"
+                    sx={{ cursor: 'pointer', bgcolor: 'black' }}
+                    src="/assets/pokerking/spectator.png"
+                  />
+                </Tooltip>
+              ))}
+            </AvatarGroup>
+          </Stack>
+        )}
+
+        {appendPlayers.length > 0 && (
+          <Stack sx={{ position: 'absolute', zIndex: 99999, top: 70, right: 0 }}>
+            <Typography color="success.main" sx={{ fontSize: 12 }}>
+              {t('label.append_players')}
+            </Typography>
+            <AvatarGroup max={4}>
+              {appendPlayers.map((player, index) => (
+                <Tooltip title={player.playerName} key={index}>
+                  <Avatar
+                    alt="spectator"
+                    sx={{ cursor: 'pointer' }}
+                    src="/assets/pokerking/avatars/avatar0.jpg"
+                  />
+                </Tooltip>
+              ))}
+            </AvatarGroup>
+          </Stack>
+        )}
+
         <Stack
           sx={{
             mt: 5,

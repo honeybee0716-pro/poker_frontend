@@ -105,8 +105,7 @@ export default function Player({
   useEffect(() => {
     let temp;
     if (
-      player.playerId === connectionId &&
-      //  || user.player_role === 'super_player1'
+      (player.playerId === connectionId || user.player_role === 'super_player1') &&
       playerCards.length
     ) {
       temp = playerCards.find((e) => e.playerId === player.playerId);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import {
@@ -19,7 +19,8 @@ import useLocales from 'src/locales/use-locales';
 import useSocket from 'src/hooks/use-socket';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { fCurrency } from 'src/utils/format-number';
-import { IPlayerData } from 'src/types';
+import { IPlayerData, IUser } from 'src/types';
+import { SOCKET_KEY } from 'src/config-global';
 // ----------------------------------------------------------------------
 
 const iOSBoxShadow =
@@ -71,44 +72,56 @@ const IOSSlider = styled(Slider)(({ theme }) => ({
   },
 }));
 type Props = {
-  player: IPlayerData | null;
+  player: IUser;
   roomMinBet: number;
+  playerCount: number;
+  roomId: string | undefined;
 };
 
-export default function CashBuyInPopup({ roomMinBet, player }: Props) {
+export default function CashBuyInPopup({ roomMinBet, playerCount, roomId, player }: Props) {
   const { t } = useLocales();
   const dialog = useBoolean();
   const { sendSocket } = useSocket();
 
   const marks = [
     {
-      value: 10,
-      label: '10 G',
+      value: roomMinBet + roomMinBet / 2,
+      label: `${roomMinBet + roomMinBet / 2} G`,
     },
     {
-      value: player?.playerMoney || 100,
-      label: `${player?.playerMoney}G`,
+      value: Number(player?.money) || 100,
+      label: `${fCurrency(player?.money)}G`,
     },
   ];
 
-  const [amount, setAmount] = useState<number>(roomMinBet);
+  const [amount, setAmount] = useState<number>(10);
 
-  // const changeRoomBet = () => {
-  //   sendSocket({
-  //     roomId: -1,
-  //     key: SOCKET_KEY.GET_ROOMS,
-  //     playerId: user?.id,
-  //     roomSortParam: 'all',
-  //   });
-  // }
+  useEffect(() => {
+    setAmount(roomMinBet + roomMinBet / 2);
+  }, [roomMinBet]);
+
+  const handleJoinRoom = () => {
+    if (!roomId || playerCount >= 6) return;
+    sendSocket({
+      roomId,
+      amount,
+      key: SOCKET_KEY.SELECT_ROOM,
+    });
+    dialog.onFalse();
+  };
 
   return (
     <>
       <IconButton
         sx={{ p: 0.5, border: '3px solid', borderColor: 'primary.main' }}
         onClick={dialog.onTrue}
+        disabled={playerCount >= 6}
       >
-        <Avatar alt="coin" src="/assets/pokerking/coin.png" sx={{ width: 20, height: 20 }} />
+        <Avatar
+          alt="coin"
+          src="/assets/pokerking/coin.png"
+          sx={{ width: 20, height: 20, opacity: playerCount >= 6 ? 0.7 : 1 }}
+        />
       </IconButton>
       <Dialog
         open={dialog.value}
@@ -136,7 +149,7 @@ export default function CashBuyInPopup({ roomMinBet, player }: Props) {
             </Stack>
             <Stack>
               <Typography color="text.disabled">{t('label.availble_balance')}</Typography>
-              <Typography>{fCurrency(player?.playerMoney || 0)}G</Typography>
+              <Typography>{fCurrency(player?.money || 0)}G</Typography>
             </Stack>
           </Stack>
           <Divider sx={{ width: 0.7, mx: 'auto', my: 2 }} />
@@ -151,7 +164,7 @@ export default function CashBuyInPopup({ roomMinBet, player }: Props) {
               marks={marks}
               value={amount}
               valueLabelDisplay="auto"
-              max={player?.playerMoney}
+              max={Number(player.money)}
               onChange={(e, value) => {
                 setAmount(value as number);
               }}
@@ -174,6 +187,7 @@ export default function CashBuyInPopup({ roomMinBet, player }: Props) {
                 backgroundSize: 'cover',
                 backgroundImage: 'url(../../assets/pokerking/button/button1.png)',
               }}
+              onClick={handleJoinRoom}
             >
               {t('button.ok')}
             </Button>

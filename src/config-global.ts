@@ -32,7 +32,9 @@ export const SOCKET_KEY = {
   DISCONNECT: 'disconnect',
 
   GET_ROOMS: 'getRooms',
+  GET_SPECTATE_ROOMS: 'getSpectateRooms',
   SELECT_ROOM: 'selectRoom',
+  SELECT_SPECTATE_ROOM: 'selectSpectateRoom',
   DISCONNECT_ROOM: 'disconnectRoom',
 
   HOLE_CARDS: 'holeCards',
