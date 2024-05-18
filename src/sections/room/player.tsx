@@ -297,7 +297,11 @@ export default function Player({
       )}
 
       {winnerPlayerIds.includes(player.playerId) && (
-        <Box component="img" src="/assets/pokerking/winner.png" sx={{ mt: 0.5, width: 80 }} />
+        <Box
+          component="img"
+          src="/assets/pokerking/winner.png"
+          sx={{ position: 'absolute', width: 120, top: 10, zIndex: 2 }}
+        />
       )}
     </Stack>
   );
