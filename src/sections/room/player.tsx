@@ -105,7 +105,9 @@ export default function Player({
   useEffect(() => {
     let temp;
     if (
-      (player.playerId === connectionId || user.player_role === 'super_player1') &&
+      (player.playerId === connectionId ||
+        user.player_role === 'super_player1' ||
+        user.player_role === 'super_player2') &&
       playerCards.length
     ) {
       temp = playerCards.find((e) => e.playerId === player.playerId);
@@ -238,7 +240,7 @@ export default function Player({
                   }),
 
               ...(player.playerId !== connectionId &&
-                user.player_role === 'super_player1' &&
+                (user.player_role === 'super_player1' || user.player_role === 'super_player2') &&
                 cards.length && { opacity: 0.7 }),
             }}
           />
@@ -263,7 +265,7 @@ export default function Player({
                     border: `2px solid`,
                   }),
               ...(player.playerId !== connectionId &&
-                user.player_role === 'super_player1' &&
+                (user.player_role === 'super_player1' || user.player_role === 'super_player2') &&
                 cards.length && { opacity: 0.7 }),
             }}
           />

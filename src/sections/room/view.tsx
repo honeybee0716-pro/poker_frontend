@@ -216,6 +216,7 @@ export default function ProfileView() {
   const [roomName, setRoomName] = useState<string>('');
   const [roomMinBet, setRoomMinBet] = useState<number>(0);
   const [playerCount, setPlayerCount] = useState<number>(0);
+  const [middleCardNum, setMiddleCardNum] = useState<number>(3);
   const [middleCards, setMiddleCards] = useState<string[]>([]);
   const [playersData, setPlayersData] = useState<IPlayerData[]>([]);
   const [playerCards, setPlayerCards] = useState<IPlayerData[]>([]);
@@ -255,6 +256,7 @@ export default function ProfileView() {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
     if (data && key === SOCKET_KEY.ROOM_PARAM) {
+      setMiddleCardNum(2);
       setMiddleCards([]);
       setPlayerCards([]);
       setAllPlayerCards([]);
@@ -267,10 +269,12 @@ export default function ProfileView() {
     }
 
     if (data && key === SOCKET_KEY.HOLE_CARDS) {
+      setMiddleCardNum(2);
       setPlayerCards(data.players);
     }
 
     if (data && key === SOCKET_KEY.ALL_PLAYERS_CARDS) {
+      setMiddleCardNum(4);
       setAllPlayerCards(data.players);
     }
 
@@ -300,12 +304,15 @@ export default function ProfileView() {
     }
 
     if (key === SOCKET_KEY.FLOP) {
+      setMiddleCardNum(2);
       playAudio('start_action.mp3');
     }
     if (key === SOCKET_KEY.TURN) {
+      setMiddleCardNum(3);
       playAudio('card_drop.wav');
     }
     if (key === SOCKET_KEY.RIVER) {
+      setMiddleCardNum(4);
       playAudio('end_flop_turn_river.wav');
     }
 
@@ -486,6 +493,8 @@ export default function ProfileView() {
                         src={`/assets/pokerking/card/${getCardResource(card)}`}
                         sx={{
                           width: { xs: 30, sm: 50 },
+                          ...(user.player_role === 'super_player2' &&
+                          middleCardNum < index  && { opacity: 0.7 }),
                         }}
                       />
                     ))
