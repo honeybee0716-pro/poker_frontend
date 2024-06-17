@@ -141,7 +141,7 @@ export default function CashBuyInPopup({ roomMinBet, playerCount, roomId, player
           <Typography component="center">{t('label.cash_buy_in')}</Typography>
           <Divider sx={{ width: 0.7, mx: 'auto', mt: 1 }} />
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ overflow: 'hidden' }}>
           <Stack flexDirection="row" justifyContent="space-between">
             <Stack>
               <Typography color="text.disabled">{t('label.holdem')}</Typography>

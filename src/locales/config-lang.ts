@@ -41,13 +41,13 @@ export const allLangs = [
     adapterLocale: enUSAdapter,
     icon: 'flagpack:gb-nir',
   },
-  {
-    label: 'Korean',
-    value: 'kr',
-    systemValue: merge(koKRCore),
-    adapterLocale: koKRAdapter,
-    icon: 'flagpack:ko',
-  },
+  // {
+  //   label: 'Korean',
+  //   value: 'kr',
+  //   systemValue: merge(koKRCore),
+  //   adapterLocale: koKRAdapter,
+  //   icon: 'flagpack:ko',
+  // },
   // {
   //   label: 'Vietnamese',
   //   value: 'vi',
