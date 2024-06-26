@@ -154,7 +154,7 @@ export default function Player({
           </Box>
         </Stack>
       ) : (
-        <Stack sx={{ alignItems: "center" }}>
+        <Stack sx={{ alignItems: "center", position: "relative" }}>
           <Typography fontSize={{ xs: 13, sm: 16 }}>{player.playerName}</Typography>
           <Avatar ref={avatarRef} src="/assets/pokerking/avatars/avatar3.png" sx={{ width: { xs: 63, sm: 100 }, height: { xs: 63, sm: 100 }, border: "1px solid #FAFF1B" }} />
           <Chip
@@ -273,7 +273,7 @@ export default function Player({
               component="img"
               className="dealer-icon"
               src="/assets/pokerking/dealer.png"
-              sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 }, mt: { xs: 2, sm: 3 }, ml: 5 }}
+              sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 }, mt: { xs: 2, sm: 3 }, ml: 5, position: "absolute" }}
             />
           )}
           {player?.totalBet && player.totalBet > 0 ? (
@@ -288,7 +288,14 @@ export default function Player({
               label={player.totalBet}
               color="primary"
               className="chip-icon"
-              sx={{ bgcolor: '#000000a6', mt: dealerId === player.playerId ? 0.5 : 3, color: '#FFF' }}
+              sx={{
+                bgcolor: '#000000a6', color: '#FFF',
+                ...(!smDown ? {
+                  mt: dealerId === player.playerId ? 0.5 : 3,
+                } : {
+                  position: "absolute", top: 30,
+                })
+              }}
             />
           ) : (
             <></>

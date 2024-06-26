@@ -132,7 +132,6 @@ export default function ProfileView() {
   const [isCallSituation, setIsCallSituation] = useState<boolean>(false);
   const [actionButtonsEnabled, setActionButtonsEnabled] = useState<boolean>(false);
 
-  const [isPlay, setIsPlay] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -255,7 +254,6 @@ export default function ProfileView() {
   };
 
   const handleFold = () => {
-    setIsPlay(!isPlay);
     if (!actionButtonsEnabled || !isPlayerTurn) return;
     sendSocket({
       roomId,
@@ -266,7 +264,6 @@ export default function ProfileView() {
   };
 
   const handleCheck = () => {
-    setIsPlay(!isPlay);
     if (!actionButtonsEnabled || !isPlayerTurn) return;
     sendSocket({
       roomId,
@@ -276,7 +273,6 @@ export default function ProfileView() {
   };
 
   const handleRaise = () => {
-    setIsPlay(!isPlay);
     if (!actionButtonsEnabled || !isPlayerTurn || !me?.playerMoney) return;
     if (raiseCount === me.playerMoney) playAudio('player_all_in.mp3');
     sendSocket({
@@ -310,7 +306,7 @@ export default function ProfileView() {
         <Stack direction="row" justifyContent="space-between">
           <Stack direction="row" gap={{ xs: 0.5, sm: 4 }} alignItems="center">
             <Logo sx={{ width: { xs: 80, sm: 100 } }} />
-            {isPlay && !smDown && <Typography>#10202049506</Typography>}
+            {/* {isPlay && !smDown && <Typography>#10202049506</Typography>} */}
           </Stack>
           <Stack direction="row" gap={{ xs: 0.5, sm: 4 }}>
             <Button sx={{
@@ -393,7 +389,7 @@ export default function ProfileView() {
               <Box
                 component="img"
                 sx={{
-                  width: { xs: 270, sm: 0.8 },
+                  width: { xs: 320, sm: 0.8 },
                   // minWidth: 252
                 }}
                 src={`/assets/pokerking/table_${smDown ? 'mobile' : 'desktop'}.png`}
