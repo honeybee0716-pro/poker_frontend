@@ -1,3 +1,4 @@
+import { tabsClasses } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { tabClasses } from '@mui/material/Tab';
 
@@ -7,8 +8,13 @@ export function tabs(theme: Theme) {
   return {
     MuiTabs: {
       styleOverrides: {
+        root: {
+          [`& .MuiTab-root`]: {
+            color: `${theme.palette.text.secondary} !important`,
+          },
+        },
         indicator: {
-          backgroundColor: theme.palette.text.primary,
+          backgroundColor: theme.palette.primary.main,
         },
         scrollButtons: {
           width: 48,

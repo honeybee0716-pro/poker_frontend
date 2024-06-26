@@ -2,9 +2,8 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 // @mui
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 // hooks
-import Iconify from 'src/components/iconify';
 import useLocales from 'src/locales/use-locales';
 import { usePathname, useRouter } from 'src/routes/hooks';
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -22,19 +21,61 @@ type Props = {
 const NAVBAR = [
   {
     value: 'lobby',
-    icon: 'material-symbols:data-table-rounded',
+    icon: 'ic_lobby.png',
+    sx: {
+      width: {
+        xs: 24, sm: 39
+      },
+      height: {
+        xs: 20, sm: 34
+      }
+    }
   },
   {
-    value: 'profile',
-    icon: 'iconamoon:profile-fill',
+    value: 'board',
+    icon: 'ic_task.png',
+    sx: {
+      width: {
+        xs: 17, sm: 25
+      },
+      height: {
+        xs: 19, sm: 24
+      }
+    }
   },
   {
-    value: 'wallet',
-    icon: 'mingcute:wallet-line',
+    value: 'ranking',
+    icon: 'ic_level.png',
+    sx: {
+      width: {
+        xs: 17, sm: 21
+      },
+      height: {
+        xs: 23, sm: 28
+      }
+    }
   },
   {
-    value: 'shop',
-    icon: 'majesticons:shopping-cart',
+    value: 'myaccount',
+    icon: 'ic_wallet.png',
+    sx: {
+      width: {
+        xs: 29, sm: 39
+      },
+      height: {
+        xs: 27, sm: 39
+      }
+    }
+  },
+  {
+    value: 'more',
+    icon: 'ic_more.png',
+    sx: {
+      width: { sm: 38, md: 48 },
+      height: {
+        xs: 25, sm: 28
+      }
+    }
   },
 ];
 export default function DashboardLayout({ children }: Props) {
@@ -55,6 +96,16 @@ export default function DashboardLayout({ children }: Props) {
     setNavbar(nav?.value || 'lobby');
   }, [pathname]);
 
+  const VideoPlayer = (
+    <div>
+      <video height="100%" autoPlay controls>
+        <source src="/assets/pokerking/video/40510-360.mp4" type="video/mp4" />
+        <track kind="captions" src="path_toyour_caption_file.vtt" label="English" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  );
+
   const renderBg = (
     <Stack
       sx={{
@@ -65,6 +116,7 @@ export default function DashboardLayout({ children }: Props) {
         },
       }}
     >
+      {/* {VideoPlayer} */}
       <Stack
         sx={{
           height: 1,
@@ -104,21 +156,16 @@ export default function DashboardLayout({ children }: Props) {
           <Tabs
             value={navbar}
             onChange={handleChange}
+            scrollButtons={false}
             sx={{
               width: 1,
               bottom: 0,
-              bgcolor: '#1603038a',
+              bgcolor: 'rgba(0, 0, 0, 0.55)',
               position: 'absolute',
               '& .MuiTabs-flexContainer': {
-                py: 2,
-                px: { xs: 2, sm: 8 },
+                py: { xs: 1.5, sm: 2 },
+                px: { xs: 1, sm: "5%" },
                 justifyContent: 'space-between',
-              },
-              '& .MuiTab-root.Mui-selected': {
-                color: '#cfb13a',
-              },
-              '& .MuiTabs-indicator': {
-                bgcolor: '#cfb13a',
               },
             }}
           >
@@ -126,9 +173,10 @@ export default function DashboardLayout({ children }: Props) {
               <Tab
                 key={e.value}
                 value={e.value}
-                label={t(`button.${e.value}`)}
                 iconPosition="top"
-                icon={<Iconify icon={e.icon} width={24} height={24} />}
+                label={t(`button.${e.value}`)}
+                sx={{ fontSize: { xs: 12, sm: 14 }, mr: { xs: `0px !important` } }}
+                icon={<Box component="img" src={`/assets/pokerking/menu/${e.icon}`} sx={e.sx} />}
               />
             ))}
           </Tabs>

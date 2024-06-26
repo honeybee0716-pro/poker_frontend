@@ -1,74 +1,40 @@
-import { useEffect, useMemo, useState } from 'react';
 // @mui
 import {
-  Box,
-  Card,
-  Container,
-  CardHeader,
-  Stack,
-  Typography,
-  Chip,
   Avatar,
-  IconButton,
-  Button,
+  Box, Chip,
+  Stack,
+  Container,
+  Typography,
+  Button
 } from '@mui/material';
 // store
-import { useSelector, useDispatch } from 'src/store';
-import { edit } from 'src/store/reducers/auth';
+import { useSelector } from 'src/store';
 // hooks
-import useSocket from 'src/hooks/use-socket';
-import useLocales from 'src/locales/use-locales';
-import { useBoolean } from 'src/hooks/use-boolean';
 import { useResponsive } from 'src/hooks/use-responsive';
+import useLocales from 'src/locales/use-locales';
 
 // components
-import { useRouter } from 'src/routes/hooks';
-import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
-import { GuidePopover, AccountPopover, LanguagePopover } from 'src/layouts/_common';
-import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
 
 // types
 import { fCurrency } from 'src/utils/format-number';
-import { SOCKET_KEY } from 'src/config-global';
-import { IRoom } from 'src/types';
 
 // ----------------------------------------------------------------------
 
-export default function UsersView() {
-  const dispatch = useDispatch();
+export default function GameBoardView() {
+  // const dispatch = useDispatch();
   const { t } = useLocales();
   const router = useRouter();
   const store = useSelector((e) => e.auth);
-  const { sendSocket, lastJsonMessage } = useSocket();
+  // const { sendSocket, lastJsonMessage } = useSocket();
   const settings = useSettingsContext();
   const smDown = useResponsive('down', 'sm');
 
-  const [rooms, setRooms] = useState<IRoom[]>([]);
-
-  useEffect(() => {
-    if (!store.user?.id) return;
-    sendSocket({
-      roomId: -1,
-      key: SOCKET_KEY.GET_SPECTATE_ROOMS,
-      playerId: store.user?.id,
-      roomSortParam: 'all',
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.user?.id]);
-
-  useEffect(() => {
-    if (!lastJsonMessage) return;
-    const { key, data, user } = lastJsonMessage;
-    if (key !== SOCKET_KEY.GET_SPECTATE_ROOMS || !data) return;
-    setRooms(data);
-    dispatch(edit(user));
-  }, [lastJsonMessage, dispatch]);
-
-  const selectRoom = (roomId: number) => {
-    router.push(paths.room.view(roomId));
-  };
+  const handleDetail = (id: number) => {
+    router.push(`${id}`);
+  }
 
   return (
     <>
@@ -82,11 +48,9 @@ export default function UsersView() {
           justifyContent: 'space-between',
         }}
       >
-        {!smDown && (
-          <Typography variant="h5">
-            {t('label.welcome_to')} {store.user?.name}!
-          </Typography>
-        )}
+        <Typography variant="h5">
+          {!smDown ? t('button.board') : `${t('label.hello')} "${store.user?.name}"`}
+        </Typography>
 
         <Stack
           flexGrow={1}
@@ -95,68 +59,105 @@ export default function UsersView() {
           justifyContent="flex-end"
           spacing={{ xs: 0, sm: 1 }}
         >
-          {!smDown && <GuidePopover />}
+          <Chip
+            avatar={<Avatar alt="Natacha" src="/assets/pokerking/ticket.png" />}
+            label="16"
+            variant="outlined"
+            sx={{
+              px: 1,
+              py: 0.5,
+              borderRadius: 50,
+              border: '2px solid #cfb13a',
+              "& .MuiChip-label": {
+                minWidth: 50,
+                textAlign: 'center'
+              }
+            }}
+          />
+
           <Chip
             avatar={<Avatar alt="Natacha" src="/assets/pokerking/coin.png" />}
             label={`${fCurrency(Number(store.user?.money || 0).toFixed(2))} G`}
             variant="outlined"
-            sx={{ px: 1, py: 0.5, borderRadius: 50, border: '2px solid #cfb13a' }}
+            sx={{
+              px: 1, py: 0.5, borderRadius: 50, border: '2px solid #cfb13a'
+            }}
           />
 
-          <LanguagePopover />
+          {/* <LanguagePopover />
 
-          <AccountPopover />
+          <AccountPopover /> */}
         </Stack>
       </Stack>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ mt: 2 }}>
-        <Scrollbar>
-          {rooms.map((room) => (
-            <Card key={room.roomId} sx={{ bgcolor: '#000000cc', mt: 1 }}>
-              <Stack flexDirection="row" justifyContent="space-between" alignItems="center">
-                <Stack
-                  sx={{
-                    flexDirection: 'row',
-                    letterSpacing: 2,
-                    fontWeight: 'bold',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 10,
-                      height: 70,
-                      backgroundColor: '#ffcc00',
-                    }}
-                  />
-                  <Stack justifyContent="center" ml={3}>
-                    <Typography
-                      sx={{
-                        color: '#e1c021',
-                      }}
-                    >
-                      {`${room.maxSeats} ${t('label.seat')} / ${room.playerCount}`}
-                    </Typography>
-                    <Typography>{`${room.roomMinBet} G`}</Typography>
-                  </Stack>
+
+      <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ mt: { xs: 1, sm: 2 }, height: `calc(100% - 180px)` }}>
+        <Scrollbar sx={{
+          height: 1, [`& .simplebar-content`]: {
+            height: 1,
+          }
+        }}>
+          {smDown && (
+            <Typography variant="h5">
+              {t('button.board')}
+            </Typography>
+          )}
+          <Stack gap={1}>
+            <Stack flexDirection="row" width={1} textAlign="center" fontSize={13}>
+              <Box width={0.05} minWidth={30}>
+                {t('label.no')}
+              </Box>
+              <Box width={0.65}>
+                {t('label.title')}
+              </Box>
+              <Box width={0.1} minWidth={50}>
+                {t('label.writer')}
+              </Box>
+              <Box width={0.07} minWidth={50}>
+                {t('label.view')}
+              </Box >
+              <Box width={0.13} minWidth={74}>
+                {t('label.comments')}
+              </Box>
+            </Stack>
+            {[...Array(4)].map((_, index) => (
+              <Button key={index} sx={{
+                p: 0, bgcolor: "#000",
+                borderRadius: 1.9,
+                border: "1px solid #575757",
+                boxShadow: " 0px 4px 4px 0px rgba(0, 0, 0, 0.55)",
+              }} onClick={() => handleDetail(index + 1)}>
+                <Stack flexDirection="row" width={1} textAlign="center" sx={{
+                  py: 1,
+                  fontSize: 13,
+
+                }}>
+                  <Box width={0.05} minWidth={30}>
+                    {index + 1}
+                  </Box>
+                  <Box width={0.65} sx={{
+                    whiteSpace: 'nowrap',
+                    width: 1,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }} >
+                    The poker project aims to develop a cutting-edge online platform for players
+                  </Box>
+                  <Box width={0.1} minWidth={50}>
+                    NAME
+                  </Box>
+                  <Box width={0.07} minWidth={50}>
+                    9999
+                  </Box >
+                  <Box width={0.13} minWidth={74}>
+                    9999
+                  </Box>
                 </Stack>
-                <Button
-                  sx={{
-                    px: 4,
-                    mr: 2,
-                    width: 113,
-                    height: 30,
-                    color: 'black',
-                    background: 'url(/assets/pokerking/button/button2.png)',
-                    backgroundSize: 'contain',
-                  }}
-                  onClick={() => selectRoom(room.roomId)}
-                >
-                  {`${room.roomMinBet} G`}
-                </Button>
-              </Stack>
-            </Card>
-          ))}
+              </Button>
+            ))}
+          </Stack>
+
         </Scrollbar>
-      </Container>
+      </Container >
     </>
   );
 }

@@ -76,11 +76,11 @@ type Props = {
   roomMinBet: number;
   playerCount: number;
   roomId: string | undefined;
+  dialog: any;
 };
 
-export default function CashBuyInPopup({ roomMinBet, playerCount, roomId, player }: Props) {
+export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player, dialog }: Props) {
   const { t } = useLocales();
-  const dialog = useBoolean();
   const { sendSocket } = useSocket();
 
   const marks = [
@@ -112,7 +112,7 @@ export default function CashBuyInPopup({ roomMinBet, playerCount, roomId, player
 
   return (
     <>
-      <IconButton
+      {/* <IconButton
         sx={{ p: 0.5, border: '3px solid', borderColor: 'primary.main' }}
         onClick={dialog.onTrue}
         disabled={playerCount >= 6}
@@ -122,7 +122,7 @@ export default function CashBuyInPopup({ roomMinBet, playerCount, roomId, player
           src="/assets/pokerking/coin.png"
           sx={{ width: 20, height: 20, opacity: playerCount >= 6 ? 0.7 : 1 }}
         />
-      </IconButton>
+      </IconButton> */}
       <Dialog
         open={dialog.value}
         onClose={dialog.onFalse}

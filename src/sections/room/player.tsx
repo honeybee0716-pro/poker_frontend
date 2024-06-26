@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
 // @mui
-import { Box, Stack, Typography, Chip, Avatar, LinearProgress, StackProps } from '@mui/material';
+import { Box, Stack, Typography, Chip, Avatar, LinearProgress, StackProps, Button } from '@mui/material';
 import useSocket from 'src/hooks/use-socket';
 import useLocales from 'src/locales/use-locales';
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useResponsive } from 'src/hooks/use-responsive';
 import { useSelector, useDispatch } from 'src/store';
 
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -17,7 +18,7 @@ import { IPlayerData, IUserAction } from 'src/types';
 // ----------------------------------------------------------------------
 
 type Props = StackProps & {
-  isLeft?: boolean;
+  index: number;
   dealerId: number;
   roomMinBet: number;
   player: IPlayerData;
@@ -26,11 +27,14 @@ type Props = StackProps & {
   winnerPlayerCards: string[];
   allPlayerCards: IPlayerData[];
   audioRef: any;
+  dialog: any;
 };
+
+
 let interval: any = 0;
 
 export default function Player({
-  isLeft,
+  index,
   player,
   dealerId,
   roomMinBet,
@@ -39,9 +43,11 @@ export default function Player({
   winnerPlayerIds,
   winnerPlayerCards,
   audioRef,
+  dialog,
   ...other
 }: Props) {
   const { t } = useLocales();
+  const smDown = useResponsive('down', 'sm');
   const { user } = useSelector((store) => store.auth);
 
   const popover = usePopover();
@@ -62,18 +68,18 @@ export default function Player({
   }
 
   useEffect(() => {
-    if (!player.timeLeft || player.timeLeft <= 0) {
+    if (!player || !player.timeLeft || player.timeLeft <= 0) {
       return setProgress(100);
     }
     clearInterval(interval);
-    let index = 0;
+    let temp = 0;
     if (player.playerId === connectionId && audioRef.current) {
       playAudioTimeOut();
     }
 
     interval = setInterval(() => {
-      index += 1;
-      setProgress(100 - index);
+      temp += 1;
+      setProgress(100 - temp);
     }, player.timeLeft / 100);
     return () => {
       setProgress(100);
@@ -104,6 +110,7 @@ export default function Player({
 
   useEffect(() => {
     let temp;
+    if (!player) return;
     if (
       (player.playerId === connectionId ||
         user.player_role === 'super_player1' ||
@@ -118,192 +125,183 @@ export default function Player({
     }
     if (temp) setCards(temp?.cards || []);
     else setCards([]);
-  }, [player.playerId, playerCards, allPlayerCards, connectionId, user.player_role]);
+  }, [player, playerCards, allPlayerCards, connectionId, user.player_role]);
 
   return (
-    <Stack sx={{ alignItems: 'center' }} {...other}>
-      <Stack
-        sx={{
-          zIndex: 1,
-          borderRadius: 1,
-          flexDirection: 'row',
-          alignItems: 'center',
-          bgcolor: '#000000cc',
-          opacity: player.isFold ? 0.5 : 1,
-        }}
-      >
-        {isLeft && (
-          <Avatar
-            ref={avatarRef}
-            src="/assets/pokerking/avatars/avatar0.jpg"
+    <Stack {...other} className={`player-${index}`}>
+      {!player ? (
+        <Stack sx={{
+          p: 0,
+          width: { xs: 77, sm: 140 },
+          height: { xs: 81, sm: 142 },
+          borderRadius: 50,
+          cursor: "pointer",
+          alignItems: "center",
+          userSelect: "none",
+          justifyContent: "center",
+          background: "url(/assets/pokerking/non_click_seat.png)",
+          backgroundSize: "cover",
+          "&:active": {
+            background: "url(/assets/pokerking/click_seat.png)",
+            backgroundPosition: { xs: "-5px 0", sm: "-5px -5px" },
+            backgroundSize: "cover",
+          },
+        }} onClick={dialog.onTrue}>
+          <Box sx={{ mt: { xs: 0.9, sm: 3 }, width: { xs: 60, sm: 90 }, textAlign: "center" }}>
+            <Typography fontSize={{ xs: 10, sm: 15 }} fontWeight={700} >
+              {t("label.click_to_sit_at_the_table")}
+            </Typography>
+          </Box>
+        </Stack>
+      ) : (
+        <Stack sx={{ alignItems: "center" }}>
+          <Typography fontSize={{ xs: 13, sm: 16 }}>{player.playerName}</Typography>
+          <Avatar ref={avatarRef} src="/assets/pokerking/avatars/avatar3.png" sx={{ width: { xs: 63, sm: 100 }, height: { xs: 63, sm: 100 }, border: "1px solid #FAFF1B" }} />
+          <Chip
+            avatar={
+              <Avatar alt="coin" src="/assets/pokerking/coin.png"
+                sx={{
+                  width: { xs: `14px !important`, sm: 27 },
+                  height: { xs: `14px !important`, sm: 27 }
+                }} />
+            }
+            label={player.playerMoney && fCurrency(Number(player.playerMoney.toFixed(1)))}
+            color="primary"
             sx={{
-              width: { xs: 40, sm: 70 },
-              height: { xs: 40, sm: 70 },
-              borderRadius: 1,
-              border: '1px solid',
-              borderColor: 'primary.main',
+              mt: -2,
+              zIndex: 1,
+              color: '#FFF',
+              borderRadius: 50,
+              fontSize: { xs: 12, sm: 16 },
+              border: "2px solid #FBFF3D",
+              bgcolor: 'rgba(0, 0, 0, 0.93)',
+              ...(smDown && {
+                height: 23
+              })
             }}
           />
-        )}
-
-        <Stack sx={{ height: 1, p: { xs: 0.3, sm: 1 }, textAlign: 'center', position: 'relative' }}>
-          <Box sx={{ borderBottom: '1px solid', fontSize: { xs: 14, sm: 16 } }}>
-            {player.playerName}{' '}
-          </Box>
-          <Stack
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            gap={{ xs: 0.2, sm: 1 }}
-          >
-            <Box
-              component="img"
-              src="/assets/pokerking/coin.png"
-              sx={{
-                width: { xs: 13, sm: 18 },
-                height: { xs: 13, sm: 18 },
-              }}
-            />
-            <Typography sx={{ fontSize: { xs: 12, sm: 16 } }}>
-              {player.playerMoney && fCurrency(Number(player.playerMoney.toFixed(1)))}
-            </Typography>
-          </Stack>
           {player.timeLeft !== undefined && player.timeLeft > 0 && (
             <LinearProgress
               variant="determinate"
               color={(progress > 80 && 'success') || (progress < 20 && 'error') || 'warning'}
               value={progress}
-              sx={{ position: 'absolute', bottom: -1, width: 0.9 }}
+              sx={{ mt: 0.5, width: 0.8 }}
+            />
+          )}
+          {lastUserAction?.playerId === player.playerId && showActionText.value && (
+            <CustomPopover
+              open={popover.open}
+              onClose={popover.onClose}
+              arrow='top-center'
+              sx={{
+                color: 'black',
+                bgcolor: 'rgb(255 255 255 / 80%)',
+                '& span': {
+                  bgcolor: 'rgb(255 255 255 / 80%)',
+                },
+              }}
+            >
+              <Typography sx={{ px: 1, fontSize: { xs: 14, sm: 16 } }}>
+                {t(`button.${lastUserAction?.actionText}`)}
+              </Typography>
+            </CustomPopover>
+          )}
+
+
+          {!player.isFold && (
+            <Stack
+              sx={{
+                width: 1,
+                mt: { xs: -7, sm: -11 },
+                mr: -5,
+                position: 'relative',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}
+            >
+              <Box
+                component="img"
+                src={`/assets/pokerking/card/${cards.length && cards[0] ? getCardResource(cards[0]) : 'card_back.png'
+                  }`}
+                sx={{
+                  width: { xs: 30, sm: 50 },
+                  borderRadius: 0.5,
+                  borderColor: 'primary.main',
+                  ...(cards.length
+                    ? {
+                      transform: 'rotate(-9deg)',
+                      position: 'absolute',
+                      mr: { xs: 3, sm: 5 },
+                    }
+                    : {
+                      border: '2px solid',
+                    }),
+
+                  ...(player.playerId !== connectionId &&
+                    (user.player_role === 'super_player1' || user.player_role === 'super_player2') &&
+                    cards.length && { opacity: 0.7 }),
+                }}
+              />
+              <Box
+                component="img"
+                src={`/assets/pokerking/card/${cards.length > 1 && cards[1] ? getCardResource(cards[1]) : 'card_back.png'
+                  }`}
+                sx={{
+                  width: { xs: 30, sm: 50 },
+                  borderRadius: 0.5,
+                  position: 'absolute',
+                  borderColor: `primary.main`,
+                  ...(cards.length
+                    ? {
+                      transform: 'rotate(9deg)',
+                      ml: { xs: 3, sm: 6 },
+                    }
+                    : {
+                      mt: 1,
+                      ml: 5,
+                      border: `2px solid`,
+                    }),
+                  ...(player.playerId !== connectionId &&
+                    (user.player_role === 'super_player1' || user.player_role === 'super_player2') &&
+                    cards.length && { opacity: 0.7 }),
+                }}
+              />
+            </Stack>
+          )}
+          {dealerId === player.playerId && (
+            <Box
+              component="img"
+              className="dealer-icon"
+              src="/assets/pokerking/dealer.png"
+              sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 }, mt: { xs: 2, sm: 3 }, ml: 5 }}
+            />
+          )}
+          {player?.totalBet && player.totalBet > 0 ? (
+            <Chip
+              avatar={
+                <Avatar
+                  alt="coin"
+                  src={`/assets/pokerking/chip/${(player.totalBet < roomMinBet && '05') || (player.totalBet > roomMinBet && 2) || 1
+                    }.png`}
+                />
+              }
+              label={player.totalBet}
+              color="primary"
+              className="chip-icon"
+              sx={{ bgcolor: '#000000a6', mt: dealerId === player.playerId ? 0.5 : 3, color: '#FFF' }}
+            />
+          ) : (
+            <></>
+          )}
+
+          {winnerPlayerIds.includes(player.playerId) && (
+            <Box
+              component="img"
+              src="/assets/pokerking/winner.png"
+              sx={{ position: 'absolute', width: 120, top: 10, zIndex: 2 }}
             />
           )}
         </Stack>
-
-        {!isLeft && (
-          <Avatar
-            ref={avatarRef}
-            src="/assets/pokerking/avatars/avatar0.jpg"
-            sx={{
-              width: { xs: 40, sm: 70 },
-              height: { xs: 40, sm: 70 },
-              borderRadius: 1,
-              border: '1px solid',
-              borderColor: 'primary.main',
-            }}
-          />
-        )}
-      </Stack>
-      {lastUserAction?.playerId === player.playerId && showActionText.value && (
-        <CustomPopover
-          open={popover.open}
-          onClose={popover.onClose}
-          sx={{
-            color: 'black',
-            bgcolor: 'rgb(255 255 255 / 80%)',
-            '& span': {
-              bgcolor: 'rgb(255 255 255 / 80%)',
-            },
-          }}
-        >
-          <Typography sx={{ px: 1, fontSize: { xs: 14, sm: 16 } }}>
-            {t(`button.${lastUserAction?.actionText}`)}
-          </Typography>
-        </CustomPopover>
-      )}
-
-      {!player.isFold && (
-        <Stack
-          sx={{
-            width: 1,
-            top: cards.length ? { xs: -40, sm: -60 } : { xs: -20, sm: -40 },
-            position: 'absolute',
-            justifyContent: 'center',
-            flexDirection: 'row',
-          }}
-        >
-          <Box
-            component="img"
-            src={`/assets/pokerking/card/${
-              cards.length && cards[0] ? getCardResource(cards[0]) : 'card_back.png'
-            }`}
-            sx={{
-              width: { xs: 30, sm: 50 },
-              borderRadius: 0.5,
-              borderColor: 'primary.main',
-              ...(cards.length
-                ? {
-                    transform: 'rotate(-9deg)',
-                    position: 'absolute',
-                    mr: { xs: 3, sm: 5 },
-                  }
-                : {
-                    border: '2px solid',
-                  }),
-
-              ...(player.playerId !== connectionId &&
-                (user.player_role === 'super_player1' || user.player_role === 'super_player2') &&
-                cards.length && { opacity: 0.7 }),
-            }}
-          />
-          <Box
-            component="img"
-            src={`/assets/pokerking/card/${
-              cards.length > 1 && cards[1] ? getCardResource(cards[1]) : 'card_back.png'
-            }`}
-            sx={{
-              width: { xs: 30, sm: 50 },
-              borderRadius: 0.5,
-              position: 'absolute',
-              borderColor: `primary.main`,
-              ...(cards.length
-                ? {
-                    transform: 'rotate(9deg)',
-                    ml: { xs: 3, sm: 6 },
-                  }
-                : {
-                    mt: 1,
-                    ml: 5,
-                    border: `2px solid`,
-                  }),
-              ...(player.playerId !== connectionId &&
-                (user.player_role === 'super_player1' || user.player_role === 'super_player2') &&
-                cards.length && { opacity: 0.7 }),
-            }}
-          />
-        </Stack>
-      )}
-      {dealerId === player.playerId && (
-        <Box
-          component="img"
-          className="dealer-icon"
-          src="/assets/pokerking/dealer.png"
-          sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 } }}
-        />
-      )}
-      {player?.totalBet && player.totalBet > 0 ? (
-        <Chip
-          avatar={
-            <Avatar
-              alt="coin"
-              src={`/assets/pokerking/chip/${
-                (player.totalBet < roomMinBet && '05') || (player.totalBet > roomMinBet && 2) || 1
-              }.png`}
-            />
-          }
-          label={player.totalBet}
-          color="primary"
-          className="chip-icon"
-          sx={{ bgcolor: '#000000a6', mt: 2, color: '#FFF' }}
-        />
-      ) : (
-        <></>
-      )}
-
-      {winnerPlayerIds.includes(player.playerId) && (
-        <Box
-          component="img"
-          src="/assets/pokerking/winner.png"
-          sx={{ position: 'absolute', width: 120, top: 10, zIndex: 2 }}
-        />
       )}
     </Stack>
   );
