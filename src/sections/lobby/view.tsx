@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 // store
 import { useDispatch, useSelector } from 'src/store';
-import { edit } from 'src/store/reducers/auth';
+import { edit, signout } from 'src/store/reducers/auth';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 import useSocket from 'src/hooks/use-socket';
@@ -23,6 +23,7 @@ import useLocales from 'src/locales/use-locales';
 // components
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
+import Iconify from 'src/components/iconify';
 import { useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
 
@@ -117,6 +118,19 @@ export default function GameUsersView() {
             sx={{
               height: "auto",
               px: 1, py: 0.5, borderRadius: 50, border: '2px solid #cfb13a', mr: 1
+            }}
+          />
+
+          <Chip
+            avatar={<Iconify icon="mdi:power" sx={{ m: `0px !important` }} />}
+            variant="outlined"
+            onClick={() => dispatch(signout())}
+            sx={{
+              height: "auto",
+              p: 0.5, borderRadius: 50, border: '2px solid #cfb13a', mr: 1,
+              "& .MuiChip-label": {
+                display: "none"
+              }
             }}
           />
 

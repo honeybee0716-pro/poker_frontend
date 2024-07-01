@@ -185,7 +185,11 @@ export default function Player({
               variant="determinate"
               color={(progress > 80 && 'success') || (progress < 20 && 'error') || 'warning'}
               value={progress}
-              sx={{ mt: 0.5, width: 0.8 }}
+              sx={{
+                mt: 0.5,
+                width: { xs: 0.5, sm: 0.8 },
+                ...(smDown && { position: "absolute", bottom: -25, }),
+              }}
             />
           )}
           {lastUserAction?.playerId === player.playerId && showActionText.value && (
@@ -277,26 +281,60 @@ export default function Player({
             />
           )}
           {player?.totalBet && player.totalBet > 0 ? (
-            <Chip
-              avatar={
-                <Avatar
-                  alt="coin"
-                  src={`/assets/pokerking/chip/${(player.totalBet < roomMinBet && '05') || (player.totalBet > roomMinBet && 2) || 1
-                    }.png`}
-                />
-              }
-              label={player.totalBet}
-              color="primary"
-              className="chip-icon"
-              sx={{
-                bgcolor: '#000000a6', color: '#FFF',
-                ...(!smDown ? {
-                  mt: dealerId === player.playerId ? 0.5 : 3,
-                } : {
-                  position: "absolute", top: 30,
-                })
-              }}
-            />
+            <Stack sx={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              ...(smDown && {
+                position: 'absolute',
+                ...(index !== 6 && {
+                  top: 95,
+                }),
+                ...(index === 6 && {
+                  top: -50,
+                }),
+                ...(index > 1 && index < 6 && {
+                  left: -20
+                }),
+                ...(index > 6 && {
+                  right: -10
+                }),
+                "& .MuiChip-label": {
+                  px: 0.8
+                }
+              })
+            }}>
+              {smDown && <Avatar
+                alt="coin"
+                src={`/assets/pokerking/chip/${(player.totalBet < roomMinBet && '05') || (player.totalBet > roomMinBet && 2) || 1
+                  }.png`}
+                // src="/assets/pokerking/chip/05.png"
+                sx={{
+                  width: `18px !important`,
+                  height: `20px !important`,
+                }}
+              />}
+              <Chip
+                avatar={
+                  !smDown ? <Avatar
+                    alt="coin"
+                    src={`/assets/pokerking/chip/${(player.totalBet < roomMinBet && '05') || (player.totalBet > roomMinBet && 2) || 1
+                      }.png`}
+                  // src="/assets/pokerking/chip/05.png"
+                  /> : undefined
+                }
+                label={player.totalBet}
+                // label={1000}
+                color="primary"
+                className="chip-icon"
+                sx={{
+                  bgcolor: '#000000a6', color: '#FFF',
+                  ...(!smDown && {
+                    position: "absolute",
+                    top: 150,
+                  })
+                }}
+              />
+            </Stack>
           ) : (
             <></>
           )}

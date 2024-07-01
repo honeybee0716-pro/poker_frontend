@@ -8,7 +8,8 @@ import {
   Button
 } from '@mui/material';
 // store
-import { useSelector } from 'src/store';
+import { dispatch, useSelector } from 'src/store';
+import { signout } from 'src/store/reducers/auth';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 import useLocales from 'src/locales/use-locales';
@@ -16,6 +17,7 @@ import useLocales from 'src/locales/use-locales';
 // components
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
+import Iconify from 'src/components/iconify';
 import { useRouter } from 'src/routes/hooks';
 
 // types
@@ -81,6 +83,19 @@ export default function GameBoardView() {
             variant="outlined"
             sx={{
               px: 1, py: 0.5, borderRadius: 50, border: '2px solid #cfb13a'
+            }}
+          />
+
+          <Chip
+            avatar={<Iconify icon="mdi:power" sx={{ m: `0px !important` }} />}
+            variant="outlined"
+            onClick={() => dispatch(signout())}
+            sx={{
+              height: "auto",
+              p: 0.5, borderRadius: 50, border: '2px solid #cfb13a', mr: 1,
+              "& .MuiChip-label": {
+                display: "none"
+              }
             }}
           />
 

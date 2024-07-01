@@ -401,9 +401,9 @@ export default function ProfileView() {
               />
               <Stack sx={{
                 position: 'absolute',
+                alignItems: 'center',
                 ...(!smDown && {
                   justifyContent: 'center',
-                  alignItems: 'center'
                 })
               }}>
                 <Stack textAlign="center" mt={-14}>
@@ -413,7 +413,7 @@ export default function ProfileView() {
                   <Typography>{currentStatus}</Typography>
                 </Stack>
 
-                <Stack direction="row" gap={1}>
+                <Stack direction="row" gap={1} justifyContent="center">
                   {middleCards.length
                     ? middleCards.map((card: string, index: number) => (
                       <Box
@@ -438,6 +438,13 @@ export default function ProfileView() {
                       />
                     ))}
                 </Stack>
+
+                <Chip
+                  avatar={<Avatar alt="coin" src="/assets/pokerking/coin.png" />}
+                  label={totalPot ? fCurrency(totalPot) : 0}
+                  color="primary"
+                  sx={{ bgcolor: '#000000a6', mt: 2, color: '#FFF', width: "fit-content" }}
+                />
 
               </Stack>
 
@@ -665,7 +672,7 @@ export default function ProfileView() {
             onClick={messagePropover.onOpen}
           />
         </Stack>
-        {/* <Stack
+        <Stack
           direction="row"
           width={{ xs: 1, sm: 1, md: 0.6 }}
           sx={{ p: 3, justifyContent: 'space-between', opacity: 1, gap: 1 }}
@@ -760,7 +767,7 @@ export default function ProfileView() {
               popover.onOpen(e);
             }}
           />
-        </Stack> */}
+        </Stack>
         <Stack
           direction="row"
           justifyContent="flex-end" width={210}
