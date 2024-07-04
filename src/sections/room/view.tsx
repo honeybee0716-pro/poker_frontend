@@ -213,7 +213,6 @@ export default function ProfileView() {
         setTotalPot(data.totalPot + data.twiceInfor.totalPot);
       }
       setSideGameType(data.sideGameType);
-      setCurrentStatus(data.currentStatus);
 
       setRoomName(data.roomName);
       setPlayersData(data.playersData);
@@ -379,7 +378,7 @@ export default function ProfileView() {
         backgroundPosition: 1,
         backgroundSize: 'cover',
         position: 'relative',
-        minWidth: 400
+        minWidth: 312
       }}
     >
       <AppBar sx={{ px: 3, pt: 1, zIndex: 9999 }}>
@@ -783,7 +782,10 @@ export default function ProfileView() {
         <Stack
           direction="row"
           width={{ xs: 1, sm: 1, md: 0.6 }}
-          sx={{ p: 3, justifyContent: 'space-between', opacity: 1, gap: 1 }}
+          sx={{ p: 3, justifyContent: 'space-between', 
+                opacity: 1, 
+                gap: 1,
+              }}
         >
           <Box
             sx={{
@@ -1169,7 +1171,7 @@ function SideDialog(props: SideDialogProps) {
   const { roomId } = params;
 
   const { sendSocket, lastJsonMessage, connectionId } = useSocket();
-  console.log(roomId);
+  
   const setSideGame = (event: String) => {
     sendSocket({
       roomId,
