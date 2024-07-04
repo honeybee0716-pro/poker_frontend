@@ -185,12 +185,11 @@ export default function ProfileView() {
 
     if (data && key === SOCKET_KEY.STATUS_UPDATE) {
       setTotalPot(data.totalPot);
-      setCurrentStatus(data.currentStatus);
+
       setRoomName(data.roomName);
       setPlayersData(data.playersData);
       setMiddleCards(data.middleCards);
       setIsCallSituation(data.isCallSituation);
-
       setSpectators(data.spectators);
       setAppendPlayers(data.appendPlayers);
       if (data.isResultsCall) {
@@ -232,6 +231,45 @@ export default function ProfileView() {
         playAudio('player_fold.wav');
       }
     }
+
+    if (data && key === SOCKET_KEY.HOLE_CARDS) {
+      setCurrentStatus('Hole cards');
+    }
+    if (data && key === SOCKET_KEY.STATUS_UPDATE) {
+      if (data.currentStatus === 'Pre flop') {
+        setCurrentStatus('Pre flop');
+      }
+    }
+    if (data && key === SOCKET_KEY.FLOP) {
+      setCurrentStatus('The flop');
+    }
+    if (data && key === SOCKET_KEY.TURN) {
+      setCurrentStatus('The turn');
+    }
+    if (data && key === SOCKET_KEY.RIVER) {
+      setCurrentStatus('The river');
+    }
+    if (data && key === SOCKET_KEY.ShowDown) {
+      setCurrentStatus('The show down');
+    }
+    if (data && key === SOCKET_KEY.STATUS_UPDATE) {
+      const excludedStatuses = [
+        'Hole cards',
+        'Pre flop',
+        'The flop',
+        // 'Post flop',
+        'The turn',
+        // 'Post turn',
+        'The river',
+        'The show down',
+      ];
+
+      if (!excludedStatuses.includes(data.currentStatus)) {
+        setCurrentStatus(data.currentStatus);
+      }
+    }
+
+
   }, [lastJsonMessage, connectionId]);
 
   useEffect(() => {
@@ -293,6 +331,7 @@ export default function ProfileView() {
     setOpen(false);
   };
 
+
   return (
     <Stack
       sx={{
@@ -300,6 +339,8 @@ export default function ProfileView() {
         height: 1,
         backgroundPosition: 1,
         backgroundSize: 'cover',
+        position: 'relative',
+        minWidth: 400
       }}
     >
       <AppBar sx={{ px: 3, pt: 1, zIndex: 9999 }}>
@@ -307,26 +348,29 @@ export default function ProfileView() {
           <Stack direction="row" gap={{ xs: 0.5, sm: 4 }} alignItems="center">
             <Logo sx={{ width: { xs: 80, sm: 100 } }} />
             {/* {isPlay && !smDown && <Typography>#10202049506</Typography>} */}
-          </Stack>
-          <Stack direction="row" gap={{ xs: 0.5, sm: 4 }}>
-            <Button sx={{
-              width: { xs: 53, sm: 66 },
-              height: { xs: 52, sm: 66 },
-              minWidth: 40,
-              minHeight: 40,
-              background: "url(/assets/pokerking/non_click_menu.png)",
-              backgroundSize: "cover",
-              "&:hover": {
-                background: "url(/assets/pokerking/mouse_over_menu.png)",
-                backgroundSize: "cover",
-              },
-              "&:active": {
-                background: "url(/assets/pokerking/click_menu.png)",
-                backgroundSize: "cover",
-              },
-              zIndex: 99
-            }} />
-          </Stack>
+          </Stack>{!smDown && (
+            <Stack direction="row" gap={{ xs: 0.5, sm: 4 }}>
+              <Button sx={{
+                width: { xs: 53, sm: 66 },
+                height: { xs: 52, sm: 66 },
+                minWidth: 40,
+                minHeight: 40,
+                background: "url(/assets/pokerking/non_click_menu.png) no-repeat center center",
+                backgroundSize: "contain",
+                "&:hover": {
+                  background: "url(/assets/pokerking/mouse_over_menu.png) no-repeat center center",
+                  backgroundSize: "contain",
+                },
+                "&:active": {
+                  background: "url(/assets/pokerking/click_menu.png) no-repeat center center",
+                  backgroundSize: "contain",
+                },
+                zIndex: 99
+              }} />
+            </Stack>
+          )
+          }
+
         </Stack>
       </AppBar>
       <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ height: { xs: 0.9, sm: 1 }, width: 1 }}>
@@ -625,7 +669,7 @@ export default function ProfileView() {
         </Stack>
 
       </Container>
-      <Stack direction="row" width={1} px={1} justifyContent="space-between" position="relative">
+      <Stack direction="row" width={1} px={3} justifyContent="space-between" position="relative">
         <Stack
           direction="row"
           width={210}
@@ -633,39 +677,40 @@ export default function ProfileView() {
             gap: { xs: 0.5, sm: 1 },
             alignItems: "center",
             ...(smDown && {
-              top: -40,
+              top: -30,
+              left: '11vw',
               position: "absolute",
             })
           }}>
           <Button sx={{
-            width: { xs: 53, sm: 86 },
-            height: { xs: 52, sm: 71 },
-            background: "url(/assets/pokerking/non_click_emoji.png)",
-            backgroundSize: "cover",
+            width: { xs: 45, sm: 86 },
+            height: { xs: 45, sm: 71 },
+            background: "url(/assets/pokerking/non_click_emoji.png) no-repeat center center",
+            backgroundSize: "contain",
             "&:hover": {
-              background: "url(/assets/pokerking/mouse_over_emoji.png)",
-              backgroundSize: "cover",
+              background: "url(/assets/pokerking/mouse_over_emoji.png) no-repeat center center",
+              backgroundSize: "contain",
             },
             "&:active": {
-              background: "url(/assets/pokerking/click_emoji.png)",
-              backgroundSize: "cover",
+              background: "url(/assets/pokerking/click_emoji.png) no-repeat center center",
+              backgroundSize: "contain",
             },
             zIndex: 99
           }}
             onClick={emojPropover.onOpen}
           />
           <Button sx={{
-            width: { xs: 53, sm: 86 },
-            height: { xs: 52, sm: 71 },
-            background: "url(/assets/pokerking/non_click_text.png)",
-            backgroundSize: "cover",
+            width: { xs: 45, sm: 86 },
+            height: { xs: 45, sm: 71 },
+            background: "url(/assets/pokerking/non_click_text.png) no-repeat center center",
+            backgroundSize: "contain",
             "&:hover": {
-              background: "url(/assets/pokerking/mouse_over_text.png)",
-              backgroundSize: "cover",
+              background: "url(/assets/pokerking/mouse_over_text.png) no-repeat center center",
+              backgroundSize: "contain",
             },
             "&:active": {
-              background: "url(/assets/pokerking/click_text.png)",
-              backgroundSize: "cover",
+              background: "url(/assets/pokerking/click_text.png) no-repeat center center",
+              backgroundSize: "contain",
             },
             zIndex: 99
           }}
@@ -770,30 +815,51 @@ export default function ProfileView() {
         </Stack>
         <Stack
           direction="row"
-          justifyContent="flex-end" width={210}
+          justifyContent="flex-end" width={210} 
           sx={{
+            gap: { xs: 1, sm: 2 },
             alignItems: "center",
             ...(smDown && {
-              top: -40,
-              right: 0,
+              top: -33,
+              right: '11vw',
               position: "absolute",
             })
           }}>
           <Button sx={{
-            width: { xs: 53, sm: 86 },
-            height: { xs: 52, sm: 71 },
-            background: "url(/assets/pokerking/non_click_sidegame.png)",
-            backgroundSize: "cover",
+            width: { xs: 45, sm: 86 },
+            height: { xs: 45, sm: 71 },
+            background: "url(/assets/pokerking/non_click_sidegame.png) no-repeat center center",
+            backgroundSize: "contain",
             "&:hover": {
-              background: "url(/assets/pokerking/mouse_over_sidegame.png)",
-              backgroundSize: "cover",
+              background: "url(/assets/pokerking/mouse_over_sidegame.png) no-repeat center center",
+              backgroundSize: "contain",
             },
             "&:active": {
-              background: "url(/assets/pokerking/click_sidegame.png)",
-              backgroundSize: "cover",
+              background: "url(/assets/pokerking/click_sidegame.png) no-repeat center center",
+              backgroundSize: "contain",
             },
             zIndex: 99
           }} onClick={handleClickOpen} />
+          {smDown && (
+            <Button sx={{
+              width: { xs: 50, sm: 66 },
+              height: { xs: 50, sm: 66 },
+              minWidth: 40,
+              minHeight: 40,
+              background: "url(/assets/pokerking/non_click_menu.png) no-repeat center center",
+              backgroundSize: "contain",
+              "&:hover": {
+                background: "url(/assets/pokerking/mouse_over_menu.png) no-repeat center center",
+                backgroundSize: "contain",
+              },
+              "&:active": {
+                background: "url(/assets/pokerking/click_menu.png) no-repeat center center",
+                backgroundSize: "contain",
+              },
+              zIndex: 99
+            }} />
+
+          )}
         </Stack>
       </Stack>
       <CustomPopover
