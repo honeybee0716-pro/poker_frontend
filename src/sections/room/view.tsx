@@ -213,7 +213,6 @@ export default function ProfileView() {
         setTotalPot(data.totalPot + data.twiceInfor.totalPot);
       }
       setSideGameType(data.sideGameType);
-      setCurrentStatus(data.currentStatus);
 
       setRoomName(data.roomName);
       setPlayersData(data.playersData);
