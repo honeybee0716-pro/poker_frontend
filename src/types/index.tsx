@@ -57,6 +57,19 @@ export type IPlayerData = {
   isDealer?: boolean;
 };
 
+export type FirstMatchData = {
+  firstCardInfor: [];
+  firstWin: [];
+  raise_val: [];
+  win_by_raise: number;
+};
+
+export type TwiceData = {
+  first: FirstMatchData;
+  totalPot: number;
+  turn: number;
+};
+
 export type IUserAction = {
   actionText: string;
   playerId: number;

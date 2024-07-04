@@ -47,6 +47,12 @@ export const SOCKET_KEY = {
   SET_CHECK: 'setCheck',
   SET_RAISE: 'setRaise',
 
+
+  SET_SIDEGAME: 'side_game',
+  SET_SIDEGAME_HOLD: 'hold',
+  SET_SIDEGAME_ANTE: 'ante',
+  SET_SIDEGAME_TWICE: 'twice',
+
   FLOP: 'theFlop',
   TURN: 'theTurn',
   RIVER: 'theRiver',

@@ -39,7 +39,7 @@ import playAudio from 'src/utils/audio';
 
 // types
 import { SOCKET_KEY } from 'src/config-global';
-import { IPlayerData } from 'src/types';
+import { IPlayerData, TwiceData } from 'src/types';
 
 import Player from './player';
 import CashBuyDialog from './options/cash_buy';
@@ -115,9 +115,21 @@ export default function ProfileView() {
   const [raiseCount, setRaiseCount] = useState<number>(0);
   const [currentStatus, setCurrentStatus] = useState<string>('');
   const [roomName, setRoomName] = useState<string>('');
+  const [sideGameType, setSideGameType] = useState<string>('');
+  const [isUseSideGameHold, setIsUseSideGameHold] = useState<boolean>(false);
   const [roomMinBet, setRoomMinBet] = useState<number>(0);
   const [playerCount, setPlayerCount] = useState<number>(0);
   const [middleCardNum, setMiddleCardNum] = useState<number>(3);
+  const [twiceFMiddleCards, setTwiceFMiddleCards] = useState<TwiceData>({
+    first: {
+      firstCardInfor: [],
+      firstWin: [],
+      raise_val: [],
+      win_by_raise: 0
+    },
+    totalPot: 0,
+    turn: 1
+  });
   const [middleCards, setMiddleCards] = useState<string[]>([]);
   const [playersData, setPlayersData] = useState<IPlayerData[]>([]);
   const [playerCards, setPlayerCards] = useState<IPlayerData[]>([]);
@@ -185,6 +197,22 @@ export default function ProfileView() {
 
     if (data && key === SOCKET_KEY.STATUS_UPDATE) {
       setTotalPot(data.totalPot);
+      if (data?.twiceInfor?.first?.raise_val !== undefined) {
+        setTwiceFMiddleCards({
+          first: {
+            firstCardInfor: data?.twiceInfor?.first?.firstCardInfor,
+            firstWin: data?.twiceInfor?.first?.firstWin,
+            raise_val: data?.twiceInfor?.first?.raise_val,
+            win_by_raise: data?.twiceInfor?.first?.win_by_raise
+          },
+          totalPot: data?.twiceInfor?.totalPot,
+          turn: data?.twiceInfor?.turn
+        });
+      }
+      if (data?.twiceInfor?.turn === 2) {
+        setTotalPot(data.totalPot + data.twiceInfor.totalPot);
+      }
+      setSideGameType(data.sideGameType);
       setCurrentStatus(data.currentStatus);
       setRoomName(data.roomName);
       setPlayersData(data.playersData);
@@ -194,6 +222,7 @@ export default function ProfileView() {
       setSpectators(data.spectators);
       setAppendPlayers(data.appendPlayers);
       if (data.isResultsCall) {
+        setIsUseSideGameHold(false);
         setWinnerPlayerIds(data.roundWinnerPlayerIds);
         setWinnerPlayerCards(data.roundWinnerPlayerCards);
 
@@ -254,12 +283,14 @@ export default function ProfileView() {
   };
 
   const handleFold = () => {
-    if (!actionButtonsEnabled || !isPlayerTurn) return;
+    if ((!actionButtonsEnabled || !isPlayerTurn) && !isABHold()) return;
+    if (isABHold() && isUseSideGameHold) return;
     sendSocket({
       roomId,
       key: SOCKET_KEY.SET_FOLD,
     });
     setActionButtonsEnabled(false);
+    setIsUseSideGameHold(true);
     setIsPlayerTurn(false);
   };
 
@@ -273,8 +304,9 @@ export default function ProfileView() {
   };
 
   const handleRaise = () => {
-    if (!actionButtonsEnabled || !isPlayerTurn || !me?.playerMoney) return;
-    if (raiseCount === me.playerMoney) playAudio('player_all_in.mp3');
+    if ((!actionButtonsEnabled || !isPlayerTurn || !me?.playerMoney) && !isABHold()) return;
+    if (isABHold() && (raiseCount !== me?.playerMoney || isUseSideGameHold)) return;
+    if (raiseCount === me?.playerMoney) playAudio('player_all_in.mp3');
     sendSocket({
       roomId,
       amount: raiseCount,
@@ -282,6 +314,7 @@ export default function ProfileView() {
     });
     setRaiseCount(0);
     setActionButtonsEnabled(false);
+    setIsUseSideGameHold(true);
     popover.onClose();
   };
 
@@ -292,6 +325,12 @@ export default function ProfileView() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const isABHold = () => {
+    if (currentStatus === 'Pre flop' && sideGameType === 'hold')
+      return true;
+    return false;
+  }
 
   return (
     <Stack
@@ -412,7 +451,31 @@ export default function ProfileView() {
                   </Typography>
                   <Typography>{currentStatus}</Typography>
                 </Stack>
-
+                {twiceFMiddleCards.turn === 2 &&
+                  <Stack direction="row" gap={1} justifyContent="center" pb={2}>
+                    {(twiceFMiddleCards?.first?.firstCardInfor?.length !== undefined && twiceFMiddleCards?.first?.firstCardInfor?.length > 4)
+                      ? twiceFMiddleCards?.first?.firstCardInfor.map((card: string, index: number) => (
+                        <Box
+                          key={index}
+                          component="img"
+                          src={`/assets/pokerking/card/${getCardResource(card)}`}
+                          sx={{
+                            width: { xs: 30, sm: 50 }
+                          }}
+                        />
+                      ))
+                      : [...Array(5)].map((_, index) => (
+                        <Box
+                          key={index}
+                          component="img"
+                          src="/assets/pokerking/card/card_back.png"
+                          sx={{
+                            width: { xs: 30, sm: 50 },
+                          }}
+                        />
+                      ))}
+                  </Stack>
+                }
                 <Stack direction="row" gap={1} justifyContent="center">
                   {middleCards.length
                     ? middleCards.map((card: string, index: number) => (
@@ -703,7 +766,7 @@ export default function ProfileView() {
               backgroundRepeat: "no-repeat"
             }}
             onClick={handleFold}
-          />
+          >hold{smDown}</Box>
           <Box
             // variant="contained"
             // color="error"
@@ -733,7 +796,7 @@ export default function ProfileView() {
               backgroundRepeat: "no-repeat"
             }}
             onClick={handleCheck}
-          />
+          >check{smDown}</Box>
           <Box
             // variant="contained"
             // color="error"
@@ -763,10 +826,12 @@ export default function ProfileView() {
               backgroundRepeat: "no-repeat"
             }}
             onClick={(e) => {
-              if (!actionButtonsEnabled || !isPlayerTurn) return;
+              console.log(111111111)
+              if ((!actionButtonsEnabled || !isPlayerTurn) && !isABHold()) return;
+              console.log(2222222222222)
               popover.onOpen(e);
             }}
-          />
+          >raise{smDown}</Box>
         </Stack>
         <Stack
           direction="row"
@@ -860,7 +925,7 @@ export default function ProfileView() {
             color="warning"
             size="small"
             sx={{ height: 60 }}
-            disabled={!actionButtonsEnabled || !isPlayerTurn}
+            disabled={(!actionButtonsEnabled || !isPlayerTurn) && !isABHold()}
             onClick={handleRaise}
           >
             {t('button.RAISE')}
@@ -1007,6 +1072,7 @@ export default function ProfileView() {
         <source src="/assets/pokerking/sounds/time_out.wav" type="audio/wav" />
         <track kind="captions" srcLang="en" src="" />
       </Box>
+      sideGameType={sideGameType}
       <SideDialog
         open={open}
         onClose={handleClose}
@@ -1030,7 +1096,20 @@ export interface SideDialogProps {
 
 function SideDialog(props: SideDialogProps) {
   const { t } = useLocales();
+  const params = useParams();
   const { onClose, open } = props;
+
+  const { roomId } = params;
+
+  const { sendSocket, lastJsonMessage, connectionId } = useSocket();
+  console.log(roomId);
+  const setSideGame = (event: String) => {
+    sendSocket({
+      roomId,
+      key: SOCKET_KEY.SET_SIDEGAME,
+      event,
+    });
+  }
 
   const handleClose = () => {
     onClose();
@@ -1073,8 +1152,26 @@ function SideDialog(props: SideDialogProps) {
               background: 'url(/assets/pokerking/button/call_button.png)',
               backgroundSize: 'cover',
             }}
+            onClick={() => setSideGame(SOCKET_KEY.SET_SIDEGAME_HOLD)}
           >
-            {t('button.agree')}
+            all in
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            sx={{
+              textAlign: "center",
+              fontWeight: 700,
+              fontSize: { xs: 14, sm: 16 },
+              width: 150,
+              height: 38,
+              borderRadius: 50,
+              background: 'url(/assets/pokerking/button/call_button.png)',
+              backgroundSize: 'cover',
+            }}
+            onClick={() => setSideGame(SOCKET_KEY.SET_SIDEGAME_ANTE)}
+          >
+            ante
           </Button>
           <Button
             variant="contained"
@@ -1089,8 +1186,9 @@ function SideDialog(props: SideDialogProps) {
               background: 'url(/assets/pokerking/button/fold_button.png)',
               backgroundSize: 'cover',
             }}
+            onClick={() => setSideGame(SOCKET_KEY.SET_SIDEGAME_TWICE)}
           >
-            {t('button.oppose')}
+            twice
           </Button>
         </Stack>
       </DialogContent>
