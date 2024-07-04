@@ -795,7 +795,7 @@ export default function ProfileView() {
               cursor: "pointer",
               background: `url(/assets/pokerking/button/non_click_folds${smDown ? "_mobile" : ""}.png)`,
               "&:hover": {
-                background: "url(/assets/pokerking/button/mouse_over_folds.png)",
+                background: `url(/assets/pokerking/button/mouse_over_folds${smDown ? "_mobile" : ""}.png)`,
                 backgroundSize: "contain",
                 backgroundPosition: "center center",
                 backgroundRepeat: "no-repeat"
@@ -825,7 +825,7 @@ export default function ProfileView() {
               cursor: "pointer",
               background: `url(/assets/pokerking/button/non_click_calls${smDown ? "_mobile" : ""}.png)`,
               "&:hover": {
-                background: "url(/assets/pokerking/button/mouse_over_calls.png)",
+                background: `url(/assets/pokerking/button/mouse_over_calls${smDown ? "_mobile" : ""}.png)`,
                 backgroundSize: "contain",
                 backgroundPosition: "center center",
                 backgroundRepeat: "no-repeat"
@@ -855,7 +855,7 @@ export default function ProfileView() {
               cursor: "pointer",
               background: `url(/assets/pokerking/button/non_click_raise${smDown ? "_mobile" : ""}.png)`,
               "&:hover": {
-                background: "url(/assets/pokerking/button/mouse_over_raise.png)",
+                background: `url(/assets/pokerking/button/mouse_over_raise${smDown ? "_mobile" : ""}.png)`,
                 backgroundSize: "contain",
                 backgroundPosition: "center center",
                 backgroundRepeat: "no-repeat"
