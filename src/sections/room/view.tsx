@@ -766,7 +766,7 @@ export default function ProfileView() {
               backgroundRepeat: "no-repeat"
             }}
             onClick={handleFold}
-          >hold{smDown}</Box>
+          >{smDown}</Box>
           <Box
             // variant="contained"
             // color="error"
@@ -796,7 +796,7 @@ export default function ProfileView() {
               backgroundRepeat: "no-repeat"
             }}
             onClick={handleCheck}
-          >check{smDown}</Box>
+          >{smDown}</Box>
           <Box
             // variant="contained"
             // color="error"
@@ -831,7 +831,7 @@ export default function ProfileView() {
               console.log(2222222222222)
               popover.onOpen(e);
             }}
-          >raise{smDown}</Box>
+          >{smDown}</Box>
         </Stack>
         <Stack
           direction="row"
@@ -1097,6 +1097,7 @@ export interface SideDialogProps {
 function SideDialog(props: SideDialogProps) {
   const { t } = useLocales();
   const params = useParams();
+
   const { onClose, open } = props;
 
   const { roomId } = params;

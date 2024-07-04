@@ -15,7 +15,8 @@ _static
 out
 dist
 build
-
+package-lock.json
+yarn.lock
 # environment variables
 .env
 .env.local
