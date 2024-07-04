@@ -116,6 +116,8 @@ export default function ProfileView() {
   const [currentStatus, setCurrentStatus] = useState<string>('');
   const [roomName, setRoomName] = useState<string>('');
   const [sideGameType, setSideGameType] = useState<string>('');
+  const [voteGameType, setVoteGameType] = useState<string>('');
+  const [voter, setVoter] = useState<string>('');
   const [isUseSideGameHold, setIsUseSideGameHold] = useState<boolean>(false);
   const [roomMinBet, setRoomMinBet] = useState<number>(0);
   const [playerCount, setPlayerCount] = useState<number>(0);
@@ -145,6 +147,7 @@ export default function ProfileView() {
   const [actionButtonsEnabled, setActionButtonsEnabled] = useState<boolean>(false);
 
   const [open, setOpen] = useState<boolean>(false);
+  const [voteOpen, setVoteOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -193,6 +196,15 @@ export default function ProfileView() {
     if (data && key === SOCKET_KEY.ALL_PLAYERS_CARDS) {
       setMiddleCardNum(4);
       setAllPlayerCards(data.players);
+    }
+
+    if (data && key === SOCKET_KEY.VOTESTART) {
+      const player = playersData.find((e) => e.playerId === connectionId);
+      if (data.playerName !== player?.playerName) {
+        setVoteGameType(data.gameType);
+        setVoter(data.playerName);
+        setVoteOpen(true)
+      }
     }
 
     if (data && key === SOCKET_KEY.STATUS_UPDATE) {
@@ -299,7 +311,7 @@ export default function ProfileView() {
     }
 
 
-  }, [lastJsonMessage, connectionId]);
+  }, [lastJsonMessage, connectionId, playersData]);
 
   useEffect(() => {
     if (!playersData.length) return;
@@ -362,6 +374,10 @@ export default function ProfileView() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleVotClose = () => {
+    setVoteOpen(false);
   };
 
   const isABHold = () => {
@@ -879,7 +895,7 @@ export default function ProfileView() {
         </Stack>
         <Stack
           direction="row"
-          justifyContent="flex-end" width={210} 
+          justifyContent="flex-end" width={210}
           sx={{
             gap: { xs: 1, sm: 2 },
             alignItems: "center",
@@ -1140,8 +1156,18 @@ export default function ProfileView() {
       sideGameType={sideGameType}
       <SideDialog
         open={open}
+        playersData={playersData}
         onClose={handleClose}
       />
+
+      <VotDialog
+        open={voteOpen}
+        playersData={playersData}
+        voter={voter}
+        voteGameType={voteGameType}
+        onClose={handleVotClose}
+      />
+
       <CashBuyDialog
         dialog={cashBuyDialog}
         roomMinBet={roomMinBet}
@@ -1156,6 +1182,7 @@ export default function ProfileView() {
 
 export interface SideDialogProps {
   open: boolean;
+  playersData: IPlayerData[];
   onClose: () => void;
 }
 
@@ -1163,7 +1190,7 @@ function SideDialog(props: SideDialogProps) {
   const { t } = useLocales();
   const params = useParams();
 
-  const { onClose, open } = props;
+  const { onClose, open, playersData } = props;
 
   const { roomId } = params;
 
@@ -1174,7 +1201,9 @@ function SideDialog(props: SideDialogProps) {
       roomId,
       key: SOCKET_KEY.SET_SIDEGAME,
       event,
+      type: 'start'
     });
+    handleClose();
   }
 
   const handleClose = () => {
@@ -1187,23 +1216,8 @@ function SideDialog(props: SideDialogProps) {
         bgcolor: "transparent"
       }
     }}>
-      <DialogTitle textAlign="center">“Player name”  {t('label.requested_a_side_game')}</DialogTitle>
+      <DialogTitle textAlign="center">Select Side Game</DialogTitle>
       <DialogContent sx={{ textAlign: "center", pb: 4 }}>
-        <Typography variant='h4'>
-          {t("label.side_option")} : <Box component="span" color="primary.main">{t("label.all_in_or_folds")}</Box>
-          <Typography variant='h6' fontSize={15}>Time: 30 sec</Typography>
-        </Typography>
-        <LinearProgress variant="determinate" value={50} sx={{ mt: 1, width: { xs: 1, sm: 500 } }} />
-        <Stack sx={{ flexDirection: "row", justifyContent: "space-between", width: 0.7, m: "auto", mt: 1 }}>
-          <Stack textAlign="center">
-            <Typography fontSize={15}>{t('button.agree')}</Typography>
-            <Typography variant='h6' fontSize={25}>3</Typography>
-          </Stack>
-          <Stack textAlign="center">
-            <Typography fontSize={15}>{t('button.oppose')}</Typography>
-            <Typography variant='h6' fontSize={25}>4</Typography>
-          </Stack>
-        </Stack>
         <Stack sx={{ flexDirection: "row", justifyContent: "space-between", width: { xs: 1, sm: 0.7 }, m: "auto", mt: 1, gap: 3 }}>
           <Button
             variant="contained"
@@ -1255,6 +1269,96 @@ function SideDialog(props: SideDialogProps) {
             onClick={() => setSideGame(SOCKET_KEY.SET_SIDEGAME_TWICE)}
           >
             twice
+          </Button>
+        </Stack>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
+
+export interface VoteDialogProps {
+  open: boolean;
+  voter: string;
+  voteGameType: string;
+  playersData: IPlayerData[];
+  onClose: () => void;
+}
+
+
+
+function VotDialog(props: VoteDialogProps) {
+  const { t } = useLocales();
+  const params = useParams();
+
+  const { onClose, open, playersData, voter, voteGameType } = props;
+
+  const { roomId } = params;
+
+  const { sendSocket, lastJsonMessage, connectionId } = useSocket();
+  const setSideGame = (event: String) => {
+    sendSocket({
+      roomId,
+      key: SOCKET_KEY.SET_SIDEGAME,
+      event,
+      type: 'vote'
+    });
+    handleClose();
+  }
+
+  const handleClose = () => {
+    onClose();
+  };
+
+  return (
+    <Dialog onClose={handleClose} open={open} sx={{
+      "& .MuiBackdrop-root": {
+        bgcolor: "transparent"
+      }
+    }}>
+      <DialogTitle textAlign="center"> Player : {voter}  </DialogTitle>
+      <DialogContent sx={{ textAlign: "center", pb: 4 }}>
+        <Typography variant='h4'>
+          {t("label.side_option")} : <Box component="span" color="primary.main">{voteGameType}</Box>
+          <Typography variant='h6' fontSize={15}>Time: 30 sec</Typography>
+        </Typography>
+        <LinearProgress variant="determinate" value={50} sx={{ mt: 1, width: { xs: 1, sm: 500 } }} />
+        <Stack sx={{ flexDirection: "row", justifyContent: "space-between", width: 0.7, m: "auto", mt: 1 }}>
+
+          <Button
+            variant="contained"
+            color="error"
+            sx={{
+              textAlign: "center",
+              fontWeight: 700,
+              fontSize: { xs: 14, sm: 16 },
+              width: 150,
+              height: 38,
+              borderRadius: 50,
+              background: 'url(/assets/pokerking/button/call_button.png)',
+              backgroundSize: 'cover',
+            }}
+            onClick={() => setSideGame(voteGameType)}
+          >
+            {t('button.agree')}
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            sx={{
+              textAlign: "center",
+              fontWeight: 700,
+              fontSize: { xs: 14, sm: 16 },
+              width: 150,
+              height: 38,
+              borderRadius: 50,
+              background: 'url(/assets/pokerking/button/fold_button.png)',
+              backgroundSize: 'cover',
+            }}
+            onClick={() => handleClose()}
+          >
+            {t('button.oppose')}
           </Button>
         </Stack>
       </DialogContent>

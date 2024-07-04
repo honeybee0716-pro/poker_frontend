@@ -48,6 +48,7 @@ export type IPlayerData = {
   isFold?: boolean;
   isPlayerTurn?: boolean;
   playerId: number;
+  sideGameType: string;
   playerMoney?: number;
   playerName: string;
   timeBar?: number;

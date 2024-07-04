@@ -40,6 +40,7 @@ export const SOCKET_KEY = {
   HOLE_CARDS: 'holeCards',
   ROOM_PARAM: 'roomParams',
   STATUS_UPDATE: 'statusUpdate',
+  VOTESTART: 'voteSideGame',
   LAST_USER_ACTION: 'lastUserAction',
   ALL_PLAYERS_CARDS: 'allPlayersCards',
 
