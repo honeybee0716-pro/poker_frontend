@@ -82,6 +82,13 @@ type Props = {
 export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player, dialog }: Props) {
   const { t } = useLocales();
   const { sendSocket } = useSocket();
+  const [firstRender, setFirstRender] = useState(true); // State to track first render
+
+
+  // const handleClose = () => {
+  //   setFirstRender(false);
+  //   return dialog.setFalse;
+  // };
 
   const marks = [
     {
@@ -108,6 +115,7 @@ export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player,
       key: SOCKET_KEY.SELECT_ROOM,
     });
     dialog.onFalse();
+    setFirstRender(false);
   };
 
   return (
@@ -124,7 +132,7 @@ export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player,
         />
       </IconButton> */}
       <Dialog
-        open={dialog.value}
+        open={firstRender || dialog.value}
         onClose={dialog.onFalse}
         sx={{
           zIndex: 99999,

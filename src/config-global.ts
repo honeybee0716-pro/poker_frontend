@@ -56,6 +56,7 @@ export const SOCKET_KEY = {
   FLOP: 'theFlop',
   TURN: 'theTurn',
   RIVER: 'theRiver',
+  ShowDown: 'allPlayersCards'
 };
 
 export const SUPER_PLAYERS = {
