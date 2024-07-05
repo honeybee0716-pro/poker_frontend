@@ -85,10 +85,10 @@ export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player,
   const [firstRender, setFirstRender] = useState(true); // State to track first render
 
 
-  // const handleClose = () => {
-  //   setFirstRender(false);
-  //   return dialog.setFalse;
-  // };
+  const handleClose = () => {
+    setFirstRender(false);
+    return dialog.onFalse;
+  };
 
   const marks = [
     {
@@ -133,7 +133,7 @@ export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player,
       </IconButton> */}
       <Dialog
         open={firstRender || dialog.value}
-        onClose={dialog.onFalse}
+        onClose={handleClose}
         sx={{
           zIndex: 99999,
           '& .MuiPaper-root': {
