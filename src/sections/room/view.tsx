@@ -747,7 +747,11 @@ export default function ProfileView() {
         </Stack>
 
       </Container>
-      <Stack direction="row" width={1} justifyContent="space-between" position="relative">
+      <Stack direction="row" width={1} justifyContent="space-between" position="relative" 
+          sx={{padding:3,
+            ...(smDown && {
+              padding:0
+            })}}>
         <Stack
           direction="row"
           width={210}
