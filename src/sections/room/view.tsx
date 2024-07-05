@@ -394,7 +394,7 @@ export default function ProfileView() {
         backgroundPosition: 1,
         backgroundSize: 'cover',
         position: 'relative',
-        minWidth: 312
+        minWidth: 312,
       }}
     >
       <AppBar sx={{ px: 3, pt: 1, zIndex: 9999 }}>
@@ -468,7 +468,7 @@ export default function ProfileView() {
         <Stack justifyContent="center" alignItems="center" width={1} height={1}>
           <Stack
             sx={{
-              mt: 2.5,
+              mt: 2,
               width: 1,
               height: 1,
               maxHeight: 641,
@@ -487,7 +487,7 @@ export default function ProfileView() {
               <Box
                 component="img"
                 sx={{
-                  width: { xs: 320, sm: 0.8 },
+                  width: { xs: 0.87, sm: 0.8 },
                   // minWidth: 252
                 }}
                 src={`/assets/pokerking/table_${smDown ? 'mobile' : 'desktop'}.png`}
@@ -652,8 +652,8 @@ export default function ProfileView() {
               ) : (
                 <>
                   <Stack sx={{
-                    top: -10,
-                    width: 0.5,
+                    top: '-4vh',
+                    width: 0.6,
                     flexDirection: "row",
                     position: "absolute",
                     justifyContent: "space-between",
@@ -675,8 +675,8 @@ export default function ProfileView() {
                     ))}
                   </Stack>
                   <Stack sx={{
-                    top: 0,
-                    width: 0.9,
+                    top: '1vh',
+                    width: 0.97,
                     height: 1,
                     flexDirection: "row",
                     position: "absolute",
@@ -719,8 +719,8 @@ export default function ProfileView() {
                     </Stack>
                   </Stack>
                   <Stack sx={{
-                    bottom: -25,
-                    width: 0.85,
+                    bottom: '-2.5vh',
+                    width: 0.5,
                     flexDirection: "row",
                     position: "absolute",
                     justifyContent: "center",
@@ -747,22 +747,22 @@ export default function ProfileView() {
         </Stack>
 
       </Container>
-      <Stack direction="row" width={1} px={3} justifyContent="space-between" position="relative">
+      <Stack direction="row" width={1} justifyContent="space-between" position="relative">
         <Stack
           direction="row"
           width={210}
           sx={{
-            gap: { xs: 0.5, sm: 1 },
+            gap: { xs: 1, sm: 1 },
             alignItems: "center",
             ...(smDown && {
-              top: -30,
-              left: '11vw',
+              top: '-6vh',
+              left: '2vw',
               position: "absolute",
             })
           }}>
           <Button sx={{
-            width: { xs: 45, sm: 86 },
-            height: { xs: 45, sm: 71 },
+            width: { xs: 55, sm: 86 },
+            height: { xs: 55, sm: 71 },
             background: "url(/assets/pokerking/non_click_emoji.png) no-repeat center center",
             backgroundSize: "contain",
             "&:hover": {
@@ -778,8 +778,8 @@ export default function ProfileView() {
             onClick={emojPropover.onOpen}
           />
           <Button sx={{
-            width: { xs: 45, sm: 86 },
-            height: { xs: 45, sm: 71 },
+            width: { xs: 55, sm: 86 },
+            height: { xs: 55, sm: 71 },
             background: "url(/assets/pokerking/non_click_text.png) no-repeat center center",
             backgroundSize: "contain",
             "&:hover": {
@@ -798,9 +798,9 @@ export default function ProfileView() {
         <Stack
           direction="row"
           width={{ xs: 1, sm: 1, md: 0.6 }}
-          sx={{ p: 3, justifyContent: 'space-between', 
+          sx={{ p: 0.9, justifyContent: 'space-between', 
                 opacity: 1, 
-                gap: 1,
+                gap: 0.5,
               }}
         >
           <Box
@@ -808,7 +808,7 @@ export default function ProfileView() {
               textAlign: "center",
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
-              width: { xs: 125, sm: 319 },
+              width: { xs: 0.5, sm: 319 },
               borderRadius: { xs: 1, sm: 50 },
               cursor: "pointer",
               background: `url(/assets/pokerking/button/non_click_folds${smDown ? "_mobile" : ""}.png)`,
@@ -837,7 +837,7 @@ export default function ProfileView() {
               textAlign: "center",
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
-              width: { xs: 125, sm: 319 },
+              width: { xs: 0.5, sm: 319 },
               height: { xs: 59, sm: 71 },
               borderRadius: { xs: 1, sm: 50 },
               cursor: "pointer",
@@ -868,7 +868,7 @@ export default function ProfileView() {
               fontWeight: 700,
               borderRadius: { xs: 1, sm: 50 },
               fontSize: { xs: 14, sm: 16 },
-              width: { xs: 125, sm: 319 },
+              width: { xs: 0.5, sm: 319 },
               height: { xs: 59, sm: 71 },
               cursor: "pointer",
               background: `url(/assets/pokerking/button/non_click_raise${smDown ? "_mobile" : ""}.png)`,
@@ -900,17 +900,17 @@ export default function ProfileView() {
           direction="row"
           justifyContent="flex-end" width={210}
           sx={{
-            gap: { xs: 1, sm: 2 },
+            gap: { xs: 0.5, sm: 2 },
             alignItems: "center",
             ...(smDown && {
-              top: -33,
-              right: '11vw',
+              top: '-6vh',
+              right: '2vw',
               position: "absolute",
             })
           }}>
           <Button sx={{
-            width: { xs: 45, sm: 86 },
-            height: { xs: 45, sm: 71 },
+            width: { xs: 55, sm: 86 },
+            height: { xs: 50, sm: 71 },
             background: "url(/assets/pokerking/non_click_sidegame.png) no-repeat center center",
             backgroundSize: "contain",
             "&:hover": {
@@ -925,8 +925,8 @@ export default function ProfileView() {
           }} onClick={handleClickOpen} />
           {smDown && (
             <Button sx={{
-              width: { xs: 50, sm: 66 },
-              height: { xs: 50, sm: 66 },
+              width: { xs: 55, sm: 66 },
+              height: { xs: 55, sm: 66 },
               minWidth: 40,
               minHeight: 40,
               background: "url(/assets/pokerking/non_click_menu.png) no-repeat center center",
@@ -1156,7 +1156,7 @@ export default function ProfileView() {
         <source src="/assets/pokerking/sounds/time_out.wav" type="audio/wav" />
         <track kind="captions" srcLang="en" src="" />
       </Box>
-      sideGameType={sideGameType}
+
       <SideDialog
         open={open}
         playersData={playersData}
