@@ -747,11 +747,13 @@ export default function ProfileView() {
         </Stack>
 
       </Container>
-      <Stack direction="row" width={1} justifyContent="space-between" position="relative" 
-          sx={{padding:3,
-            ...(smDown && {
-              padding:0
-            })}}>
+      <Stack direction="row" width={1} justifyContent="space-between" position="relative"
+        sx={{
+          padding: 3,
+          ...(smDown && {
+            padding: 0
+          })
+        }}>
         <Stack
           direction="row"
           width={210}
@@ -802,10 +804,11 @@ export default function ProfileView() {
         <Stack
           direction="row"
           width={{ xs: 1, sm: 1, md: 0.6 }}
-          sx={{ p: 0.9, justifyContent: 'space-between', 
-                opacity: 1, 
-                gap: 0.5,
-              }}
+          sx={{
+            p: 0.9, justifyContent: 'space-between',
+            opacity: 1,
+            gap: 0.5,
+          }}
         >
           <Box
             sx={{
@@ -1202,7 +1205,7 @@ function SideDialog(props: SideDialogProps) {
   const { roomId } = params;
 
   const { sendSocket, lastJsonMessage, connectionId } = useSocket();
-  
+
   const setSideGame = (event: String) => {
     sendSocket({
       roomId,

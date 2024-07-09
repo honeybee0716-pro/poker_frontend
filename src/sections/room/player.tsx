@@ -156,7 +156,7 @@ export default function Player({
       ) : (
         <Stack sx={{ alignItems: "center", position: "relative" }}>
           <Typography fontSize={{ xs: 13, sm: 16 }}>{player.playerName}</Typography>
-          <Avatar ref={avatarRef} src="/assets/pokerking/avatars/avatar3.png" sx={{ width: { xs: 75, sm: 120 }, height: { xs: 75, sm: 120 }, border: player.isPlayerTurn ? "5px solid #00FF00":"1px solid #FAFF1B" }} />
+          <Avatar ref={avatarRef} src="/assets/pokerking/avatars/avatar3.png" sx={{ width: { xs: 75, sm: 120 }, height: { xs: 75, sm: 120 }, border: player.isPlayerTurn ? "5px solid #00FF00" : "1px solid #FAFF1B" }} />
           <Chip
             avatar={
               <Avatar alt="coin" src="/assets/pokerking/coin.png"
