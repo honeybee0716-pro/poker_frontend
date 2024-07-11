@@ -345,7 +345,7 @@ export default function ProfileView() {
   };
 
   const handleCheck = () => {
-    if (!actionButtonsEnabled || !isPlayerTurn) return;
+    if (!actionButtonsEnabled || !isPlayerTurn || sideGameType === 'hold') return;
     sendSocket({
       roomId,
       key: SOCKET_KEY.SET_CHECK,
@@ -896,9 +896,7 @@ export default function ProfileView() {
               backgroundRepeat: "no-repeat"
             }}
             onClick={(e) => {
-              console.log(111111111)
               if ((!actionButtonsEnabled || !isPlayerTurn) && !isABHold()) return;
-              console.log(2222222222222)
               popover.onOpen(e);
             }}
           >{smDown}</Box>
