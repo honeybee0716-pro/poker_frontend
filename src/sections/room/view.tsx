@@ -355,7 +355,7 @@ export default function ProfileView() {
 
   const handleRaise = () => {
     if ((!actionButtonsEnabled || !isPlayerTurn || !me?.playerMoney) && !isABHold()) return;
-    if (isABHold() && (raiseCount !== me?.playerMoney || isUseSideGameHold)) return;
+    if (sideGameType === 'hold' && (raiseCount !== me?.playerMoney || isUseSideGameHold)) return;
     if (raiseCount === me?.playerMoney) playAudio('player_all_in.mp3');
     sendSocket({
       roomId,
