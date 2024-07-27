@@ -10,7 +10,8 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'src/assets/css/main.css';
 
 // ----------------------------------------------------------------------
-
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 // routes
 import Router from 'src/routes/sections';
 // theme
@@ -25,12 +26,15 @@ import { LocalizationProvider } from 'src/locales';
 import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
 import { ApiProvider } from './contexts/ApiContext';
 import { SocketProvider } from './contexts/SocketContext';
-import LanguageSwitcher from './components/language-switcher/language-switcher';
 // ----------------------------------------------------------------------
 
 export default function App() {
   useScrollToTop();
-
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    // Change the language to Korean on the first render
+    i18n.changeLanguage('ko');
+  }, [i18n]); // Empty dependency array ensures this runs only once
   return (
     <LocalizationProvider>
       <SettingsProvider
@@ -46,7 +50,6 @@ export default function App() {
         <ThemeProvider>
           <MotionLazy>
             <SnackbarProvider>
-              <LanguageSwitcher/>
               <SettingsDrawer />
               <ProgressBar />
               <SocketProvider>
