@@ -5,10 +5,10 @@ export function emptyRows(page: number, rowsPerPage: number, arrayLength: number
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (a[orderBy] === null) {
+  if (a[orderBy] === null || a[orderBy] === undefined) {
     return 1;
   }
-  if (b[orderBy] === null) {
+  if (b[orderBy] === null || b[orderBy] === undefined) {
     return -1;
   }
   if (b[orderBy] < a[orderBy]) {
@@ -23,7 +23,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 export function getComparator<Key extends keyof any>(
   order: 'asc' | 'desc',
   orderBy: Key
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
+): (a: { [key in Key]: number | string | null | undefined }, b: { [key in Key]: number | string | null | undefined }) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
