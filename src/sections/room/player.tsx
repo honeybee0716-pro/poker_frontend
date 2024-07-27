@@ -15,6 +15,7 @@ import { getCardResource } from 'src/utils/card';
 import { fCurrency } from 'src/utils/format-number';
 import playAudio from 'src/utils/audio';
 import { IPlayerData, IUserAction } from 'src/types';
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 type Props = StackProps & {
@@ -46,7 +47,7 @@ export default function Player({
   dialog,
   ...other
 }: Props) {
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const smDown = useResponsive('down', 'sm');
   const { user } = useSelector((store) => store.auth);
 

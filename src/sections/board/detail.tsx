@@ -24,7 +24,7 @@ import { useParams, useRouter } from 'src/routes/hooks';
 // types
 import { fCurrency } from 'src/utils/format-number';
 import Iconify from 'src/components/iconify';
-
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 
@@ -33,7 +33,7 @@ export default function BoardDetail() {
   const { id } = useParams();
   console.log(id, "==>id");
 
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const router = useRouter();
   const store = useSelector((e) => e.auth);
   // const { sendSocket, lastJsonMessage } = useSocket();

@@ -30,12 +30,12 @@ import Iconify from 'src/components/iconify';
 import Logo from 'src/components/logo';
 
 import useSocket from 'src/hooks/use-socket';
-
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
   const router = useRouter();
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const { sendSocket, lastJsonMessage } = useSocket();

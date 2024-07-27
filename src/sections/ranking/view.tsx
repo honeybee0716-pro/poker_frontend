@@ -22,12 +22,12 @@ import { useRouter } from 'src/routes/hooks';
 
 // types
 import { fCurrency } from 'src/utils/format-number';
-
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 export default function GameBoardView() {
   // const dispatch = useDispatch();
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const router = useRouter();
   const store = useSelector((e) => e.auth);
   // const { sendSocket, lastJsonMessage } = useSocket();

@@ -43,6 +43,7 @@ import { IPlayerData, TwiceData } from 'src/types';
 
 import Player from './player';
 import CashBuyDialog from './options/cash_buy';
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 const PrettoSlider = styled(Slider)({
@@ -91,7 +92,7 @@ const PAID_MESSAGE = ["fuck_you_man", "sucks_my_card", "fucking_asshole"];
 
 export default function ProfileView() {
   const dispatch = useDispatch();
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useParams();
   const popover = usePopover();
@@ -1195,7 +1196,7 @@ export interface SideDialogProps {
 }
 
 function SideDialog(props: SideDialogProps) {
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const params = useParams();
 
   const { onClose, open, playersData } = props;
@@ -1297,7 +1298,7 @@ export interface VoteDialogProps {
 
 
 function VotDialog(props: VoteDialogProps) {
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const params = useParams();
 
   const { onClose, open, playersData, voter, voteGameType } = props;

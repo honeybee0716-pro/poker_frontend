@@ -16,6 +16,7 @@ import useLocales from 'src/locales/use-locales';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 type Props = {
   roomMinBet: number;
@@ -23,7 +24,7 @@ type Props = {
 };
 
 export default function RoomInforPopup({ playerCount, roomMinBet }: Props) {
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const dialog = useBoolean();
 
   return (

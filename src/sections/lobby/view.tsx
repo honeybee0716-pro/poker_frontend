@@ -31,12 +31,12 @@ import { paths } from 'src/routes/paths';
 import { SOCKET_KEY } from 'src/config-global';
 import { IRoom } from 'src/types';
 import { fCurrency } from 'src/utils/format-number';
-
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 export default function GameUsersView() {
   const dispatch = useDispatch();
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const router = useRouter();
   const store = useSelector((e) => e.auth);
   const { sendSocket, lastJsonMessage } = useSocket();

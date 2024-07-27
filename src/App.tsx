@@ -25,7 +25,7 @@ import { LocalizationProvider } from 'src/locales';
 import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
 import { ApiProvider } from './contexts/ApiContext';
 import { SocketProvider } from './contexts/SocketContext';
-
+import LanguageSwitcher from './components/language-switcher/language-switcher';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -46,6 +46,7 @@ export default function App() {
         <ThemeProvider>
           <MotionLazy>
             <SnackbarProvider>
+              <LanguageSwitcher/>
               <SettingsDrawer />
               <ProgressBar />
               <SocketProvider>

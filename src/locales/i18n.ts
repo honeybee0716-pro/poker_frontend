@@ -1,39 +1,22 @@
+// src/i18n.ts
 import i18n from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-// utils
-import { localStorageGetItem } from 'src/utils/storage-available';
-//
-import { defaultLang } from './config-lang';
-//
-import translationEn from './langs/en.json';
-import translationKr from './langs/kr.json';
-// import translationVi from './langs/vi.json';
-// import translationCn from './langs/cn.json';
-// import translationAr from './langs/ar.json';
-
-// ----------------------------------------------------------------------
-
-const lng = localStorageGetItem('i18nextLng', defaultLang.value);
+import HttpApi from 'i18next-http-backend';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
 i18n
+  .use(HttpApi)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      en: { translations: translationEn },
-      kr: { translations: translationKr },
-      // vi: { translations: translationVi },
-      // cn: { translations: translationCn },
-      // ar: { translations: translationAr },
-    },
-    lng,
-    fallbackLng: lng,
-    debug: false,
-    ns: ['translations'],
-    defaultNS: 'translations',
+    supportedLngs: ['en', 'ko'],
+    fallbackLng: 'en',
+    debug: true,
     interpolation: {
-      escapeValue: false,
+      escapeValue: false, // not needed for react as it escapes by default
+    },
+    backend: {
+      loadPath: '/locales/{{lng}}/translation.json',
     },
   });
 

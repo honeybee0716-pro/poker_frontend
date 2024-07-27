@@ -40,6 +40,7 @@ import { IPlayerData } from 'src/types';
 import Player from './player2';
 import CashBuyPopup from './options/cash_buy';
 import RoomInforPopup from './options/infor';
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 const PrettoSlider = styled(Slider)({
@@ -195,7 +196,7 @@ const PLAYER_STYLE: any = [
 
 export default function ProfileView() {
   const dispatch = useDispatch();
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useParams();
   const popover = usePopover();

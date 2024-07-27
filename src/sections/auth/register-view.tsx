@@ -30,12 +30,12 @@ import { useSnackbar } from 'src/components/snackbar';
 import { RouterLink } from 'src/routes/components';
 import Iconify from 'src/components/iconify';
 import Logo from 'src/components/logo';
-
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 export default function RegisterView() {
   const router = useRouter();
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const { sendSocket, lastJsonMessage } = useSocket();

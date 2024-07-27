@@ -2,7 +2,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 // @mui
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import useLocales from 'src/locales/use-locales';
-
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 type Props = TextFieldProps & {
@@ -10,7 +10,7 @@ type Props = TextFieldProps & {
 };
 
 export default function RHFTextField({ name, helperText, type, ...other }: Props) {
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const { control } = useFormContext();
 
   return (

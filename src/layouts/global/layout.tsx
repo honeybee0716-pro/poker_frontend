@@ -7,7 +7,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import useLocales from 'src/locales/use-locales';
 import { usePathname, useRouter } from 'src/routes/hooks';
 import { useResponsive } from 'src/hooks/use-responsive';
-
+import { useTranslation } from 'react-i18next';
 //
 import Main from './main';
 import Header from './header';
@@ -81,7 +81,7 @@ const NAVBAR = [
 export default function DashboardLayout({ children }: Props) {
   const router = useRouter();
   const pathname = usePathname();
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const smDown = useResponsive('down', 'sm');
 
   const [navbar, setNavbar] = useState<string>('lobby');

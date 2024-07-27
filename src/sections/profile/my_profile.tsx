@@ -13,14 +13,14 @@ import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
-
+import { useTranslation } from 'react-i18next';
 // types
 
 // ----------------------------------------------------------------------
 
 export default function MyProfileView({ onBack }: { onBack: () => void }) {
   const dispatch = useDispatch();
-  const { t } = useLocales();
+  const { t } = useTranslation();
 
   const { user } = useSelector((store) => store.auth);
 

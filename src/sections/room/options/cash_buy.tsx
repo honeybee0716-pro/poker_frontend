@@ -21,6 +21,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { fCurrency } from 'src/utils/format-number';
 import { IPlayerData, IUser } from 'src/types';
 import { SOCKET_KEY } from 'src/config-global';
+import { useTranslation } from 'react-i18next';
 // ----------------------------------------------------------------------
 
 const iOSBoxShadow =
@@ -80,7 +81,7 @@ type Props = {
 };
 
 export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player, dialog }: Props) {
-  const { t } = useLocales();
+  const { t } = useTranslation();
   const { sendSocket } = useSocket();
   const [firstRender, setFirstRender] = useState(true); // State to track first render
 
