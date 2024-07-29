@@ -26,6 +26,7 @@ export const API_PATH = {
 export const SOCKET_KEY = {
   // auth
   LOGIN: 'userLogin',
+  LOGOUT: 'userLogout',
   LOGIN_RES: 'loginResult',
   REGISTER: 'createAccount',
   REGISTER_RES: 'accountCreated',

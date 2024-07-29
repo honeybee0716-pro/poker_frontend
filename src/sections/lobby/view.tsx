@@ -55,10 +55,10 @@ export default function GameUsersView() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.user?.id]);
-
+  
   useEffect(() => {
     if (!lastJsonMessage) return;
-    const { key, data, user } = lastJsonMessage;
+    const { key, data, user } = lastJsonMessage;    
     if (key !== SOCKET_KEY.GET_SPECTATE_ROOMS || !data) return;
     setRooms(data);
     dispatch(edit(user));
@@ -68,6 +68,14 @@ export default function GameUsersView() {
     router.push(paths.room.view(roomId));
   };
 
+  const handleLogout = ()=>{
+    dispatch(signout());
+    const name = store.user?.name;
+    sendSocket({
+      key : SOCKET_KEY.LOGOUT,
+      name
+    })
+  }
   return (
     <>
       <Stack
@@ -124,7 +132,7 @@ export default function GameUsersView() {
           <Chip
             avatar={<Iconify icon="mdi:power" sx={{ m: `0px !important` }} />}
             variant="outlined"
-            onClick={() => dispatch(signout())}
+            onClick={handleLogout}
             sx={{
               height: "auto",
               p: 0.5, borderRadius: 50, border: '2px solid #cfb13a', mr: 1,
