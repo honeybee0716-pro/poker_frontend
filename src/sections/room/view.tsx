@@ -470,7 +470,8 @@ export default function ProfileView() {
         <Stack justifyContent="center" alignItems="center" width={1} height={1}>
           <Stack
             sx={{
-              mt: 2,
+              mt: 6,
+              mb:6,
               width: 1,
               height: 1,
               maxHeight: 641,
@@ -655,7 +656,7 @@ export default function ProfileView() {
               ) : (
                 <>
                   <Stack sx={{
-                    top: '-4vh',
+                    top: '-3vh',
                     width: 0.6,
                     flexDirection: "row",
                     position: "absolute",
@@ -722,7 +723,7 @@ export default function ProfileView() {
                     </Stack>
                   </Stack>
                   <Stack sx={{
-                    bottom: '-2.5vh',
+                    bottom: '1vh',
                     width: 0.5,
                     flexDirection: "row",
                     position: "absolute",
