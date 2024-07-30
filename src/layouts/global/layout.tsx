@@ -56,7 +56,7 @@ const NAVBAR = [
     }
   },
   {
-    value: 'myaccount',
+    value: 'profile',
     icon: 'ic_wallet.png',
     sx: {
       width: {

@@ -41,9 +41,10 @@ import playAudio from 'src/utils/audio';
 import { SOCKET_KEY } from 'src/config-global';
 import { IPlayerData, TwiceData } from 'src/types';
 
+import { useTranslation } from 'react-i18next';
 import Player from './player';
 import CashBuyDialog from './options/cash_buy';
-import { useTranslation } from 'react-i18next';
+
 // ----------------------------------------------------------------------
 
 const PrettoSlider = styled(Slider)({
@@ -610,8 +611,8 @@ export default function ProfileView() {
                     {[...Array(2)].map((_, index) => (
                       <Player
                         key={index}
-                        index={8 / (index + 1)}
-                        player={playersData[8 / (index + 1)]}
+                        index={index === 0 ? 10 : 4}
+                        player={playersData[index === 0 ? 10 : 4]}
                         dealerId={dealerId}
                         roomMinBet={roomMinBet}
                         playerCards={playerCards}
@@ -622,6 +623,7 @@ export default function ProfileView() {
                         dialog={cashBuyDialog}
                       />
                     ))}
+
                   </Stack>
                   <Stack sx={{
                     bottom: 0,
@@ -629,15 +631,15 @@ export default function ProfileView() {
                     flexDirection: "row",
                     position: "absolute",
                     justifyContent: "space-between",
-                    "& .player-7, & .player-5": {
+                    "& .player-9, & .player-5": {
                       mt: -8
                     }
                   }}>
-                    {[...Array(3)].map((_, index) => (
+                    {[...Array(5)].map((_, index) => (
                       <Player
                         key={index}
-                        index={7 - index}
-                        player={playersData[7 - index]}
+                        index={9 - index}
+                        player={playersData[9 - index]}
                         dealerId={dealerId}
                         roomMinBet={roomMinBet}
                         playerCards={playerCards}
@@ -729,7 +731,7 @@ export default function ProfileView() {
                   }}>
                     <Player
                       index={6}
-                      player={playersData[5]}
+                      player={playersData[6]}
                       dealerId={dealerId}
                       roomMinBet={roomMinBet}
                       playerCards={playerCards}
