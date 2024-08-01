@@ -4,9 +4,9 @@ import {
   Stack,
   Typography,
   Avatar,
-  IconButton,
-  List,
-  ListItemButton,
+  Button,
+  TextField,
+  Box,
   ListItemIcon,
   LinearProgress,
 } from '@mui/material';
@@ -19,34 +19,28 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
 import { useTranslation } from 'react-i18next';
-import MyProfileView from './my_profile';
+import { UploadAvatarButton } from 'src/components/avatar';
+
 
 // types
 
 // ----------------------------------------------------------------------
 
-const LIST = [
+const Description = [
   {
-    title: 'bonus',
-    description: 'Get extra money by participating in various events',
-    icon: 'solar:ticker-star-bold',
+    withdraw:
+      'Make sure to enter your account number in the box\n The name of the bank, the depositor, and the account number must all be written.\nIf you enter the amount at the bottom after writing it and press the application, the withdrawal will proceed,\nso please make sure there is no mistake in writing it',
   },
   {
-    title: 'support',
-    description: 'Connect us for issue',
-    icon: 'tabler:mail-filled',
-  },
-  {
-    title: 'privacy_policy',
-    description: 'Know our privacy policies',
-    icon: 'formkit:filedoc',
+    deposit:
+      'Please enter the amount to deposit\nYou have to apply for the deposit amount before deposit and then deposit it into your bank account.',
   },
 ];
 
 export default function ProfileView() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const myprofile = useBoolean();
+  const page_status = useBoolean();
 
   const { user } = useSelector((store) => store.auth);
 
@@ -54,16 +48,13 @@ export default function ProfileView() {
 
   const [progress, setProgress] = useState(50);
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  if (myprofile.value) return <MyProfileView onBack={() => myprofile.onFalse()} />;
-
   return (
     <>
       <Stack
         sx={{
-          px: 4,
-          py: 2,
-          height: 133,
+          px: 8,
+          py: 1,
+          height: '17vh',
           bgcolor: '#0000008a',
           alignItems: 'center',
           justifyContent: 'center',
@@ -76,58 +67,172 @@ export default function ProfileView() {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          spacing={{ xs: 0.5, sm: 3 }}
+          spacing={{ xs: 1, sm: 3  }}
         >
-          <Avatar src="/assets/pokerking/avatars/avatar0.jpg" sx={{ width: 70, height: 70 }} />
-
-          <Stack sx={{ width: 1 }}>
-            <Typography variant="h6">ID: {user.id}</Typography>
-            <Typography variant="h6">NAME: {user.name}</Typography>
+          <Stack sx={{width:0.5}}>
+            <UploadAvatarButton/>
           </Stack>
-
-          <IconButton onClick={() => myprofile.onTrue()}>
-            <Iconify icon="uiw:right" />
-          </IconButton>
+          <Stack sx={{ width: 1, gap:2 }}>
+            <Typography variant="h6">Name: {user.name}</Typography>
+            <Typography variant="h6">ID: {user.id}</Typography>
+          </Stack>
         </Stack>
       </Stack>
-      <List component="nav" sx={{ py: 0 }}>
-        <ListItemButton sx={{ px: 5 }} selected={selectedIndex === 0}>
-          <ListItemIcon>
-            <Iconify icon="mdi:fire" sx={{ width: 26, height: 26, color: 'primary.main' }} />
-          </ListItemIcon>
-          <Stack width={1} gap={0.5}>
-            <Stack direction="row" justifyContent="space-between">
-              <Typography letterSpacing={2} fontWeight="bold">
-                {t('label.level')} 89
-              </Typography>
-              <Typography letterSpacing={2} fontWeight="bold">
-                8,871 {t('label.point')}
-              </Typography>
+      <Stack
+        sx={{
+          px: 2,
+          py: 2,
+          height: '15vh',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Stack
+          width={1}
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={{ xs: 1, sm: 1.5 }}
+        >
+          <Stack direction="row" justifyContent="space-between" sx={{ width: 1 }}>
+            <Typography variant="h6">Balance</Typography>
+            <Typography variant="h6">0G</Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between" sx={{ width: 1}}>
+            <Stack>
+              <Typography variant="h6">Ticket</Typography>
             </Stack>
-            <LinearProgress variant="determinate" value={progress} />
-            <Typography color="text.disabled" fontSize="small" letterSpacing={2}>
-              Earn129 more points to reach level 90
+            <Stack direction="row" alignItems="center">
+              <Typography variant="h6">0</Typography>
+              <Avatar
+                alt="telegram"
+                src="/assets/pokerking/ticket.png"
+                sx={{ width: { xs: 15, sm: 20 }, height: { xs: 15, sm: 20 } }}
+              />
+            </Stack>
+
+          </Stack>
+          <Stack direction="row" justifyContent="space-between" sx={{ width:1}}>
+            <Stack>
+              <Typography variant="h6">Rakeback</Typography>
+            </Stack>
+            <Stack direction="row" spacing={1}>
+              <Typography variant="h6">0</Typography>
+              <Button color="primary" variant="contained" sx={{ borderRadius: 5 }}>
+                <Typography fontSize={10} color="black" fontWeight="bold" noWrap>
+                  Deposit a Ticket
+                </Typography>
+              </Button>
+              <Button color="primary" variant="contained" sx={{ borderRadius: 5 }}>
+                <Typography fontSize={10} color="black" fontWeight="bold" noWrap>
+                  Deposit a Balance
+                </Typography>
+              </Button>
+            </Stack>
+          </Stack>
+        </Stack>
+      </Stack>
+      <Stack direction="row" sx={{ width: 1, px: 1 }}>
+        <Stack
+          onClick = {() => page_status.onFalse()}
+          sx={{
+            px: 1,
+            bgcolor: page_status.value ? '#252525BD' : '#0000008a',
+            cursor: 'pointer', 
+          }}
+        >
+          <Typography variant="h6">Deposit</Typography>
+        </Stack>
+        <Stack
+        onClick = {() => page_status.onTrue()}
+          sx={{
+            px: 1,
+            bgcolor:  page_status.value ? '#0000008a' : '#252525BD',
+            cursor: 'pointer', 
+          }}
+        >
+          <Typography variant="h6">Withdraw</Typography>
+        </Stack>
+      </Stack>
+      <Stack
+        sx={{
+          px: 2,
+          py: 2,
+          height: '65vh',
+          bgcolor: '#000000BD',
+        }}
+      >
+        <Stack
+          width={1}
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={{ xs: 1, sm: 1.5 }}
+        >
+          <Stack sx={{ width: 1 }}>
+            <Typography variant="h6">{page_status.value ? "Withdraw" : "Deposit"}</Typography>
+          </Stack>
+          <Stack sx={{ width: 1 }}>
+            <Typography fontSize={14} style={{ whiteSpace: 'pre-line' }}>
+              {page_status.value? Description[0].withdraw: Description[1].deposit}
             </Typography>
           </Stack>
-        </ListItemButton>
+          <Stack sx={{ width: 1 }}>
+            <Typography variant="h6">{page_status.value? "1. Please enter your account number": "1. Request for purchase"}</Typography>
+            <Stack direction="row" sx={{ width: 1, gap: 1, alignItems: 'center', justifyContent: 'space-between' }}>
+              <TextField
+                hiddenLabel
+                dir="rtl"
+                id="filled-hidden-label-small"
+                variant="filled"
+                size="small"
+                sx={{width:0.7}}
+              />{!page_status.value &&
+                <Button color="primary" variant="contained" sx={{ borderRadius: 5,width:{xs:0.5, sm:0.2} }}>
+                <Typography fontSize={12} color="black" fontWeight="bold" noWrap>
+                  Deposit application
+                </Typography>
+              </Button>}
 
-        {LIST.map((row) => (
-          <ListItemButton key={row.title} sx={{ px: 5 }}>
-            <ListItemIcon>
-              <Iconify icon={row.icon} sx={{ width: 26, height: 26, color: 'primary.main' }} />
-            </ListItemIcon>
-            <Stack width={1} gap={0.5}>
-              <Typography letterSpacing={2} fontWeight="bold">
-                {t(`label.${row.title}`)}
-              </Typography>
-
-              <Typography color="text.disabled" fontSize="small" letterSpacing={2}>
-                {t(`message.${row.description}`)}
-              </Typography>
             </Stack>
-          </ListItemButton>
-        ))}
-      </List>
+          </Stack>
+          <Stack sx={{ width: 1 }}>
+            <Typography variant="h6">{page_status.value? "2. Enter the amount to withdraw": "2. Check bank account"}</Typography>
+            <Stack
+              direction="row"
+              sx={{ width: 1, gap: 1, alignItems: 'center', justifyContent: 'space-between' }}
+            >
+              <TextField
+                hiddenLabel
+                dir="rtl"
+                id="filled-hidden-label-small"
+                variant="filled"
+                size="small"
+                sx={{width:0.7}}
+              />
+              {page_status.value ? (
+                <Button color="primary" variant="contained" sx={{ borderRadius: 5,width:{xs:0.5, sm:0.2} }}>
+                  <Typography fontSize={12} color="black" fontWeight="bold" noWrap>
+                    Withdraw application
+                  </Typography>
+                </Button>
+              ) : (
+                <Button color="primary" variant="contained" sx={{ borderRadius: 5,width:{xs:0.5, sm:0.2} }}>
+                  <Typography fontSize={12} color="black" fontWeight="bold" noWrap>
+                  Check account number
+                  </Typography>
+                </Button>
+              )}
+            </Stack>
+          </Stack>
+          <Stack direction="row" sx={{ width: 1, gap: 1, alignItems: 'center' }}>
+            <Avatar
+              alt="telegram"
+              src="/assets/icons/home/telegram.jpg"
+              sx={{ width: { xs: 15, sm: 20 }, height: { xs: 15, sm: 20 } }}
+            />
+            <Typography fontSize={12}>Telegram help request</Typography>
+          </Stack>
+        </Stack>
+      </Stack>
     </>
   );
 }
