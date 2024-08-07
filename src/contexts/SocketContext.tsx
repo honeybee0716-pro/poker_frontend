@@ -33,9 +33,8 @@ export const SocketProvider = ({ children }: { children: React.ReactElement }) =
   useEffect(() => {
     if (!lastJsonMessage) return;
     const { socketKey, connectionId } = lastJsonMessage as ISocket;
-
     if (socketKey && connectionId) {
-      console.log('Web socket connected!');
+      console.log('Web socket connected!',", socketkey=",socketKey,", connectionID=",connectionId );
       setSocketKey(socketKey);
       setConnectionId(connectionId);
     }

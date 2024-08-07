@@ -15,6 +15,8 @@ import {
   DialogTitle,
   DialogContent,
 } from '@mui/material';
+import { dispatch, useSelector } from 'src/store';
+import { setbalance } from 'src/store/reducers/auth';
 import useLocales from 'src/locales/use-locales';
 import useSocket from 'src/hooks/use-socket';
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -22,7 +24,10 @@ import { fCurrency } from 'src/utils/format-number';
 import { IPlayerData, IUser } from 'src/types';
 import { SOCKET_KEY } from 'src/config-global';
 import { useTranslation } from 'react-i18next';
+
+
 // ----------------------------------------------------------------------
+
 
 const iOSBoxShadow =
   '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
@@ -86,6 +91,8 @@ export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player,
   const [firstRender, setFirstRender] = useState(true); // State to track first render
 
 
+  const userName = useSelector((state) => state.auth.user.name);
+
   const handleClose = () => {
     setFirstRender(false);
     return dialog.onFalse;
@@ -114,9 +121,11 @@ export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player,
       roomId,
       amount,
       key: SOCKET_KEY.SELECT_ROOM,
+      userName
     });
     dialog.onFalse();
     setFirstRender(false);
+    // dispatch(setbalance(Number(player?.money)-amount));
   };
 
   return (

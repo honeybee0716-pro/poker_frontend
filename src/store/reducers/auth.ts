@@ -38,6 +38,7 @@ const auth = createSlice({
   initialState,
   reducers: {
     setbalance(state, action) {
+      console.log('Updating balance to:', action.payload); // Debugging line
       state.user.money = action.payload;
     },
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import {
   Avatar,
@@ -10,7 +11,7 @@ import {
   Container,
   Typography,
   Tabs,
-  Tab
+  Tab,
 } from '@mui/material';
 // store
 import { useDispatch, useSelector } from 'src/store';
@@ -44,6 +45,7 @@ export default function GameUsersView() {
   const smDown = useResponsive('down', 'sm');
 
   const [rooms, setRooms] = useState<IRoom[]>([]);
+  const [disabledButtons, setDisabledButtons] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     if (!store.user?.id) return;
@@ -53,29 +55,50 @@ export default function GameUsersView() {
       playerId: store.user?.id,
       roomSortParam: 'all',
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.user?.id]);
-  
+
   useEffect(() => {
     if (!lastJsonMessage) return;
-    const { key, data, user } = lastJsonMessage;    
-    if (key !== SOCKET_KEY.GET_SPECTATE_ROOMS || !data) return;
+    console.log('lastJsonMessage:', lastJsonMessage); // Add this line
+    const { key, data, user } = lastJsonMessage;
+    if (key !== SOCKET_KEY.GET_SPECTATE_ROOMS || !data) {
+      sendSocket({
+        roomId: -1,
+        key: SOCKET_KEY.GET_SPECTATE_ROOMS,
+        playerId: store.user?.id,
+        roomSortParam: 'all',
+      });
+      return; // Add return here to prevent further execution if the condition is met
+    }
     setRooms(data);
     dispatch(edit(user));
-  }, [lastJsonMessage, dispatch]);
+  }, [lastJsonMessage, dispatch, sendSocket,store.user?.id]);
+  
 
   const selectRoom = (roomId: number) => {
     router.push(paths.room.view(roomId));
   };
 
-  const handleLogout = ()=>{
+  const handleClick = (roomId: number) => {
+    // Disable the button when it's clicked
+    setDisabledButtons((prevState) => ({
+      ...prevState,
+      [roomId]: true,
+    }));
+
+    // Call your selectRoom function
+    selectRoom(roomId);
+  };
+  const handleLogout = () => {
     dispatch(signout());
     const name = store.user?.name;
     sendSocket({
-      key : SOCKET_KEY.LOGOUT,
-      name
-    })
-  }
+      key: SOCKET_KEY.LOGOUT,
+      name,
+    });
+  };
   return (
     <>
       <Stack
@@ -90,7 +113,7 @@ export default function GameUsersView() {
           <Typography variant="h5" px={2} pt={1}>
             {`${t('label.hello')} "${store.user?.name}"`}
           </Typography>
-          <Tabs value={0} sx={{ minHeight: 40, }}>
+          <Tabs value={0} sx={{ minHeight: 40 }}>
             <Tab label={t('label.cash_table')} sx={{ minHeight: 40, px: 1.6 }} />
           </Tabs>
         </Stack>
@@ -109,13 +132,13 @@ export default function GameUsersView() {
             sx={{
               px: 1,
               py: 0.5,
-              height: "auto",
+              height: 'auto',
               borderRadius: 50,
               border: '2px solid #cfb13a',
-              "& .MuiChip-label": {
+              '& .MuiChip-label': {
                 minWidth: 50,
-                textAlign: 'center'
-              }
+                textAlign: 'center',
+              },
             }}
           />
 
@@ -124,8 +147,12 @@ export default function GameUsersView() {
             label={`${fCurrency(Number(store.user?.money || 0).toFixed(2))} G`}
             variant="outlined"
             sx={{
-              height: "auto",
-              px: 1, py: 0.5, borderRadius: 50, border: '2px solid #cfb13a', mr: 1
+              height: 'auto',
+              px: 1,
+              py: 0.5,
+              borderRadius: 50,
+              border: '2px solid #cfb13a',
+              mr: 1,
             }}
           />
 
@@ -134,11 +161,14 @@ export default function GameUsersView() {
             variant="outlined"
             onClick={handleLogout}
             sx={{
-              height: "auto",
-              p: 0.5, borderRadius: 50, border: '2px solid #cfb13a', mr: 1,
-              "& .MuiChip-label": {
-                display: "none"
-              }
+              height: 'auto',
+              p: 0.5,
+              borderRadius: 50,
+              border: '2px solid #cfb13a',
+              mr: 1,
+              '& .MuiChip-label': {
+                display: 'none',
+              },
             }}
           />
 
@@ -154,10 +184,11 @@ export default function GameUsersView() {
               <Stack
                 sx={{
                   fontWeight: 'bold',
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexDirection: { xs: "column", sm: 'row' },
-                }}>
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                }}
+              >
                 <Box
                   sx={{
                     height: { xs: 15, sm: 70 },
@@ -173,21 +204,27 @@ export default function GameUsersView() {
                           color: '#e1c021',
                         }}
                       >
-                        {`${t('label.max')} ${room.maxSeats}/ ${room.playerCount} ${t("label.rooms_active")}`}
+                        {`${t('label.max')} ${room.maxSeats}/ ${room.playerCount} ${t(
+                          'label.rooms_active'
+                        )}`}
                       </Typography>
                       {!smDown && (
                         <Typography
                           sx={{
-                            fontSize: 12
+                            fontSize: 12,
                           }}
                         >
                           {t('label.minimum_buy_in')} 100,000
                         </Typography>
                       )}
                     </Stack>
-                    <Typography>{t('label.small_blind')} {room.roomMinBet / 2}G /{t('label.big_blind')} {room.roomMinBet}G</Typography>
+                    <Typography>
+                      {t('label.small_blind')} {room.roomMinBet / 2}G /{t('label.big_blind')}{' '}
+                      {room.roomMinBet}G
+                    </Typography>
                   </Stack>
                   <Button
+                    disabled={!!disabledButtons[room.roomId]}
                     sx={{
                       px: 0,
                       mr: 2,
@@ -198,9 +235,9 @@ export default function GameUsersView() {
                       background: 'url(/assets/pokerking/button/default.png)',
                       backgroundSize: 'cover',
                     }}
-                    onClick={() => selectRoom(room.roomId)}
+                    onClick={() =>  handleClick(room.roomId)}
                   >
-                    {t("button.go_to_table")}
+                    {t('button.go_to_table')}
                   </Button>
                 </Stack>
               </Stack>
