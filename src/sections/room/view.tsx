@@ -177,6 +177,7 @@ export default function ProfileView() {
   useEffect(() => {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
+    console.log("lastJsonMessage: ", lastJsonMessage);
     if (data && key === SOCKET_KEY.ROOM_PARAM) {
       setMiddleCardNum(2);
       setMiddleCards([]);
@@ -208,6 +209,7 @@ export default function ProfileView() {
         setVoteOpen(true)
       }
     }
+
 
     if (data && key === SOCKET_KEY.STATUS_UPDATE) {
       setTotalPot(data.totalPot);
@@ -248,6 +250,21 @@ export default function ProfileView() {
         setWinnerPlayerIds([]);
         setWinnerPlayerCards([]);
       }
+    }
+
+    if (data && key === SOCKET_KEY.Collect_Chips_ToPot) {
+      const activePlayers = playersData.filter(player => !player.isFold);
+      // Check if only one player has not folded
+      if (activePlayers.length === 1) {
+        const activePlayerId = activePlayers[0].playerId;
+        setIsUseSideGameHold(false);
+        setWinnerPlayerIds([activePlayerId]);
+        playAudio('winner_player.wav');
+        console.log("Only one standing player")
+      } else {
+        console.log(".");
+      }
+
     }
 
     if (key === SOCKET_KEY.FLOP) {

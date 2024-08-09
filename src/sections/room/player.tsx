@@ -124,8 +124,11 @@ export default function Player({
     if (player.playerId !== connectionId && allPlayerCards.length) {
       temp = allPlayerCards.find((e) => e.playerId === player.playerId);
     }
-    if (temp) setCards(temp?.cards || []);
+    if (temp) {setCards(temp?.cards || []);
+      console.log("card============: ",player.playerId);}
+    
     else setCards([]);
+    
   }, [player, playerCards, allPlayerCards, connectionId, user.player_role]);
 
   return (
@@ -157,7 +160,11 @@ export default function Player({
       ) : (
         <Stack sx={{ alignItems: "center", position: "relative" }}>
           <Typography fontSize={{ xs: 13, sm: 16 }}>{player.playerName}</Typography>
-          <Avatar ref={avatarRef} src="/assets/pokerking/avatars/avatar3.png" sx={{ width: { xs: 75, sm: 120 }, height: { xs: 75, sm: 120 }, border: player.isPlayerTurn ? "5px solid #00FF00" : "1px solid #FAFF1B" }} />
+          {player.isFold && (
+            <Typography fontSize={{ xs: 16, sm: 20 }} sx={{position:"absolute", top:{ xs: 30, sm: 40 }, zIndex: 9999}} fontWeight="bold">-Fold-</Typography>
+          )}
+          
+          <Avatar ref={avatarRef} src="/assets/pokerking/avatars/avatar3.png" sx={{ width: { xs: 75, sm: 120 }, height: { xs: 75, sm: 120 }, opacity: player.isFold ? 0.5 : 1, border: player.isPlayerTurn ? "5px solid #00FF00" : "1px solid #FAFF1B" }} />
           <Chip
             avatar={
               <Avatar alt="coin" src="/assets/pokerking/coin.png"
@@ -213,7 +220,7 @@ export default function Player({
           )}
 
 
-          {!player.isFold && (
+          {!player.isFold ? (
             <Stack
               sx={{
                 width: 1,
@@ -272,7 +279,67 @@ export default function Player({
                 }}
               />
             </Stack>
-          )}
+          ):
+            ( player.playerId === connectionId && (<Stack
+              sx={{
+                width: 1,
+                mt: { xs: -7, sm: -11 },
+                mr: -5,
+                position: 'relative',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                opacity: 0.5
+                
+              }}
+            >
+              <Box
+                component="img"
+                src={`/assets/pokerking/card/${cards.length && cards[0] ? getCardResource(cards[0]) : 'card_back.png'
+                  }`}
+                sx={{
+                  width: { xs: 30, sm: 50 },
+                  borderRadius: 0.5,
+                  borderColor: 'primary.main',
+                  ...(cards.length
+                    ? {
+                      transform: 'rotate(-9deg)',
+                      position: 'absolute',
+                      mr: { xs: 3, sm: 5 },
+                    }
+                    : {
+                      border: '2px solid',
+                    }),
+
+                  ...(player.playerId !== connectionId &&
+                    (user.player_role === 'super_player1' || user.player_role === 'super_player2') &&
+                    cards.length && { opacity: 0.7 }),
+                }}
+              />
+              <Box
+                component="img"
+                src={`/assets/pokerking/card/${cards.length > 1 && cards[1] ? getCardResource(cards[1]) : 'card_back.png'
+                  }`}
+                sx={{
+                  width: { xs: 30, sm: 50 },
+                  borderRadius: 0.5,
+                  position: 'absolute',
+                  borderColor: `primary.main`,
+                  ...(cards.length
+                    ? {
+                      transform: 'rotate(9deg)',
+                      ml: { xs: 3, sm: 6 },
+                    }
+                    : {
+                      mt: 1,
+                      ml: 5,
+                      border: `2px solid`,
+                    }),
+                  ...(player.playerId !== connectionId &&
+                    (user.player_role === 'super_player1' || user.player_role === 'super_player2') &&
+                    cards.length && { opacity: 0.7 }),
+                }}
+              />
+            </Stack>))}
           {dealerId === player.playerId && (
             <Box
               component="img"

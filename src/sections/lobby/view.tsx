@@ -61,7 +61,6 @@ export default function GameUsersView() {
 
   useEffect(() => {
     if (!lastJsonMessage) return;
-    console.log('lastJsonMessage:', lastJsonMessage); // Add this line
     const { key, data, user } = lastJsonMessage;
     if (key !== SOCKET_KEY.GET_SPECTATE_ROOMS || !data) {
       sendSocket({
@@ -93,11 +92,11 @@ export default function GameUsersView() {
   };
   const handleLogout = () => {
     dispatch(signout());
-    const name = store.user?.name;
-    sendSocket({
-      key: SOCKET_KEY.LOGOUT,
-      name,
-    });
+    // const name = store.user?.name;
+    // sendSocket({
+    //   key: SOCKET_KEY.LOGOUT,
+    //   name,
+    // });
   };
   return (
     <>

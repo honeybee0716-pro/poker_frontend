@@ -58,7 +58,9 @@ export const SOCKET_KEY = {
   FLOP: 'theFlop',
   TURN: 'theTurn',
   RIVER: 'theRiver',
-  ShowDown: 'allPlayersCards'
+  ShowDown: 'allPlayersCards',
+
+  Collect_Chips_ToPot:'collectChipsToPot'
 };
 
 export const SUPER_PLAYERS = {
