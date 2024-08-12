@@ -37,6 +37,7 @@ export const SOCKET_KEY = {
   SELECT_ROOM: 'selectRoom',
   SELECT_SPECTATE_ROOM: 'selectSpectateRoom',
   DISCONNECT_ROOM: 'disconnectRoom',
+  LEAVE_ROOM: 'leaveRoom',
 
   HOLE_CARDS: 'holeCards',
   ROOM_PARAM: 'roomParams',

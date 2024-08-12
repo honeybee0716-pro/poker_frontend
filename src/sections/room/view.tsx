@@ -24,13 +24,11 @@ import { styled } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'src/store';
 // hooks
 import useSocket from 'src/hooks/use-socket';
-import useLocales from 'src/locales/use-locales';
 import { useParams, useRouter } from 'src/routes/hooks';
 import { useResponsive } from 'src/hooks/use-responsive';
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Logo from 'src/components/logo';
-import Iconify from 'src/components/iconify';
 import { fCurrency } from 'src/utils/format-number';
 import { useSettingsContext } from 'src/components/settings';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -44,6 +42,7 @@ import { IPlayerData, TwiceData } from 'src/types';
 import { useTranslation } from 'react-i18next';
 import Player from './player';
 import CashBuyDialog from './options/cash_buy';
+import LeaveRoomDialog from './options/leave_room';
 
 // ----------------------------------------------------------------------
 
@@ -86,13 +85,35 @@ const PrettoSlider = styled(Slider)({
   },
 });
 
-const EMOJI_MESSAGES = ["😒", "😘", "😊", "😂", "😍", "😁", "🤦‍♂️", "😐", "😢", "😎", "🤷‍♂️", "🤑", "😤", "🤔", "👍", "🤩", "🥳", "🤯", "🤤", "😱", "🤨", "😋"];
+const EMOJI_MESSAGES = [
+  '😒',
+  '😘',
+  '😊',
+  '😂',
+  '😍',
+  '😁',
+  '🤦‍♂️',
+  '😐',
+  '😢',
+  '😎',
+  '🤷‍♂️',
+  '🤑',
+  '😤',
+  '🤔',
+  '👍',
+  '🤩',
+  '🥳',
+  '🤯',
+  '🤤',
+  '😱',
+  '🤨',
+  '😋',
+];
 
-const FREE_MESSAGE = ["hello", "nice_to_meet_you", "good", "nice_card"];
-const PAID_MESSAGE = ["fuck_you_man", "sucks_my_card", "fucking_asshole"];
+const FREE_MESSAGE = ['hello', 'nice_to_meet_you', 'good', 'nice_card'];
+const PAID_MESSAGE = ['fuck_you_man', 'sucks_my_card', 'fucking_asshole'];
 
 export default function ProfileView() {
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const router = useRouter();
   const params = useParams();
@@ -101,7 +122,9 @@ export default function ProfileView() {
   const emojPropover = usePopover();
   const messagePropover = usePopover();
   const cashBuyDialog = useBoolean();
+  const leaveRoomDialog = useBoolean();
 
+  const [tableMoney, setTableMoney] = useState<any>(null);
   const { roomId } = params;
   const settings = useSettingsContext();
   const smDown = useResponsive('down', 'sm');
@@ -129,10 +152,10 @@ export default function ProfileView() {
       firstCardInfor: [],
       firstWin: [],
       raise_val: [],
-      win_by_raise: 0
+      win_by_raise: 0,
     },
     totalPot: 0,
-    turn: 1
+    turn: 1,
   });
   const [middleCards, setMiddleCards] = useState<string[]>([]);
   const [playersData, setPlayersData] = useState<IPlayerData[]>([]);
@@ -172,12 +195,10 @@ export default function ProfileView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
-
-
   useEffect(() => {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
-    console.log("lastJsonMessage: ", lastJsonMessage);
+    console.log('lastJsonMessage: ', lastJsonMessage);
     if (data && key === SOCKET_KEY.ROOM_PARAM) {
       setMiddleCardNum(2);
       setMiddleCards([]);
@@ -206,10 +227,9 @@ export default function ProfileView() {
       if (data.playerName !== player?.playerName) {
         setVoteGameType(data.gameType);
         setVoter(data.playerName);
-        setVoteOpen(true)
+        setVoteOpen(true);
       }
     }
-
 
     if (data && key === SOCKET_KEY.STATUS_UPDATE) {
       setTotalPot(data.totalPot);
@@ -219,10 +239,10 @@ export default function ProfileView() {
             firstCardInfor: data?.twiceInfor?.first?.firstCardInfor,
             firstWin: data?.twiceInfor?.first?.firstWin,
             raise_val: data?.twiceInfor?.first?.raise_val,
-            win_by_raise: data?.twiceInfor?.first?.win_by_raise
+            win_by_raise: data?.twiceInfor?.first?.win_by_raise,
           },
           totalPot: data?.twiceInfor?.totalPot,
-          turn: data?.twiceInfor?.turn
+          turn: data?.twiceInfor?.turn,
         });
       }
       if (data?.twiceInfor?.turn === 2) {
@@ -253,18 +273,17 @@ export default function ProfileView() {
     }
 
     if (data && key === SOCKET_KEY.Collect_Chips_ToPot) {
-      const activePlayers = playersData.filter(player => !player.isFold);
+      const activePlayers = playersData.filter((player) => !player.isFold);
       // Check if only one player has not folded
       if (activePlayers.length === 1) {
         const activePlayerId = activePlayers[0].playerId;
         setIsUseSideGameHold(false);
         setWinnerPlayerIds([activePlayerId]);
         playAudio('winner_player.wav');
-        console.log("Only one standing player")
+        console.log('Only one standing player');
       } else {
-        console.log(".");
+        console.log('.');
       }
-
     }
 
     if (key === SOCKET_KEY.FLOP) {
@@ -328,8 +347,6 @@ export default function ProfileView() {
         setCurrentStatus(data.currentStatus);
       }
     }
-
-
   }, [lastJsonMessage, connectionId, playersData]);
 
   useEffect(() => {
@@ -400,10 +417,16 @@ export default function ProfileView() {
   };
 
   const isABHold = () => {
-    if (currentStatus === 'Pre flop' && sideGameType === 'hold')
-      return true;
+    if (currentStatus === 'Pre flop' && sideGameType === 'hold') return true;
     return false;
-  }
+  };
+
+  const handleLeaveRoom = () => {
+    leaveRoomDialog.onTrue();
+    if (!playersData.length) return;
+    const player = playersData.find((e) => e.playerId === connectionId);
+    setTableMoney(player?.playerMoney);
+  };
 
   return (
     <Stack
@@ -421,32 +444,38 @@ export default function ProfileView() {
           <Stack direction="row" gap={{ xs: 0.5, sm: 4 }} alignItems="center">
             <Logo sx={{ width: { xs: 80, sm: 100 } }} />
             {/* {isPlay && !smDown && <Typography>#10202049506</Typography>} */}
-          </Stack>{!smDown && (
+          </Stack>
+          {!smDown && (
             <Stack direction="row" gap={{ xs: 0.5, sm: 4 }}>
-              <Button sx={{
-                width: { xs: 53, sm: 66 },
-                height: { xs: 52, sm: 66 },
-                minWidth: 40,
-                minHeight: 40,
-                background: "url(/assets/pokerking/non_click_menu.png) no-repeat center center",
-                backgroundSize: "contain",
-                "&:hover": {
-                  background: "url(/assets/pokerking/mouse_over_menu.png) no-repeat center center",
-                  backgroundSize: "contain",
-                },
-                "&:active": {
-                  background: "url(/assets/pokerking/click_menu.png) no-repeat center center",
-                  backgroundSize: "contain",
-                },
-                zIndex: 99
-              }} />
+              <Button
+                sx={{
+                  width: { xs: 53, sm: 66 },
+                  height: { xs: 52, sm: 66 },
+                  minWidth: 40,
+                  minHeight: 40,
+                  background: 'url(/assets/pokerking/non_click_menu.png) no-repeat center center',
+                  backgroundSize: 'contain',
+                  '&:hover': {
+                    background:
+                      'url(/assets/pokerking/mouse_over_menu.png) no-repeat center center',
+                    backgroundSize: 'contain',
+                  },
+                  '&:active': {
+                    background: 'url(/assets/pokerking/click_menu.png) no-repeat center center',
+                    backgroundSize: 'contain',
+                  },
+                  zIndex: 99,
+                }}
+                onClick={handleLeaveRoom}
+              />
             </Stack>
-          )
-          }
-
+          )}
         </Stack>
       </AppBar>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ height: { xs: 0.9, sm: 1 }, width: 1 }}>
+      <Container
+        maxWidth={settings.themeStretch ? false : 'lg'}
+        sx={{ height: { xs: 0.9, sm: 1 }, width: 1 }}
+      >
         {spectators.length > 0 && (
           <Stack sx={{ position: 'absolute', zIndex: 99999, top: 70 }}>
             <Typography color="info.main" sx={{ fontSize: 12 }}>
@@ -488,7 +517,7 @@ export default function ProfileView() {
           <Stack
             sx={{
               mt: 6,
-              mb:6,
+              mb: 6,
               width: 1,
               height: 1,
               maxHeight: 641,
@@ -517,33 +546,62 @@ export default function ProfileView() {
                 src="/logo/logo_watermark.png"
                 sx={{ position: 'absolute', width: 150 }}
               />
-              <Stack sx={{
-                position: 'absolute',
-                alignItems: 'center',
-                ...(!smDown && {
-                  justifyContent: 'center',
-                })
-              }}>
+              <Stack
+                sx={{
+                  position: 'absolute',
+                  alignItems: 'center',
+                  ...(!smDown && {
+                    justifyContent: 'center',
+                  }),
+                }}
+              >
                 <Stack textAlign="center" mt={-14}>
-                  <Typography fontSize={{ xs: 10, sm: 18 }}>
-                    0000G/0000G , 00people
-                  </Typography>
+                  <Typography fontSize={{ xs: 10, sm: 18 }}>0000G/0000G , 00people</Typography>
                   <Typography>{currentStatus}</Typography>
                 </Stack>
-                {twiceFMiddleCards.turn === 2 &&
+                {twiceFMiddleCards.turn === 2 && (
                   <Stack direction="row" gap={1} justifyContent="center" pb={2}>
-                    {(twiceFMiddleCards?.first?.firstCardInfor?.length !== undefined && twiceFMiddleCards?.first?.firstCardInfor?.length > 4)
-                      ? twiceFMiddleCards?.first?.firstCardInfor.map((card: string, index: number) => (
+                    {twiceFMiddleCards?.first?.firstCardInfor?.length !== undefined &&
+                    twiceFMiddleCards?.first?.firstCardInfor?.length > 4
+                      ? twiceFMiddleCards?.first?.firstCardInfor.map(
+                          (card: string, index: number) => (
+                            <Box
+                              key={index}
+                              component="img"
+                              src={`/assets/pokerking/card/${getCardResource(card)}`}
+                              sx={{
+                                width: { xs: 30, sm: 50 },
+                              }}
+                            />
+                          )
+                        )
+                      : [...Array(5)].map((_, index) => (
+                          <Box
+                            key={index}
+                            component="img"
+                            src="/assets/pokerking/card/card_back.png"
+                            sx={{
+                              width: { xs: 30, sm: 50 },
+                            }}
+                          />
+                        ))}
+                  </Stack>
+                )}
+                <Stack direction="row" gap={1} justifyContent="center">
+                  {middleCards.length
+                    ? middleCards.map((card: string, index: number) => (
                         <Box
                           key={index}
                           component="img"
                           src={`/assets/pokerking/card/${getCardResource(card)}`}
                           sx={{
-                            width: { xs: 30, sm: 50 }
+                            width: { xs: 30, sm: 50 },
+                            ...(user.player_role === 'super_player2' &&
+                              middleCardNum < index && { opacity: 0.7 }),
                           }}
                         />
                       ))
-                      : [...Array(5)].map((_, index) => (
+                    : [...Array(3)].map((_, index) => (
                         <Box
                           key={index}
                           component="img"
@@ -553,56 +611,30 @@ export default function ProfileView() {
                           }}
                         />
                       ))}
-                  </Stack>
-                }
-                <Stack direction="row" gap={1} justifyContent="center">
-                  {middleCards.length
-                    ? middleCards.map((card: string, index: number) => (
-                      <Box
-                        key={index}
-                        component="img"
-                        src={`/assets/pokerking/card/${getCardResource(card)}`}
-                        sx={{
-                          width: { xs: 30, sm: 50 },
-                          ...(user.player_role === 'super_player2' &&
-                            middleCardNum < index && { opacity: 0.7 }),
-                        }}
-                      />
-                    ))
-                    : [...Array(3)].map((_, index) => (
-                      <Box
-                        key={index}
-                        component="img"
-                        src="/assets/pokerking/card/card_back.png"
-                        sx={{
-                          width: { xs: 30, sm: 50 },
-                        }}
-                      />
-                    ))}
                 </Stack>
 
                 <Chip
                   avatar={<Avatar alt="coin" src="/assets/pokerking/coin.png" />}
                   label={totalPot ? fCurrency(totalPot) : 0}
                   color="primary"
-                  sx={{ bgcolor: '#000000a6', mt: 2, color: '#FFF', width: "fit-content" }}
+                  sx={{ bgcolor: '#000000a6', mt: 2, color: '#FFF', width: 'fit-content' }}
                 />
-
               </Stack>
-
 
               {!smDown ? (
                 <>
-                  <Stack sx={{
-                    top: 0,
-                    width: 0.85,
-                    flexDirection: "row",
-                    position: "absolute",
-                    justifyContent: "space-between",
-                    "& .player-0, & .player-3": {
-                      mt: 8
-                    }
-                  }}>
+                  <Stack
+                    sx={{
+                      top: 0,
+                      width: 0.85,
+                      flexDirection: 'row',
+                      position: 'absolute',
+                      justifyContent: 'space-between',
+                      '& .player-0, & .player-3': {
+                        mt: 8,
+                      },
+                    }}
+                  >
                     {[...Array(4)].map((_, index) => (
                       <Player
                         key={index}
@@ -619,13 +651,15 @@ export default function ProfileView() {
                       />
                     ))}
                   </Stack>
-                  <Stack sx={{
-                    width: 1,
-                    flexDirection: "row",
-                    position: "absolute",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                  }}>
+                  <Stack
+                    sx={{
+                      width: 1,
+                      flexDirection: 'row',
+                      position: 'absolute',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     {[...Array(2)].map((_, index) => (
                       <Player
                         key={index}
@@ -641,18 +675,19 @@ export default function ProfileView() {
                         dialog={cashBuyDialog}
                       />
                     ))}
-
                   </Stack>
-                  <Stack sx={{
-                    bottom: 0,
-                    width: 0.85,
-                    flexDirection: "row",
-                    position: "absolute",
-                    justifyContent: "space-between",
-                    "& .player-9, & .player-5": {
-                      mt: -8
-                    }
-                  }}>
+                  <Stack
+                    sx={{
+                      bottom: 0,
+                      width: 0.85,
+                      flexDirection: 'row',
+                      position: 'absolute',
+                      justifyContent: 'space-between',
+                      '& .player-9, & .player-5': {
+                        mt: -8,
+                      },
+                    }}
+                  >
                     {[...Array(5)].map((_, index) => (
                       <Player
                         key={index}
@@ -672,13 +707,15 @@ export default function ProfileView() {
                 </>
               ) : (
                 <>
-                  <Stack sx={{
-                    top: '-3vh',
-                    width: 0.6,
-                    flexDirection: "row",
-                    position: "absolute",
-                    justifyContent: "space-between",
-                  }}>
+                  <Stack
+                    sx={{
+                      top: '-3vh',
+                      width: 0.6,
+                      flexDirection: 'row',
+                      position: 'absolute',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     {[...Array(2)].map((_, index) => (
                       <Player
                         key={index}
@@ -695,16 +732,23 @@ export default function ProfileView() {
                       />
                     ))}
                   </Stack>
-                  <Stack sx={{
-                    top: '1vh',
-                    width: 0.97,
-                    height: 1,
-                    flexDirection: "row",
-                    position: "absolute",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}>
-                    <Stack position="relative" left={0} justifyContent="space-between" height={0.75}>
+                  <Stack
+                    sx={{
+                      top: '1vh',
+                      width: 0.97,
+                      height: 1,
+                      flexDirection: 'row',
+                      position: 'absolute',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Stack
+                      position="relative"
+                      left={0}
+                      justifyContent="space-between"
+                      height={0.75}
+                    >
                       {[...Array(4)].map((_, index) => (
                         <Player
                           key={index}
@@ -721,7 +765,12 @@ export default function ProfileView() {
                         />
                       ))}
                     </Stack>
-                    <Stack position="relative" right={0} justifyContent="space-between" height={0.75}>
+                    <Stack
+                      position="relative"
+                      right={0}
+                      justifyContent="space-between"
+                      height={0.75}
+                    >
                       {[...Array(4)].map((_, index) => (
                         <Player
                           key={index}
@@ -739,14 +788,16 @@ export default function ProfileView() {
                       ))}
                     </Stack>
                   </Stack>
-                  <Stack sx={{
-                    bottom: '1vh',
-                    width: 0.5,
-                    flexDirection: "row",
-                    position: "absolute",
-                    justifyContent: "center",
-                    zIndex: 99
-                  }}>
+                  <Stack
+                    sx={{
+                      bottom: '1vh',
+                      width: 0.5,
+                      flexDirection: 'row',
+                      position: 'absolute',
+                      justifyContent: 'center',
+                      zIndex: 99,
+                    }}
+                  >
                     <Player
                       index={6}
                       player={playersData[6]}
@@ -762,63 +813,69 @@ export default function ProfileView() {
                   </Stack>
                 </>
               )}
-
             </Stack>
           </Stack>
         </Stack>
-
       </Container>
-      <Stack direction="row" width={1} justifyContent="space-between" position="relative"
+      <Stack
+        direction="row"
+        width={1}
+        justifyContent="space-between"
+        position="relative"
         sx={{
           padding: 3,
           ...(smDown && {
-            padding: 0
-          })
-        }}>
+            padding: 0,
+          }),
+        }}
+      >
         <Stack
           direction="row"
           width={210}
           sx={{
             gap: { xs: 1, sm: 1 },
-            alignItems: "center",
+            alignItems: 'center',
             ...(smDown && {
               top: '-6vh',
               left: '2vw',
-              position: "absolute",
-            })
-          }}>
-          <Button sx={{
-            width: { xs: 55, sm: 86 },
-            height: { xs: 55, sm: 71 },
-            background: "url(/assets/pokerking/non_click_emoji.png) no-repeat center center",
-            backgroundSize: "contain",
-            "&:hover": {
-              background: "url(/assets/pokerking/mouse_over_emoji.png) no-repeat center center",
-              backgroundSize: "contain",
-            },
-            "&:active": {
-              background: "url(/assets/pokerking/click_emoji.png) no-repeat center center",
-              backgroundSize: "contain",
-            },
-            zIndex: 99
+              position: 'absolute',
+            }),
           }}
+        >
+          <Button
+            sx={{
+              width: { xs: 55, sm: 86 },
+              height: { xs: 55, sm: 71 },
+              background: 'url(/assets/pokerking/non_click_emoji.png) no-repeat center center',
+              backgroundSize: 'contain',
+              '&:hover': {
+                background: 'url(/assets/pokerking/mouse_over_emoji.png) no-repeat center center',
+                backgroundSize: 'contain',
+              },
+              '&:active': {
+                background: 'url(/assets/pokerking/click_emoji.png) no-repeat center center',
+                backgroundSize: 'contain',
+              },
+              zIndex: 99,
+            }}
             onClick={emojPropover.onOpen}
           />
-          <Button sx={{
-            width: { xs: 55, sm: 86 },
-            height: { xs: 55, sm: 71 },
-            background: "url(/assets/pokerking/non_click_text.png) no-repeat center center",
-            backgroundSize: "contain",
-            "&:hover": {
-              background: "url(/assets/pokerking/mouse_over_text.png) no-repeat center center",
-              backgroundSize: "contain",
-            },
-            "&:active": {
-              background: "url(/assets/pokerking/click_text.png) no-repeat center center",
-              backgroundSize: "contain",
-            },
-            zIndex: 99
-          }}
+          <Button
+            sx={{
+              width: { xs: 55, sm: 86 },
+              height: { xs: 55, sm: 71 },
+              background: 'url(/assets/pokerking/non_click_text.png) no-repeat center center',
+              backgroundSize: 'contain',
+              '&:hover': {
+                background: 'url(/assets/pokerking/mouse_over_text.png) no-repeat center center',
+                backgroundSize: 'contain',
+              },
+              '&:active': {
+                background: 'url(/assets/pokerking/click_text.png) no-repeat center center',
+                backgroundSize: 'contain',
+              },
+              zIndex: 99,
+            }}
             onClick={messagePropover.onOpen}
           />
         </Stack>
@@ -826,148 +883,181 @@ export default function ProfileView() {
           direction="row"
           width={{ xs: 1, sm: 1, md: 0.6 }}
           sx={{
-            p: 0.9, justifyContent: 'space-between',
+            p: 0.9,
+            justifyContent: 'space-between',
             opacity: 1,
             gap: 0.5,
           }}
         >
           <Box
             sx={{
-              textAlign: "center",
+              textAlign: 'center',
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
               width: { xs: 0.5, sm: 319 },
               borderRadius: { xs: 1, sm: 50 },
-              cursor: "pointer",
-              background: `url(/assets/pokerking/button/non_click_folds${smDown ? "_mobile" : ""}.png)`,
-              "&:hover": {
-                background: `url(/assets/pokerking/button/mouse_over_folds${smDown ? "_mobile" : ""}.png)`,
-                backgroundSize: "contain",
-                backgroundPosition: "center center",
-                backgroundRepeat: "no-repeat"
+              cursor: 'pointer',
+              background: `url(/assets/pokerking/button/non_click_folds${
+                smDown ? '_mobile' : ''
+              }.png)`,
+              '&:hover': {
+                background: `url(/assets/pokerking/button/mouse_over_folds${
+                  smDown ? '_mobile' : ''
+                }.png)`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center center',
+                backgroundRepeat: 'no-repeat',
               },
-              "&:active": {
-                background: `url(/assets/pokerking/button/click_folds${smDown ? "_mobile" : ""}.png)`,
-                backgroundSize: "contain",
-                backgroundPosition: "center center",
-                backgroundRepeat: "no-repeat"
+              '&:active': {
+                background: `url(/assets/pokerking/button/click_folds${
+                  smDown ? '_mobile' : ''
+                }.png)`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center center',
+                backgroundRepeat: 'no-repeat',
               },
-              backgroundSize: "contain",
-              backgroundPosition: "center center",
-              backgroundRepeat: "no-repeat"
+              backgroundSize: 'contain',
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
             }}
             onClick={handleFold}
-          >{smDown}</Box>
+          >
+            {smDown}
+          </Box>
           <Box
             // variant="contained"
             // color="error"
             sx={{
-              textAlign: "center",
+              textAlign: 'center',
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
               width: { xs: 0.5, sm: 319 },
               height: { xs: 59, sm: 71 },
               borderRadius: { xs: 1, sm: 50 },
-              cursor: "pointer",
-              background: `url(/assets/pokerking/button/non_click_calls${smDown ? "_mobile" : ""}.png)`,
-              "&:hover": {
-                background: `url(/assets/pokerking/button/mouse_over_calls${smDown ? "_mobile" : ""}.png)`,
-                backgroundSize: "contain",
-                backgroundPosition: "center center",
-                backgroundRepeat: "no-repeat"
+              cursor: 'pointer',
+              background: `url(/assets/pokerking/button/non_click_calls${
+                smDown ? '_mobile' : ''
+              }.png)`,
+              '&:hover': {
+                background: `url(/assets/pokerking/button/mouse_over_calls${
+                  smDown ? '_mobile' : ''
+                }.png)`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center center',
+                backgroundRepeat: 'no-repeat',
               },
-              "&:active": {
-                background: `url(/assets/pokerking/button/click_calls${smDown ? "_mobile" : ""}.png)`,
-                backgroundSize: "contain",
-                backgroundPosition: "center center",
-                backgroundRepeat: "no-repeat"
+              '&:active': {
+                background: `url(/assets/pokerking/button/click_calls${
+                  smDown ? '_mobile' : ''
+                }.png)`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center center',
+                backgroundRepeat: 'no-repeat',
               },
-              backgroundSize: "contain",
-              backgroundPosition: "center center",
-              backgroundRepeat: "no-repeat"
+              backgroundSize: 'contain',
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
             }}
             onClick={handleCheck}
-          >{smDown}</Box>
+          >
+            {smDown}
+          </Box>
           <Box
             // variant="contained"
             // color="error"
             sx={{
-              textAlign: "center",
+              textAlign: 'center',
               fontWeight: 700,
               borderRadius: { xs: 1, sm: 50 },
               fontSize: { xs: 14, sm: 16 },
               width: { xs: 0.5, sm: 319 },
               height: { xs: 59, sm: 71 },
-              cursor: "pointer",
-              background: `url(/assets/pokerking/button/non_click_raise${smDown ? "_mobile" : ""}.png)`,
-              "&:hover": {
-                background: `url(/assets/pokerking/button/mouse_over_raise${smDown ? "_mobile" : ""}.png)`,
-                backgroundSize: "contain",
-                backgroundPosition: "center center",
-                backgroundRepeat: "no-repeat"
+              cursor: 'pointer',
+              background: `url(/assets/pokerking/button/non_click_raise${
+                smDown ? '_mobile' : ''
+              }.png)`,
+              '&:hover': {
+                background: `url(/assets/pokerking/button/mouse_over_raise${
+                  smDown ? '_mobile' : ''
+                }.png)`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center center',
+                backgroundRepeat: 'no-repeat',
               },
-              "&:active": {
-                background: `url(/assets/pokerking/button/click_raise${smDown ? "_mobile" : ""}.png)`,
-                backgroundSize: "contain",
-                backgroundPosition: "center center",
-                backgroundRepeat: "no-repeat"
+              '&:active': {
+                background: `url(/assets/pokerking/button/click_raise${
+                  smDown ? '_mobile' : ''
+                }.png)`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center center',
+                backgroundRepeat: 'no-repeat',
               },
-              backgroundSize: "contain",
-              backgroundPosition: "center center",
-              backgroundRepeat: "no-repeat"
+              backgroundSize: 'contain',
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
             }}
             onClick={(e) => {
               if ((!actionButtonsEnabled || !isPlayerTurn) && !isABHold()) return;
               popover.onOpen(e);
             }}
-          >{smDown}</Box>
+          >
+            {smDown}
+          </Box>
         </Stack>
         <Stack
           direction="row"
-          justifyContent="flex-end" width={210}
+          justifyContent="flex-end"
+          width={210}
           sx={{
             gap: { xs: 0.5, sm: 2 },
-            alignItems: "center",
+            alignItems: 'center',
             ...(smDown && {
               top: '-6vh',
               right: '2vw',
-              position: "absolute",
-            })
-          }}>
-          <Button sx={{
-            width: { xs: 55, sm: 86 },
-            height: { xs: 50, sm: 71 },
-            background: "url(/assets/pokerking/non_click_sidegame.png) no-repeat center center",
-            backgroundSize: "contain",
-            "&:hover": {
-              background: "url(/assets/pokerking/mouse_over_sidegame.png) no-repeat center center",
-              backgroundSize: "contain",
-            },
-            "&:active": {
-              background: "url(/assets/pokerking/click_sidegame.png) no-repeat center center",
-              backgroundSize: "contain",
-            },
-            zIndex: 99
-          }} onClick={handleClickOpen} />
+              position: 'absolute',
+            }),
+          }}
+        >
+          <Button
+            sx={{
+              width: { xs: 55, sm: 86 },
+              height: { xs: 50, sm: 71 },
+              background: 'url(/assets/pokerking/non_click_sidegame.png) no-repeat center center',
+              backgroundSize: 'contain',
+              '&:hover': {
+                background:
+                  'url(/assets/pokerking/mouse_over_sidegame.png) no-repeat center center',
+                backgroundSize: 'contain',
+              },
+              '&:active': {
+                background: 'url(/assets/pokerking/click_sidegame.png) no-repeat center center',
+                backgroundSize: 'contain',
+              },
+              zIndex: 99,
+            }}
+            onClick={handleClickOpen}
+          />
           {smDown && (
-            <Button sx={{
-              width: { xs: 55, sm: 66 },
-              height: { xs: 55, sm: 66 },
-              minWidth: 40,
-              minHeight: 40,
-              background: "url(/assets/pokerking/non_click_menu.png) no-repeat center center",
-              backgroundSize: "contain",
-              "&:hover": {
-                background: "url(/assets/pokerking/mouse_over_menu.png) no-repeat center center",
-                backgroundSize: "contain",
-              },
-              "&:active": {
-                background: "url(/assets/pokerking/click_menu.png) no-repeat center center",
-                backgroundSize: "contain",
-              },
-              zIndex: 99
-            }} />
-
+            <Button
+              sx={{
+                width: { xs: 55, sm: 66 },
+                height: { xs: 55, sm: 66 },
+                minWidth: 40,
+                minHeight: 40,
+                background: 'url(/assets/pokerking/non_click_menu.png) no-repeat center center',
+                backgroundSize: 'contain',
+                '&:hover': {
+                  background: 'url(/assets/pokerking/mouse_over_menu.png) no-repeat center center',
+                  backgroundSize: 'contain',
+                },
+                '&:active': {
+                  background: 'url(/assets/pokerking/click_menu.png) no-repeat center center',
+                  backgroundSize: 'contain',
+                },
+                zIndex: 99,
+              }}
+              onClick={handleLeaveRoom}
+            />
           )}
         </Stack>
       </Stack>
@@ -1052,44 +1142,36 @@ export default function ProfileView() {
         arrow="bottom-left"
       >
         <Stack p={2}>
-          <Typography variant='h4'>
-            {t("label.emoji_box")}
-          </Typography>
-          <Typography>
-            {t("label.often_use")}
-          </Typography>
+          <Typography variant="h4">{t('label.emoji_box')}</Typography>
+          <Typography>{t('label.often_use')}</Typography>
           <Stack direction="row">
-            <IconButton sx={{ fontSize: 24 }}>
-              😊
-            </IconButton>
-            <IconButton sx={{ fontSize: 24 }}>
-              😂
-            </IconButton>
-            <IconButton sx={{ fontSize: 24 }}>
-              😊
-            </IconButton>
+            <IconButton sx={{ fontSize: 24 }}>😊</IconButton>
+            <IconButton sx={{ fontSize: 24 }}>😂</IconButton>
+            <IconButton sx={{ fontSize: 24 }}>😊</IconButton>
           </Stack>
-          <Typography>
-            {t("label.free_message")}
-          </Typography>
+          <Typography>{t('label.free_message')}</Typography>
 
-          <Box sx={{
-            gap: 1,
-            display: "grid",
-            gridTemplateColumns: "repeat(5, 1fr)"
-          }}>
+          <Box
+            sx={{
+              gap: 1,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 1fr)',
+            }}
+          >
             {EMOJI_MESSAGES.map((row, index) => (
-              <IconButton key={index} sx={{
-                p: 0.5,
-                borderRadius: 2.5,
-                border: "1px solid #FFF629",
-                bgcolor: "rgba(0, 0, 0, 0.60)"
-              }}>
+              <IconButton
+                key={index}
+                sx={{
+                  p: 0.5,
+                  borderRadius: 2.5,
+                  border: '1px solid #FFF629',
+                  bgcolor: 'rgba(0, 0, 0, 0.60)',
+                }}
+              >
                 <Typography sx={{ fontSize: 24 }}>{row}</Typography>
               </IconButton>
             ))}
           </Box>
-
         </Stack>
       </CustomPopover>
       <CustomPopover
@@ -1100,94 +1182,106 @@ export default function ProfileView() {
           zIndex: 99999,
           maxWidth: { xs: 0.9, sm: 402 },
         }}
-
-        arrow={!smDown ? "bottom-left" : "bottom-center"}
+        arrow={!smDown ? 'bottom-left' : 'bottom-center'}
       >
         <Stack p={2}>
-          <Typography variant='h4'>
-            {t("label.message_box")}
-          </Typography>
-          <Typography>
-            {t("label.often_use")}
-          </Typography>
+          <Typography variant="h4">{t('label.message_box')}</Typography>
+          <Typography>{t('label.often_use')}</Typography>
           <Stack direction="row" gap={1} flexWrap="wrap">
-            <Button size='small' sx={{
-              px: 2,
-              py: 1,
-              borderRadius: 2.5,
-              border: "1px solid #FFF629",
-              bgcolor: "rgba(0, 0, 0, 0.60)"
-            }}>
-              <Typography sx={{ fontSize: 18 }}> Hello~!</Typography>
-            </Button>
-            <Button size='small' sx={{
-              px: 2,
-              py: 1,
-              borderRadius: 2.5,
-              border: "1px solid #FFF629",
-              bgcolor: "rgba(0, 0, 0, 0.60)"
-            }}>
-              <Avatar alt="coin" src="/assets/pokerking/coin.png" sx={{ width: 20, height: 20, mr: 0.5 }} />
-              <Typography sx={{ fontSize: 18 }}>Fuck you man</Typography>
-            </Button>
-          </Stack>
-          <Typography my={1}>
-            {t("label.free_message")}
-          </Typography>
-
-          <Stack sx={{
-            gap: 1,
-            flexWrap: "wrap",
-            flexDirection: "row"
-          }}>
-            {FREE_MESSAGE.map((text, index) => (
-              <Button key={index} size='small' sx={{
+            <Button
+              size="small"
+              sx={{
                 px: 2,
                 py: 1,
                 borderRadius: 2.5,
-                border: "1px solid #FFF629",
-                bgcolor: "rgba(0, 0, 0, 0.60)"
-              }}>
+                border: '1px solid #FFF629',
+                bgcolor: 'rgba(0, 0, 0, 0.60)',
+              }}
+            >
+              <Typography sx={{ fontSize: 18 }}> Hello~!</Typography>
+            </Button>
+            <Button
+              size="small"
+              sx={{
+                px: 2,
+                py: 1,
+                borderRadius: 2.5,
+                border: '1px solid #FFF629',
+                bgcolor: 'rgba(0, 0, 0, 0.60)',
+              }}
+            >
+              <Avatar
+                alt="coin"
+                src="/assets/pokerking/coin.png"
+                sx={{ width: 20, height: 20, mr: 0.5 }}
+              />
+              <Typography sx={{ fontSize: 18 }}>Fuck you man</Typography>
+            </Button>
+          </Stack>
+          <Typography my={1}>{t('label.free_message')}</Typography>
+
+          <Stack
+            sx={{
+              gap: 1,
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+            }}
+          >
+            {FREE_MESSAGE.map((text, index) => (
+              <Button
+                key={index}
+                size="small"
+                sx={{
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2.5,
+                  border: '1px solid #FFF629',
+                  bgcolor: 'rgba(0, 0, 0, 0.60)',
+                }}
+              >
                 <Typography sx={{ fontSize: 18 }}>{t(`message.${text}`)}</Typography>
               </Button>
             ))}
           </Stack>
 
-          <Typography my={1}>
-            {t("label.paid_message")}
-          </Typography>
+          <Typography my={1}>{t('label.paid_message')}</Typography>
 
-          <Stack sx={{
-            gap: 1,
-            flexWrap: "wrap",
-            flexDirection: "row"
-          }}>
+          <Stack
+            sx={{
+              gap: 1,
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+            }}
+          >
             {PAID_MESSAGE.map((text, index) => (
-              <Button key={index} size='small' sx={{
-                px: 2,
-                py: 1,
-                borderRadius: 2.5,
-                border: "1px solid #FFF629",
-                bgcolor: "rgba(0, 0, 0, 0.60)"
-              }}>
-                <Avatar alt="coin" src="/assets/pokerking/coin.png" sx={{ width: 20, height: 20, mr: 0.5 }} />
+              <Button
+                key={index}
+                size="small"
+                sx={{
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2.5,
+                  border: '1px solid #FFF629',
+                  bgcolor: 'rgba(0, 0, 0, 0.60)',
+                }}
+              >
+                <Avatar
+                  alt="coin"
+                  src="/assets/pokerking/coin.png"
+                  sx={{ width: 20, height: 20, mr: 0.5 }}
+                />
                 <Typography sx={{ fontSize: 18 }}>{t(`message.${text}`)}</Typography>
               </Button>
             ))}
           </Stack>
         </Stack>
-
       </CustomPopover>
       <Box component="audio" ref={audioRef} hidden>
         <source src="/assets/pokerking/sounds/time_out.wav" type="audio/wav" />
         <track kind="captions" srcLang="en" src="" />
       </Box>
 
-      <SideDialog
-        open={open}
-        playersData={playersData}
-        onClose={handleClose}
-      />
+      <SideDialog open={open} playersData={playersData} onClose={handleClose} />
 
       <VotDialog
         open={voteOpen}
@@ -1204,10 +1298,16 @@ export default function ProfileView() {
         roomId={roomId}
         player={user}
       />
+
+      <LeaveRoomDialog
+        dialog={leaveRoomDialog}
+        player={user}
+        roomId={roomId}
+        table_money={tableMoney}
+      />
     </Stack>
   );
 }
-
 
 export interface SideDialogProps {
   open: boolean;
@@ -1230,29 +1330,42 @@ function SideDialog(props: SideDialogProps) {
       roomId,
       key: SOCKET_KEY.SET_SIDEGAME,
       event,
-      type: 'start'
+      type: 'start',
     });
     handleClose();
-  }
+  };
 
   const handleClose = () => {
     onClose();
   };
 
   return (
-    <Dialog onClose={handleClose} open={open} sx={{
-      "& .MuiBackdrop-root": {
-        bgcolor: "transparent"
-      }
-    }}>
+    <Dialog
+      onClose={handleClose}
+      open={open}
+      sx={{
+        '& .MuiBackdrop-root': {
+          bgcolor: 'transparent',
+        },
+      }}
+    >
       <DialogTitle textAlign="center">Select Side Game</DialogTitle>
-      <DialogContent sx={{ textAlign: "center", pb: 4 }}>
-        <Stack sx={{ flexDirection: "row", justifyContent: "space-between", width: { xs: 1, sm: 0.7 }, m: "auto", mt: 1, gap: 3 }}>
+      <DialogContent sx={{ textAlign: 'center', pb: 4 }}>
+        <Stack
+          sx={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: { xs: 1, sm: 0.7 },
+            m: 'auto',
+            mt: 1,
+            gap: 3,
+          }}
+        >
           <Button
             variant="contained"
             color="error"
             sx={{
-              textAlign: "center",
+              textAlign: 'center',
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
               width: 150,
@@ -1269,7 +1382,7 @@ function SideDialog(props: SideDialogProps) {
             variant="contained"
             color="error"
             sx={{
-              textAlign: "center",
+              textAlign: 'center',
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
               width: 150,
@@ -1286,7 +1399,7 @@ function SideDialog(props: SideDialogProps) {
             variant="contained"
             color="error"
             sx={{
-              textAlign: "center",
+              textAlign: 'center',
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
               width: 150,
@@ -1305,8 +1418,6 @@ function SideDialog(props: SideDialogProps) {
   );
 }
 
-
-
 export interface VoteDialogProps {
   open: boolean;
   voter: string;
@@ -1314,8 +1425,6 @@ export interface VoteDialogProps {
   playersData: IPlayerData[];
   onClose: () => void;
 }
-
-
 
 function VotDialog(props: VoteDialogProps) {
   const { t } = useTranslation();
@@ -1331,35 +1440,55 @@ function VotDialog(props: VoteDialogProps) {
       roomId,
       key: SOCKET_KEY.SET_SIDEGAME,
       event,
-      type: 'vote'
+      type: 'vote',
     });
     handleClose();
-  }
+  };
 
   const handleClose = () => {
     onClose();
   };
 
   return (
-    <Dialog onClose={handleClose} open={open} sx={{
-      "& .MuiBackdrop-root": {
-        bgcolor: "transparent"
-      }
-    }}>
-      <DialogTitle textAlign="center"> Player : {voter}  </DialogTitle>
-      <DialogContent sx={{ textAlign: "center", pb: 4 }}>
-        <Typography variant='h4'>
-          {t("label.side_option")} : <Box component="span" color="primary.main">{voteGameType}</Box>
-          <Typography variant='h6' fontSize={15}>Time: 30 sec</Typography>
+    <Dialog
+      onClose={handleClose}
+      open={open}
+      sx={{
+        '& .MuiBackdrop-root': {
+          bgcolor: 'transparent',
+        },
+      }}
+    >
+      <DialogTitle textAlign="center"> Player : {voter} </DialogTitle>
+      <DialogContent sx={{ textAlign: 'center', pb: 4 }}>
+        <Typography variant="h4">
+          {t('label.side_option')} :{' '}
+          <Box component="span" color="primary.main">
+            {voteGameType}
+          </Box>
+          <Typography variant="h6" fontSize={15}>
+            Time: 30 sec
+          </Typography>
         </Typography>
-        <LinearProgress variant="determinate" value={50} sx={{ mt: 1, width: { xs: 1, sm: 500 } }} />
-        <Stack sx={{ flexDirection: "row", justifyContent: "space-between", width: 0.7, m: "auto", mt: 1 }}>
-
+        <LinearProgress
+          variant="determinate"
+          value={50}
+          sx={{ mt: 1, width: { xs: 1, sm: 500 } }}
+        />
+        <Stack
+          sx={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: 0.7,
+            m: 'auto',
+            mt: 1,
+          }}
+        >
           <Button
             variant="contained"
             color="error"
             sx={{
-              textAlign: "center",
+              textAlign: 'center',
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
               width: 150,
@@ -1376,7 +1505,7 @@ function VotDialog(props: VoteDialogProps) {
             variant="contained"
             color="error"
             sx={{
-              textAlign: "center",
+              textAlign: 'center',
               fontWeight: 700,
               fontSize: { xs: 14, sm: 16 },
               width: 150,

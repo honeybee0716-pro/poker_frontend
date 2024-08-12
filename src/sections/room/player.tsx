@@ -124,8 +124,7 @@ export default function Player({
     if (player.playerId !== connectionId && allPlayerCards.length) {
       temp = allPlayerCards.find((e) => e.playerId === player.playerId);
     }
-    if (temp) {setCards(temp?.cards || []);
-      console.log("card============: ",player.playerId);}
+    if (temp) {setCards(temp?.cards || []);}
     
     else setCards([]);
     
