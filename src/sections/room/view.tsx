@@ -173,8 +173,8 @@ export default function ProfileView() {
 
   const [open, setOpen] = useState<boolean>(false);
   const [voteOpen, setVoteOpen] = useState<boolean>(false);
+  const [TwoAllInState, setTwoAllInState] = useState<boolean>(false);
   const navigate = useNavigate();
-
 
 // disable back navigation to prevent user's abnormal actions
   useEffect(() => {
@@ -233,6 +233,16 @@ export default function ProfileView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
+  // useEffect(() => {
+  //   if (!roomId) return;
+  //   if (!TwoAllInState) return;
+  //   sendSocket({
+  //     roomId,
+  //     key: SOCKET_KEY.Two_All_In_State,
+  //   });
+  //   setTwoAllInState(false);
+  // }, [roomId, TwoAllInState, sendSocket]);
+
   useEffect(() => {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
@@ -270,6 +280,15 @@ export default function ProfileView() {
     }
 
     if (data && key === SOCKET_KEY.STATUS_UPDATE) {
+      if (data?.appendPlayers[0]?.playerMoney) {
+        setTableMoney(data?.appendPlayers[0]?.playerMoney);
+      }
+      const activePlayers = data?.playersData.filter((player:any) => !player.isFold);
+      if (activePlayers.length ===2){
+        if (activePlayers[0].playerMoney === 0 || activePlayers[1].playerMoney === 0){
+          setTwoAllInState(true);
+        }
+      }
       setTotalPot(data.totalPot);
       if (data?.twiceInfor?.first?.raise_val !== undefined) {
         setTwiceFMiddleCards({
@@ -385,7 +404,7 @@ export default function ProfileView() {
         setCurrentStatus(data.currentStatus);
       }
     }
-  }, [lastJsonMessage, connectionId, playersData]);
+  }, [lastJsonMessage, connectionId, playersData, tableMoney]);
 
   useEffect(() => {
     if (!playersData.length) return;
