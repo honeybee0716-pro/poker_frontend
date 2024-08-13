@@ -20,7 +20,6 @@ import { IPlayerData, IUser } from 'src/types';
 import { SOCKET_KEY } from 'src/config-global';
 import { useTranslation } from 'react-i18next';
 
-
 // ----------------------------------------------------------------------
 
 type Props = {
@@ -37,7 +36,7 @@ export default function LeaveRoomDialog({ roomId, player, dialog, table_money }:
   const router = useRouter();
 
   const username = useSelector((state) => state.auth.user.name);
-  
+
   const handleClose = () => dialog.onFalse();
 
   const handleLeaveRoom = () => {
@@ -45,11 +44,11 @@ export default function LeaveRoomDialog({ roomId, player, dialog, table_money }:
       roomId,
       table_money,
       key: SOCKET_KEY.LEAVE_ROOM,
-      username
+      username,
     });
     dialog.onFalse();
     router.push('/');
-    
+
     // dispatch(setbalance(Number(player?.money)-amount));
   };
 
@@ -66,32 +65,40 @@ export default function LeaveRoomDialog({ roomId, player, dialog, table_money }:
             height: 300,
             letterSpacing: 2,
             bgcolor: '#0000009c',
-            justifyContent:'center',alignItems: 'center'
+            justifyContent: 'center',
+            alignItems: 'center',
           },
         }}
       >
         <DialogTitle>
           <Typography component="center">Leave Room</Typography>
-          <Divider sx={{ width: 0.7, mx: 'auto', mt: 1 }} />
+          <Divider sx={{ width: 1, mx: 'auto', mt: 1 }} />
         </DialogTitle>
-        <DialogContent sx={{ overflow: 'hidden'}}>
-        <Typography color="text.disabled" fontSize={12}>Some Text...</Typography>
-        <Divider sx={{ width: 0.7, mx: 'auto', mt: 1 }} />
-            <Button
-              size="large"
-              type="submit"
-              color="inherit"
-              variant="contained"
-              sx={{
-                height: 30,
-                width: 100,
-                backgroundSize: 'cover',
-                backgroundImage: 'url(../../assets/pokerking/button/button1.png)',
-              }}
-              onClick={handleLeaveRoom}
-            >
-              {t('button.ok')}
-            </Button>
+        <DialogContent sx={{ overflow: 'hidden' }}>
+          <Stack spacing={10}>
+            <Stack textAlign="center">
+              <Typography color="text.disabled" fontSize={12}>
+                Some Text...
+              </Typography>
+            </Stack>
+            <Stack>
+              <Button
+                  size="large"
+                  type="submit"
+                  color="inherit"
+                  variant="contained"
+                  sx={{
+                    height: 30,
+                    width: 100,
+                    backgroundSize: 'cover',
+                    backgroundImage: 'url(../../assets/pokerking/button/button1.png)',
+                  }}
+                  onClick={handleLeaveRoom}
+                >
+                  {t('button.ok')}
+                </Button>
+            </Stack>
+          </Stack>
         </DialogContent>
       </Dialog>
     </>

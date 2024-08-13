@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-
+import { useNavigate, useLocation } from "react-router-dom";
 // @mui
 import {
   Box,
@@ -173,6 +173,44 @@ export default function ProfileView() {
 
   const [open, setOpen] = useState<boolean>(false);
   const [voteOpen, setVoteOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+
+// disable back navigation to prevent user's abnormal actions
+  useEffect(() => {
+    // Add a new entry to the history stack
+    window.history.pushState(null, "", window.location.href);
+
+    const handlePopState = (event:any) => {
+      // Prevent back navigation
+      window.history.pushState(null, "", window.location.href);
+      alert("Back navigation is disabled! To leave the room, use the Exit button in the top right.");
+    };
+
+    // Add the event listener for the popstate event
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [navigate]);
+// alert when user refresh site
+  useEffect(() => {
+    // Function to handle beforeunload event
+    const handleBeforeUnload = (event:any) => {
+      // Show a confirmation dialog
+      event.preventDefault();
+      event.returnValue = ""; // Required for Chrome to show the confirmation dialog
+    };
+
+    // Add the event listener
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      // Remove the event listener on cleanup
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
     if (!user?.id) return;
