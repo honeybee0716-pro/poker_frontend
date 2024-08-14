@@ -128,7 +128,7 @@ export default function ProfileView() {
   const { roomId } = params;
   const settings = useSettingsContext();
   const smDown = useResponsive('down', 'sm');
-  const { user } = useSelector((store) => store.auth);
+  const { user, cash_buy_money } = useSelector((store) => store.auth);
 
   const { sendSocket, lastJsonMessage, connectionId } = useSocket();
 
@@ -175,6 +175,8 @@ export default function ProfileView() {
   const [voteOpen, setVoteOpen] = useState<boolean>(false);
   const [TwoAllInState, setTwoAllInState] = useState<boolean>(false);
   const navigate = useNavigate();
+
+
 
 // disable back navigation to prevent user's abnormal actions
   useEffect(() => {
@@ -247,6 +249,9 @@ export default function ProfileView() {
     if (!lastJsonMessage) return;
     const { key, data } = lastJsonMessage;
     console.log('lastJsonMessage: ', lastJsonMessage);
+    if (cash_buy_money !== 0){
+      setTableMoney(cash_buy_money);
+    }
     if (data && key === SOCKET_KEY.ROOM_PARAM) {
       setMiddleCardNum(2);
       setMiddleCards([]);
@@ -404,7 +409,7 @@ export default function ProfileView() {
         setCurrentStatus(data.currentStatus);
       }
     }
-  }, [lastJsonMessage, connectionId, playersData, tableMoney]);
+  }, [lastJsonMessage, connectionId, playersData, tableMoney, cash_buy_money]);
 
   useEffect(() => {
     if (!playersData.length) return;
