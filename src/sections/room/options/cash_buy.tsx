@@ -16,7 +16,7 @@ import {
   DialogContent,
 } from '@mui/material';
 import { dispatch, useSelector } from 'src/store';
-import { setbalance } from 'src/store/reducers/auth';
+import { setCashBuyIn } from 'src/store/reducers/auth';
 import useLocales from 'src/locales/use-locales';
 import useSocket from 'src/hooks/use-socket';
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -125,7 +125,7 @@ export default function CashBuyDialog({ roomMinBet, playerCount, roomId, player,
     });
     dialog.onFalse();
     setFirstRender(false);
-    // dispatch(setbalance(Number(player?.money)-amount));
+    dispatch(setCashBuyIn(amount));
   };
 
   return (

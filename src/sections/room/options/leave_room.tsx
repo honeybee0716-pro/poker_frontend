@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useParams, useRouter } from 'src/routes/hooks';
 import { dispatch, useSelector } from 'src/store';
-import { setbalance } from 'src/store/reducers/auth';
+import { setCashBuyIn } from 'src/store/reducers/auth';
 import useSocket from 'src/hooks/use-socket';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { fCurrency } from 'src/utils/format-number';
@@ -49,7 +49,7 @@ export default function LeaveRoomDialog({ roomId, player, dialog, table_money }:
     dialog.onFalse();
     router.push('/');
 
-    // dispatch(setbalance(Number(player?.money)-amount));
+    dispatch(setCashBuyIn(0));
   };
 
   return (

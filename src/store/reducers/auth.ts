@@ -6,6 +6,7 @@ type initialStateType = {
   user: IUser;
   isLoggedIn: boolean;
   loading: boolean;
+  cash_buy_money : any;
 };
 
 const initialUser: IUser = {
@@ -31,6 +32,7 @@ const initialState: initialStateType = {
   user: initialUser,
   isLoggedIn: false,
   loading: false,
+  cash_buy_money : 0
 };
 
 const auth = createSlice({
@@ -58,9 +60,14 @@ const auth = createSlice({
       state.user = initialUser;
       state.isLoggedIn = false;
     },
+
+    setCashBuyIn(state, action) {
+      console.log('Updating cash buy in balance to:', action.payload);
+      state.cash_buy_money = action.payload;
+    }
   },
 });
 
 export default auth.reducer;
 
-export const { signin, signout, edit, setbalance } = auth.actions;
+export const { signin, signout, edit, setbalance, setCashBuyIn } = auth.actions;

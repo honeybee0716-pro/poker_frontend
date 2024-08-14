@@ -61,7 +61,8 @@ export const SOCKET_KEY = {
   RIVER: 'theRiver',
   ShowDown: 'allPlayersCards',
 
-  Collect_Chips_ToPot:'collectChipsToPot'
+  Collect_Chips_ToPot:'collectChipsToPot',
+  Two_All_In_State :'twoAllInState'
 };
 
 export const SUPER_PLAYERS = {
