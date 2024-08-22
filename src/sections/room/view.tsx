@@ -235,15 +235,15 @@ export default function ProfileView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
-  // useEffect(() => {
-  //   if (!roomId) return;
-  //   if (!TwoAllInState) return;
-  //   sendSocket({
-  //     roomId,
-  //     key: SOCKET_KEY.Two_All_In_State,
-  //   });
-  //   setTwoAllInState(false);
-  // }, [roomId, TwoAllInState, sendSocket]);
+  useEffect(() => {
+    if (!roomId) return;
+    if (!TwoAllInState) return;
+    sendSocket({
+      roomId,
+      key: SOCKET_KEY.Two_All_In_State,
+    });
+    setTwoAllInState(false);
+  }, [roomId, TwoAllInState, sendSocket]);
 
   useEffect(() => {
     if (!lastJsonMessage) return;
@@ -292,6 +292,7 @@ export default function ProfileView() {
       if (activePlayers.length ===2){
         if (activePlayers[0].playerMoney === 0 || activePlayers[1].playerMoney === 0){
           setTwoAllInState(true);
+          console.log("twoallin=====")
         }
       }
       setTotalPot(data.totalPot);
